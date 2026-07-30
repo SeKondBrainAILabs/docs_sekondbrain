@@ -1,0 +1,48 @@
+name: Deploy to Pages
+
+# Static site. No build step — the repo is what gets served.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a queued run supersedes an in-flight one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard the required files
+        run: |
+          set -e
+          test -f CNAME       || { echo "::error::CNAME missing — the custom domain will drop"; exit 1; }
+          test -f .nojekyll   || { echo "::error::.nojekyll missing — Jekyll will mangle the tree"; exit 1; }
+          test -f index.html  || { echo "::error::root index.html missing"; exit 1; }
+          test -f kemory/index.html || { echo "::error::kemory/index.html missing — this is the documentation URL on the directory listing"; exit 1; }
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pre-flight — tag balance, link resolution, no committed credentials
+        run: python tools/preflight.py
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

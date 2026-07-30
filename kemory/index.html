@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory — documentation | SeKondBrain</title>
+<meta name="description" content="Persistent, permissioned memory for AI agents. How to connect Kemory, what its tools do, and how authentication and scoping work.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Kemory — documentation">
+<meta property="og:description" content="Persistent, permissioned memory for AI agents.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: blue — the technical surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Kemory <span>· by SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="#connect-web">Connect</a>
+      <a href="#tools">Tools</a>
+      <a href="#scoping">Scoping</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Remote MCP server · Streamable HTTP</span>
+  <h1>Memory your AI<br><em>doesn't forget.</em></h1>
+  <p class="lede">Kemory gives an AI something it does not have on its own: recall. An assistant that reads from Kemory at the start of a session knows what you told it last week, in a different client, on a different machine. What it learns, it can write back.</p>
+  <p>Every memory is scoped to a user and an organisation, and that scoping is enforced in the database rather than in a prompt. Connect once from any MCP-capable AI, and it is available to every session after that.</p>
+  <div class="addr">
+    <span class="k">Server address</span>
+    <code>https://kemory.prod.apps.s9n.ai/mcp/v1</code>
+  </div>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Start</div>
+    <a href="#before">Before you connect</a>
+    <a href="#connect-web">Connect a web AI</a>
+    <a href="#connect-local">Connect a local client</a>
+    <a href="#quickstart">Quickstart</a>
+    <div class="grp">Reference</div>
+    <a href="#tools">The tools</a>
+    <a href="#auth">Authentication</a>
+    <a href="#scoping">Scoping and sharing</a>
+    <div class="grp">Operating</div>
+    <a href="#data">Your data</a>
+    <a href="#errors">Errors and limits</a>
+    <a href="#support">Support</a>
+  </nav>
+
+  <main>
+
+    <section id="before">
+      <h2>Before you connect</h2>
+      <p>You need a SeKondBrain account. Sign-in is handled by SeKondBrain's identity service — Kemory never sees or holds a password.</p>
+      <p>There is nothing to install for a web AI. Local clients need a config-file entry, shown below. Every user connects to the same address; there is no per-tenant URL and nothing to provision before you begin.</p>
+      <p class="muted"><strong>Transport.</strong> Streamable HTTP, JSON-RPC 2.0, single endpoint. Protocol revisions <code>2024-11-05</code> through <code>2025-11-25</code> are negotiated on <code>initialize</code>. Server-sent events, server-initiated messages and persistent sessions are deliberately not implemented — every request is stateless and self-authenticating.</p>
+    </section>
+
+    <section id="connect-web">
+      <h2>Connect a web AI</h2>
+      <p>For Claude, ChatGPT, Perplexity, Manus and any other AI that supports remote MCP connectors.</p>
+      <ol>
+        <li>Open your AI's connector settings and choose <strong>Add custom connector</strong>.</li>
+        <li>Paste the server address above.</li>
+        <li>Your browser opens a SeKondBrain sign-in page. Sign in and approve.</li>
+        <li>The connector reports the tools it found. You are connected.</li>
+      </ol>
+      <p>There is no key to copy, paste or keep safe. The connector holds a short-lived token that refreshes itself and that you can revoke at any time from your Kemory dashboard.</p>
+      <div class="note">
+        <span class="lbl">What you are approving</span>
+        <p>The sign-in screen asks you to let this AI act as you inside Kemory — read your memories, write new ones, and delete memories you point it at. It does not grant access to anything else in your SeKondBrain account, and it does not grant access to another user's memories, including colleagues in the same organisation.</p>
+      </div>
+    </section>
+
+    <section id="connect-local">
+      <h2>Connect a local client</h2>
+      <p>For Claude Code, Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client that reads MCP servers from a config file.</p>
+      <p>These clients authenticate with an API key sent as an <code>X-API-Key</code> header. Create one from <strong>Dashboard → Keys</strong>. It is shown once.</p>
+      <p>The entry below is exactly what a local client needs. Read it before you connect anything — this is the whole surface.</p>
+<pre><code>{
+  "mcpServers": {
+    "kemory": {
+      "type": "http",
+      "url": "https://kemory.prod.apps.s9n.ai/mcp/v1",
+      "headers": {
+        "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
+      }
+    }
+  }
+}</code></pre>
+      <table>
+        <thead><tr><th>Client</th><th>Config location</th></tr></thead>
+        <tbody>
+          <tr><td>Claude Code</td><td><code>~/.claude.json</code></td></tr>
+          <tr><td>Claude Desktop</td><td><code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS)</td></tr>
+          <tr><td>Cursor</td><td><code>~/.cursor/mcp.json</code></td></tr>
+          <tr><td>Cline</td><td>VS Code settings → Cline → MCP servers</td></tr>
+          <tr><td>Windsurf</td><td><code>~/.codeium/windsurf/mcp_config.json</code></td></tr>
+          <tr><td>Warp</td><td>Settings → AI → MCP servers</td></tr>
+          <tr><td>Codex</td><td><code>~/.codex/config.toml</code></td></tr>
+          <tr><td>Gemini CLI</td><td><code>~/.gemini/settings.json</code></td></tr>
+        </tbody>
+      </table>
+      <p>Restart the client fully after editing — quitting the window is not enough. Ask it to list your Kemory namespaces; a response means authentication, agent registration and permissions are all green.</p>
+      <p>A key inherits the organisation of the person who created it, so an agent holding one stays inside your tenant. Keys can be listed and revoked from the dashboard, and revocation takes effect on the next call. Never commit one.</p>
+
+      <h3>Making an AI actually use memory</h3>
+      <p>Most clients treat a tool as something to reach for when asked. Put this in your project instructions and it becomes the first thing checked instead.</p>
+<pre><code>You have Kemory memory tools available.
+
+At the start of each session: call kemory_list_namespaces, then
+kemory_recall_memory on the current topic.
+
+Write a memory immediately when: I state a preference or a way of
+working, we make a decision, or we learn something non-obvious about
+this codebase or domain. Tell me what you wrote and to which namespace.
+
+Never write credentials, keys or passwords into memory.</code></pre>
+    </section>
+
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <p>Write one memory, then read it back in a session that has never seen it.</p>
+      <h3>1. Write it</h3>
+      <p>Ask your AI: <em>"Remember that I prefer imperative-mood commit messages, no emoji. Put it in <code>user:preferences</code>."</em> It calls <code>kemory_store_memory</code> and tells you the namespace it used.</p>
+      <h3>2. Read it back</h3>
+      <p>Quit the client entirely and reopen it — a new chat is not enough, the point is to cross a process boundary. Then ask: <em>"What is my commit-message preference?"</em> It calls <code>kemory_recall_memory</code> and answers correctly.</p>
+      <p>That is the whole product. Everything below is detail.</p>
+    </section>
+
+    <section id="tools">
+      <h2>The tools</h2>
+<!-- TOOLS:BEGIN -->
+      <p>Kemory exposes <strong>17 tools</strong>, all prefixed <code>kemory_</code>. Every one carries a <code>title</code> and MCP behaviour annotations, so your client can tell reading from writing from deleting before it runs anything.</p>
+
+      <div class="grade"><span class="dot read"></span><h3>Read-only</h3><span class="ann">readOnlyHint: true</span></div>
+      <p class="count">12 tools</p>
+      <table>
+        <tbody>
+          <tr><td><code>kemory_check_access</code></td><td>Asks whether an action on a namespace would be permitted, without performing it.</td></tr>
+          <tr><td><code>kemory_find_similar</code></td><td>Nearest-neighbour lookup by embedding. Finds memories that mean the same thing, not ones that share words.</td></tr>
+          <tr><td><code>kemory_get_compressed</code></td><td>The same material at three levels of compression: raw, key-fact, and concept synthesis.</td></tr>
+          <tr><td><code>kemory_get_context</code></td><td>Memories relevant to a topic, returned as a synthesis rather than a list.</td></tr>
+          <tr><td><code>kemory_get_history</code></td><td>Version history and provenance for one memory — what changed, when, and which agent changed it.</td></tr>
+          <tr><td><code>kemory_get_raw</code></td><td>Unsynthesised contents of one namespace. Use when you want the source text, not a summary.</td></tr>
+          <tr><td><code>kemory_get_session_context</code></td><td>What was read and written inside one session.</td></tr>
+          <tr><td><code>kemory_get_user_context</code></td><td>A cross-namespace picture of you. Used to prewarm a session before the first question.</td></tr>
+          <tr><td><code>kemory_list_namespaces</code></td><td>Every namespace you can reach.</td></tr>
+          <tr><td><code>kemory_list_skills</code></td><td>Registered agent skills available to you.</td></tr>
+          <tr><td><code>kemory_recall_memory</code></td><td>Hybrid search across your namespaces — vector similarity and full-text, fused and re-ranked. The default way to find something.</td></tr>
+          <tr><td><code>kemory_rehydrate_session_sources</code></td><td>Re-reads the source material behind a session's memories, within a token budget. Reads only, despite the name.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grade"><span class="dot write"></span><h3>Write</h3><span class="ann">destructiveHint: false</span></div>
+      <p class="count">4 tools</p>
+      <table>
+        <tbody>
+          <tr><td><code>kemory_consolidate_session</code></td><td>Turns a session into durable memories. Idempotent — running it twice changes nothing.</td></tr>
+          <tr><td><code>kemory_promote_memory</code></td><td>Raises a memory from a narrow namespace into a wider one. The original stays where it was.</td></tr>
+          <tr><td><code>kemory_store_memory</code></td><td>Writes one memory into a namespace, with metadata. Nothing existing is overwritten.</td></tr>
+          <tr><td><code>kemory_store_skill</code></td><td>Registers a reusable skill.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grade"><span class="dot del"></span><h3>Destructive</h3><span class="ann">destructiveHint: true</span></div>
+      <p class="count">1 tool</p>
+      <table>
+        <tbody>
+          <tr><td><code>kemory_delete_memory</code></td><td>Deletes a memory by id. It stops being returned by recall. The audit trail retains that a deletion happened, and by whom.</td></tr>
+        </tbody>
+      </table>
+
+<!-- TOOLS:END -->
+      <div class="note">
+        <span class="lbl">On annotations</span>
+        <p>MCP clients read these hints when deciding what to auto-approve and what to confirm with you. They are hints: the MCP specification says a client must treat annotations from an untrusted server as untrusted. They are not Kemory's access control. Permissions are enforced server-side on every call, whatever a client decides to do with the hint.</p>
+      </div>
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <p>Two paths, one authorisation model.</p>
+      <h3>OAuth 2.1 with PKCE — web AIs</h3>
+      <p>Authorisation is handled by SeKondBrain's identity service. Clients register dynamically, so there is nothing to configure. You are redirected to sign in, you approve, and the client receives a short-lived access token and a refresh token. Kemory never sees your password. No long-lived credential exists anywhere on this path.</p>
+      <h3>API keys — local clients</h3>
+      <p>A key is minted from an authenticated dashboard session, displayed once, and stored hashed. It carries your organisation and identity. Present it as <code>X-API-Key</code>. Revoke it when the machine or agent is retired.</p>
+      <p>Whichever path issued it, a credential resolves to the same authorisation context — a user, an organisation, and an agent identity — and every tool call is checked against it before it runs.</p>
+      <h3>Revoking access</h3>
+      <p>Dashboard → Connectors lists every agent connected to your account, with the client it came from and when it last called. Revoke one and its next request returns <code>401</code>.</p>
+    </section>
+
+    <section id="scoping">
+      <h2>Scoping, namespaces<br>and sharing</h2>
+      <p>This is the part worth reading twice, because it determines what other people can see.</p>
+      <h3>Organisation isolation is structural</h3>
+      <p>Every query against tenant-scoped data carries an organisation filter applied beneath the API layer, not by the calling code. A request cannot read across organisations, and no tool, transport or client setting changes that.</p>
+      <h3>Within an organisation, you are the default boundary</h3>
+      <p>Memories you write are yours. Colleagues in the same organisation do not see them by default, and neither do their agents.</p>
+      <h3>Namespaces are how you organise memory</h3>
+      <p>A namespace is a label you choose — they are free-form. Conventions that work well:</p>
+      <table>
+        <thead><tr><th>Namespace</th><th>For</th></tr></thead>
+        <tbody>
+          <tr><td><code>user:preferences</code></td><td>How you like to work — style, tools, formats</td></tr>
+          <tr><td><code>project:&lt;name&gt;</code></td><td>Facts and decisions about one project</td></tr>
+          <tr><td><code>decisions:&lt;period&gt;</code></td><td>A decision log with reasoning, in dated buckets</td></tr>
+          <tr><td><code>tribal:&lt;area&gt;</code></td><td>Operational knowledge that is nobody's and everybody's</td></tr>
+        </tbody>
+      </table>
+      <h3>Sharing is explicit</h3>
+      <p>A memory becomes visible beyond you when it is written to, or promoted into, a namespace your team can read. Nothing is promoted automatically. <code>kemory_promote_memory</code> is the tool that does it, and it is a write — so a client that asks before writing will ask before sharing.</p>
+      <p>If you are unsure whether something would be visible to a colleague, <code>kemory_check_access</code> answers the question without changing anything.</p>
+      <h3>What agents can see</h3>
+      <p>An agent sees exactly what the person who connected it can see — no more. Two agents connected by the same person share that person's memory. Two agents connected by different people do not.</p>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p>Kemory stores memory content, the namespaces and metadata you attach to it, and the vector embeddings computed from it. Where you connect a capture surface, it stores the conversation content that surface sends. Account identity comes from SeKondBrain sign-in.</p>
+      <p>Memory content is processed by third-party language models for enrichment, compression and embedding. Which providers, what is retained, how long, and how to have material erased are set out in full in the <a href="https://sekondbrain.ai/privacy">privacy policy</a>.</p>
+      <p><code>kemory_delete_memory</code> is a soft delete: the memory stops being returned by any read tool. The privacy policy describes what the audit trail retains afterwards and how to request complete erasure.</p>
+      <div class="note">
+        <span class="lbl">Do not put credentials in memory</span>
+        <p>Passwords, API keys and tokens have no business in a memory layer. Every tool description says so to the model as well as to you.</p>
+      </div>
+    </section>
+
+    <section id="errors">
+      <h2>Errors and limits</h2>
+      <p>Tool failures come back inside a successful JSON-RPC response with <code>isError: true</code> and a typed message, rather than as an HTTP error — an AI can read the message and adjust.</p>
+      <table>
+        <thead><tr><th>You see</th><th>It means</th></tr></thead>
+        <tbody>
+          <tr><td><code>Permission denied</code></td><td>The credential is valid; that action on that namespace is not allowed.</td></tr>
+          <tr><td><code>Validation error</code></td><td>Arguments did not match the tool's schema.</td></tr>
+          <tr><td><code>401</code></td><td>No credential, or it expired or was revoked. Web clients re-authenticate automatically; local clients need a new key.</td></tr>
+          <tr><td><code>-32601</code></td><td>An MCP method Kemory does not implement. <code>resources/*</code> returns an empty list by design.</td></tr>
+          <tr><td><code>429</code></td><td>Rate limited. Back off and retry.</td></tr>
+        </tbody>
+      </table>
+      <p>Tools returning <code>s9nmem_*</code> migration errors mean a client is running an outdated configuration. Reconnect it.</p>
+    </section>
+
+    <section id="support">
+      <h2>Support</h2>
+      <p>Kemory is built by SeKondBrain AI Labs. We own and operate the API, the domain and the infrastructure this connector reaches.</p>
+      <table>
+        <tbody>
+          <tr><td>Support</td><td><a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a></td></tr>
+          <tr><td>Privacy policy</td><td><a href="https://sekondbrain.ai/privacy">sekondbrain.ai/privacy</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+      <a href="mailto:support@sekondbrain.ai">Support</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

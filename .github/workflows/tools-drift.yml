@@ -1,0 +1,42 @@
+name: Tool-table drift
+
+# Fails if the published tool table no longer matches the live `tools/list`.
+# The Connectors Directory Definition of Done requires the two to agree.
+#
+# MANUAL ONLY FOR NOW. Enable the schedule once production serves annotated
+# tools (Kemory >= v0.108.0 — see S9N-6528). Running it against an older prod
+# fails on missing titles and turns the badge red for a reason that is not
+# a docs problem.
+on:
+  workflow_dispatch:
+  # Uncomment after S9N-6528 lands:
+  # schedule:
+  #   - cron: "17 6 * * 1"   # Mondays, 06:17 UTC
+  # pull_request:
+  #   paths: ["kemory/**"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compare published tables against the live server
+        env:
+          KEMORY_MCP_URL: ${{ vars.KEMORY_MCP_URL }}
+          KEMORY_DOCS_KEY: ${{ secrets.KEMORY_DOCS_KEY }}
+        run: |
+          if [ -z "$KEMORY_MCP_URL" ] || [ -z "$KEMORY_DOCS_KEY" ]; then
+            echo "::error::Set the KEMORY_MCP_URL repository variable and the KEMORY_DOCS_KEY secret."
+            echo "The key needs read access only — tools/list performs no writes."
+            exit 1
+          fi
+          python tools/gen_tools_table.py \
+            --url "$KEMORY_MCP_URL" \
+            --api-key "$KEMORY_DOCS_KEY" \
+            --check kemory/docs.md \
+            --check kemory/index.html

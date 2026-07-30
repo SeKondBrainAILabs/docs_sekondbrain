@@ -3,13 +3,13 @@ name: Tool-table drift
 # Fails if the published tool table no longer matches the live `tools/list`.
 # The Connectors Directory Definition of Done requires the two to agree.
 #
-# MANUAL ONLY FOR NOW. Enable the schedule once production serves annotated
-# tools (Kemory >= v0.108.0 — see S9N-6528). Running it against an older prod
-# fails on missing titles and turns the badge red for a reason that is not
-# a docs problem.
+# MANUAL ONLY FOR NOW. Enable the schedule once production serves the annotated
+# tool surface (title + readOnlyHint/destructiveHint on every tool). Running it
+# against an older prod fails on missing titles and turns the badge red for a
+# reason that is not a docs problem.
 on:
   workflow_dispatch:
-  # Uncomment after S9N-6528 lands:
+  # Uncomment once prod serves the annotated tool surface:
   # schedule:
   #   - cron: "17 6 * * 1"   # Mondays, 06:17 UTC
   # pull_request:

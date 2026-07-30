@@ -27,7 +27,7 @@ There is nothing to install for a web AI. Local clients need a config-file entry
 **The server address:**
 
 ```
-https://kemory.prod.apps.s9n.ai/mcp/v1
+https://kemory.sekondbrain.ai/mcp/v1
 ```
 
 Every user connects to the same address. There is no per-tenant URL and nothing to
@@ -75,7 +75,7 @@ this is the whole surface.
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://kemory.prod.apps.s9n.ai/mcp/v1",
+      "url": "https://kemory.sekondbrain.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -250,6 +250,39 @@ answers the question without changing anything.
 **What agents can see.** An agent sees exactly what the person who connected it can see —
 no more. Two agents connected by the same person share that person's memory. Two agents
 connected by different people do not.
+
+---
+
+## Capture with Kora for Chrome
+
+Kemory is the memory; **Kora** is one way to fill it. Kora is a Chrome extension that
+captures your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have
+them, keeps them in your browser, and syncs them into Kemory — so a chat you had in one AI
+becomes a memory any connected AI can recall.
+
+It keeps what the host platforms eventually drop: full message text and structured blocks —
+code, tables, reasoning, citations, artifacts — uploaded and generated files, inline images,
+and conversation metadata. It groups related chats across tools by topic, so your *React
+hooks* thread in ChatGPT and your *React state* thread in Claude land in the same place.
+
+**Local first.** Conversations are captured into browser storage first, and sync only to the
+Kemory you connect — your SeKondBrain account's, or a self-hosted instance you point it at.
+They go nowhere else.
+
+**Connecting is the sign-in.** Choose your environment and **Sign in with SeKondBrain**. That
+single sign-in also connects Kemory: a per-install key is issued for you in the background and
+the connection indicator turns green on its own — there is no separate key to paste. An
+Advanced mode still accepts a pair code, a pasted key, or a custom URL for manual and
+self-hosted setups.
+
+**What reaches Kemory.** Captured chats become memories in your account, routed into
+namespaces automatically — a chat with no routing signal lands in an inbox namespace and is
+sorted from there. Once in Kemory they behave like any other memory: `kemory_recall_memory`
+and the rest return them, scoped to you, from any AI you have connected.
+
+**What Kora reads.** The extension reads page content only on the AI sites you switch it on
+for, and only to capture your own conversations. What it stores and syncs is covered by the
+same privacy policy as the rest of Kemory.
 
 ---
 

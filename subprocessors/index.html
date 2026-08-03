@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<!--
+  Sub-processor disclosure — SeKondBrain AI Labs Limited.
+
+  This URL is cited in binding legal text and is contractually load-bearing:
+    - Privacy Policy §5.2 and §7.1
+    - Business Terms Schedule 1 §3 (general authorisation) and §4 (transfers)
+    - Business Terms Schedule 2 §1
+    - Kora for Chrome & Kemory privacy policy §6 and §8
+  Keep it live. A dead link here weakens the Article 28 authorisation the DPA relies on.
+
+  Only entities whose role is settled are named. Categories whose providers are not yet
+  confirmed are listed as categories with class="gap" — never guessed, never quietly
+  omitted, because an incomplete list that reads as complete is the worse failure.
+  Paddle is listed separately and deliberately: it is an independent controller as
+  merchant of record, NOT a sub-processor.
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sub-processors | SeKondBrain</title>
+<meta name="description" content="The third parties SeKondBrain uses to provide its services, what each is used for, and where data is processed.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/subprocessors/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Sub-processors — SeKondBrain">
+<meta property="og:description" content="Who processes data on our behalf, for what, and where.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/subprocessors/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: mint and blue — the legal surface. */
+  :root{ --veil-a:rgba(64,203,104,.14); --veil-b:rgba(95,196,240,.14); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../legal/">Legal <span>· SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="../legal/privacy/">Privacy</a>
+      <a href="../legal/terms/">Terms</a>
+      <a href="../legal/business-terms/">Business</a>
+      <a href="../">Documentation</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i style="background:var(--c-mint)"></i>Sub-processors</span>
+  <h1>Who touches<br><em>your data.</em></h1>
+  <p class="lede">The third parties we use to provide the Services, what each one is used for, and where your data is processed. This page is referenced by our <a href="../legal/privacy/">Privacy Policy</a> and forms part of the Data Processing Agreement in our <a href="../legal/business-terms/">Business Terms</a>.</p>
+  <div class="addr">
+    <span class="k">Last updated</span>
+    <code>3 August 2026</code>
+  </div>
+</div>
+
+<div class="wrap" style="padding-bottom:96px">
+  <main>
+
+    <section id="status" style="padding-top:var(--sp-6)">
+      <div class="note">
+        <span class="lbl">Status of this list</span>
+        <p>The infrastructure and payment entries below are final. The remaining categories &mdash; inference, speech, email delivery and analytics &mdash; are disclosed here <strong>by category</strong> while the individual providers are confirmed, and are marked as outstanding. Treat any category still marked outstanding as not yet a complete disclosure for that category.</p>
+      </div>
+    </section>
+
+    <section id="named">
+      <h2>Sub-processors</h2>
+      <p>These parties process personal data on our behalf, under contracts that restrict their use of it to providing services to us.</p>
+      <table>
+        <thead>
+          <tr><th>Provider</th><th>Purpose</th><th>Processing location</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google Cloud</td>
+            <td>Cloud infrastructure, storage and backend services for the Services and your Kemory data</td>
+            <td>Switzerland (customers in the rest of the world); India (customers in India)</td>
+          </tr>
+          <tr>
+            <td><span class="gap">Inference providers</span></td>
+            <td>Large language model inference &mdash; generating the outputs you request, and the background processing that organises your memory. Content is transmitted solely to generate your requested output and is not used to train models.</td>
+            <td>Provider list being finalised</td>
+          </tr>
+          <tr>
+            <td><span class="gap">Speech providers</span></td>
+            <td>Speech-to-text and text-to-speech for Kora Voice</td>
+            <td>Provider list being finalised</td>
+          </tr>
+          <tr>
+            <td><span class="gap">Email delivery</span></td>
+            <td>Transactional and service email</td>
+            <td>Provider list being finalised</td>
+          </tr>
+          <tr>
+            <td><span class="gap">Analytics</span></td>
+            <td>Product usage analytics. Telemetry events never include the content of your conversations or memories.</td>
+            <td>Provider list being finalised</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="payments">
+      <h2>Payments</h2>
+      <p><strong>Paddle is not a sub-processor.</strong> Paddle acts as our <strong>merchant of record</strong>: it is the seller of record for your transaction, charges your payment method, handles applicable taxes, issues invoices and processes refunds. In doing so it acts as an <strong>independent controller</strong> of your payment data under its own privacy policy, not as a processor acting on our instructions.</p>
+      <p>We receive transaction confirmations and subscription status from Paddle. We do not store full card numbers. See clause 4.3B of the <a href="../legal/terms/">Terms of Service</a> and section 3.1 of the <a href="../legal/privacy/">Privacy Policy</a>.</p>
+      <table>
+        <thead>
+          <tr><th>Provider</th><th>Role</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Paddle</td>
+            <td>Merchant of record &mdash; independent controller</td>
+            <td>Seller of record, payment processing, tax handling, invoicing and refunds</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="transfers">
+      <h2>International transfers</h2>
+      <p>Data at rest is stored in the deployment region selected at organisation creation: Google Cloud Switzerland (rest of world) or Google Cloud India (customers in India). Transfers to Switzerland are covered by UK adequacy regulations.</p>
+      <p>Transfers to India, and any other restricted transfer &mdash; including processing by inference providers in other jurisdictions &mdash; are made under the UK International Data Transfer Agreement or the UK Addendum to the EU Standard Contractual Clauses, with supplementary measures where appropriate. You may request details of the safeguards applicable to a specific transfer at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
+    </section>
+
+    <section id="changes">
+      <h2>Changes to this list</h2>
+      <p>Business customers give general written authorisation to the sub-processors listed on this page, under Schedule 1 §3 of the <a href="../legal/business-terms/">Business Terms</a>.</p>
+      <p>We will give at least <strong>30 days&rsquo; notice</strong> of an intended addition or replacement. A customer may object on reasonable data-protection grounds; if the objection cannot be resolved, that customer may terminate the affected Services with a pro-rata refund. We impose data-protection obligations on sub-processors materially equivalent to those in Schedule 1, and remain liable for their performance.</p>
+      <p>To be notified of changes, or to raise an objection, write to <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../legal/">Legal</a>
+      <a href="../legal/privacy/">Privacy</a>
+      <a href="mailto:privacy@sekondbrain.ai">Privacy contact</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

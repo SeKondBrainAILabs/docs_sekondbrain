@@ -31,8 +31,8 @@ claiming a credential.
 │   └── docs.md             copy source of truth (prose)
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
-│   ├── privacy/            master Privacy Policy v2.2
-│   ├── terms/              Terms of Service — Individuals v2.1
+│   ├── privacy/            master Privacy Policy v2.3
+│   ├── terms/              Terms of Service — Individuals v2.2
 │   ├── business-terms/     Business Terms v1.0 + DPA (Schedules 1 and 2)
 │   └── extension-privacy/  Kora for Chrome & Kemory privacy companion
 ├── tools/
@@ -73,16 +73,17 @@ hand-edit it.
 
 ## The legal documents
 
-Four documents, one page each, at `/legal/`. **The source of truth is Google Drive, not this
-repo** — each page carries its source document's name and file ID in an HTML comment at the
-top. Edit the Doc first, then mirror the change here; never let the two diverge silently.
+Four documents, one page each, at `/legal/`. **The source of truth is the legal document, not
+this repo** — each page names its source document in an HTML comment at the top, along with
+what changed in the current version. Edit the source first, then mirror it here; never let the
+two diverge silently.
 
 | Page | Document | Version |
 |---|---|---|
-| `/legal/privacy/` | Privacy Policy | 2.2 |
-| `/legal/terms/` | Terms of Service — Individuals | 2.1 |
+| `/legal/privacy/` | Privacy Policy | 2.3 |
+| `/legal/terms/` | Terms of Service — Individuals | 2.2 |
 | `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.0 |
-| `/legal/extension-privacy/` | Kora for Chrome & Kemory | companion to 2.2 |
+| `/legal/extension-privacy/` | Kora for Chrome & Kemory | companion to 2.3 |
 
 Two rules, both enforced by `tools/preflight.py`:
 

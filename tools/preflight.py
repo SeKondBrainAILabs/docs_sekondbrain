@@ -89,6 +89,7 @@ for page, label in [
     ("legal/terms/index.html", "Terms of Service"),
     ("legal/business-terms/index.html", "Business Terms and DPA"),
     ("legal/extension-privacy/index.html", "extension privacy policy"),
+    ("subprocessors/index.html", "sub-processor disclosure cited by the DPA"),
 ]:
     if not os.path.exists(page):
         failures.append(f"{page}: missing — {label} is linked from published pages")

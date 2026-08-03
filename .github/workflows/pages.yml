@@ -32,7 +32,7 @@ jobs:
           test -f .nojekyll   || { echo "::error::.nojekyll missing — Jekyll will mangle the tree"; exit 1; }
           test -f index.html  || { echo "::error::root index.html missing"; exit 1; }
           test -f kemory/index.html || { echo "::error::kemory/index.html missing — this is the documentation URL on the directory listing"; exit 1; }
-          for p in legal legal/privacy legal/terms legal/business-terms legal/extension-privacy; do
+          for p in legal legal/privacy legal/terms legal/business-terms legal/extension-privacy subprocessors; do
             test -f "$p/index.html" || { echo "::error::$p/index.html missing — the legal documents are linked from the index, the footers and the Chrome Web Store listing"; exit 1; }
           done
 

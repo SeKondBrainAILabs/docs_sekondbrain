@@ -35,6 +35,8 @@ claiming a credential.
 │   ├── terms/              Terms of Service — Individuals v2.2
 │   ├── business-terms/     Business Terms v1.0 + DPA (Schedules 1 and 2)
 │   └── extension-privacy/  Kora for Chrome & Kemory privacy companion
+├── subprocessors/          sub-processor disclosure — cited by the DPA, keep it live
+│   └── index.html
 ├── tools/
 │   ├── gen_tools_table.py  regenerates the tool table from live tools/list
 │   └── preflight.py        tag balance, link resolution, no leaked internal notes
@@ -104,9 +106,12 @@ privacy policy.
 - **ICO registration number.** The application is pending. Both privacy pages say so in
   plain terms and promise to publish the number once issued — replace that sentence in
   `privacy/` §14.2 and `extension-privacy/` §2 when it arrives.
-- **`/subprocessors` does not exist yet** and three of the four documents link to it. This is
+- **`/subprocessors` is live but incomplete.** Google Cloud and Paddle are named; inference,
+  speech, email delivery and analytics are published as categories with `gap` markers. This is
   contractual, not cosmetic: Schedule 1 §3 grounds the general sub-processor authorisation in
-  that list, and §4 says transfers to inference providers occur only as disclosed there.
+  that list, and §4 says transfers to inference providers occur only as disclosed there — so an
+  undisclosed provider is one the DPA does not permit us to transfer to. Tracked as **S9N-6672**
+  (Karol), which carries the fill-in table and the prompt to regenerate the page.
 - **Cookie Policy** has no URL, and both Terms documents incorporate it by reference.
 - Backup retention `[90]` days, and three unfilled Schedule 2 entries.
 - **Business Terms**: published as v1.0 effective 3 August 2026. Bring the source Doc in line

@@ -497,7 +497,23 @@
     <section id="access">
       <h2>Availability &amp; access</h2>
       <p>Cognition OS ships as part of the <strong>SeKondBrain platform</strong>. It is licensed, not open source: you buy the platform and integrate the graph into your own stack, with your organisation's data isolated and provisioned for you. It already runs in production behind our own products — what you integrate is proven, not a prototype.</p>
-      <p>Provisioning gives you a host, an organisation identifier and service credentials. The API above is the contract you build against; your instance also serves its own live OpenAPI reference at <code>/docs</code>.</p>
+      <h3>Where it runs</h3>
+      <table class="tight">
+        <thead><tr><th>Model</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Multi-tenant cloud</strong></td><td>The default. We operate it; your organisation gets its own isolated graph and its own endpoint.</td></tr>
+          <tr><td><strong>Your own cloud</strong></td><td>For enterprise. Deployed into your cloud account, so graph data never leaves your boundary.</td></tr>
+        </tbody>
+      </table>
+      <h3>What you get when you're set up</h3>
+      <table class="tight">
+        <tbody>
+          <tr><td>A unique URL</td><td>Your organisation is issued its own endpoint — that is the <code>&lt;YOUR_COGNITION_HOST&gt;</code> in every example on this page.</td></tr>
+          <tr><td>Credentials</td><td>Your organisation identifier and service token, issued with the endpoint.</td></tr>
+          <tr><td>A live API reference</td><td>Your instance serves its own OpenAPI at <code>/docs</code> and <code>/redoc</code>, matching the version you are running.</td></tr>
+          <tr><td>Setup guide</td><td>Provisioning walks you through tenant creation, your first write and your first search.</td></tr>
+        </tbody>
+      </table>
       <div class="note">
         <span class="lbl">Request access</span>
         <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Cognition%20OS">hello@sekondbrain.ai</a> with the subject <em>“Access for Cognition OS”</em> and tell us what you want to build.</p>

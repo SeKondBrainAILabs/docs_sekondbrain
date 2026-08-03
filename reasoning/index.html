@@ -274,8 +274,37 @@
           <tr><td>Failure policy</td><td><code>abort</code>, <code>retry_chain</code>, or fall back to a named chain.</td></tr>
         </tbody>
       </table>
+      <h3>A chain of skills</h3>
+      <p>The useful pattern is composing <em>skills</em> rather than prompts — each step is separately versioned, separately tested and reusable somewhere else. A step can also be another chain, so a chain of skills becomes a building block in a larger one.</p>
+<pre><code>{
+  "name": "intake_pipeline",
+  "steps": [
+    { "name": "classify",  "step_type": "skill", "skill_name": "doc.classify" },
+
+    // fan out — both run concurrently, results merged
+    { "name": "entities",  "step_type": "skill", "skill_name": "doc.extract_entities",
+      "parallel_group": "enrich", "uses_previous": true },
+    { "name": "summary",   "step_type": "skill", "skill_name": "doc.summarise",
+      "parallel_group": "enrich", "uses_previous": true,
+      "merge_strategy": "merge" },
+
+    // only escalate when the classifier wasn't confident
+    { "name": "deep_review", "step_type": "chain", "chain_name": "expert_review",
+      "condition": { "field": "confidence", "op": "&lt;", "value": 0.8 },
+      "skip_on_condition_fail": true },
+
+    { "name": "render", "step_type": "skill", "skill_name": "doc.render_report",
+      "uses_previous": true, "is_final_output": true }
+  ],
+  "max_cost_usd": 0.50,
+  "budget_enforcement": "downgrade",
+  "on_failure_strategy": "abort"
+}</code></pre>
+      <p>Four things are worth noticing. Steps <strong>fan out</strong> by sharing a group and reconverge by merge strategy. A step <strong>skips itself</strong> when its condition fails, so the expensive review only runs when the cheap classifier was unsure. A step is <strong>another chain</strong>, which is how a library of small pipelines composes into a big one. And the whole run carries a <strong>budget</strong> — on <code>downgrade</code> it drops to faster models rather than failing, which is usually what you want at 3am.</p>
+      <p class="muted">Nesting is depth-bounded with circular-reference detection, so a chain that references itself is refused at execution rather than discovered as a stack overflow.</p>
+
       <div class="ep"><span class="m post">POST</span><span>/v1/chain/{name}/execute</span></div>
-      <p>Returns <code>final_output</code>, every <code>intermediate_outputs</code> step, <code>errors</code>, <code>total_tokens</code>, <code>execution_time</code> and the <code>models_used</code>.</p>
+      <p>Returns <code>final_output</code>, every <code>intermediate_outputs</code> step, <code>errors</code>, <code>total_tokens</code>, <code>execution_time</code> and the <code>models_used</code> — note the plural: one chain routinely spans several models and providers, and the response tells you which ones actually served it.</p>
       <div class="ep"><span class="m post">POST</span><span>/v1/chain/{name}/execute/stream</span></div>
       <p>The same run as server-sent events: <code>chain_start</code>, <code>chain_step_start</code>, <code>chain_step_complete</code>, <code>chain_step_error</code>, <code>chain_complete</code>.</p>
       <div class="ep"><span class="m get">GET</span><span>/v1/chain/{id}/versions</span><span class="d">· <code>/rollback/{n}</code> — edits auto-snapshot.</span></div>
@@ -343,19 +372,52 @@
     </section>
 
     <section id="routing">
-      <h2>Model routing</h2>
-      <p>Skills declare a <strong>tier</strong>, not a model — so a model change is a configuration change, not a rewrite.</p>
+      <h2>Multi-model, multi-provider</h2>
+      <p>No single model is right for every call, and no single provider should be a hard dependency. Reasoning treats the model as a <em>routing decision</em> made at call time, from four inputs: the tier a skill declares, its affinity rules, your tenant policy, and what is actually reachable right now.</p>
+
+      <h3>Tiers, not model names</h3>
+      <p>Skills declare a <strong>tier</strong>. Swapping the model behind a tier is a configuration change, not a rewrite of every skill that used it.</p>
       <table class="tight">
         <thead><tr><th>Tier</th><th>For</th></tr></thead>
         <tbody>
           <tr><td><code>fast</code></td><td>Always-hot small model — classification, routing, cheap transforms.</td></tr>
           <tr><td><code>balanced</code></td><td>The default for most work.</td></tr>
           <tr><td><code>capable</code></td><td>Harder reasoning and longer synthesis.</td></tr>
-          <tr><td><code>reasoning</code></td><td>The strongest available for the hardest calls.</td></tr>
+          <tr><td><code>reasoning</code></td><td>The strongest available, for the calls that justify it.</td></tr>
         </tbody>
       </table>
-      <p>Inference is <strong>local-first</strong>: requests prefer self-hosted models, then a secondary self-hosted route, then a cloud provider. A per-tenant policy can override the chain — naming a primary provider and an ordered fallback list with explicit triggers such as connection error, timeout, upstream error or model unavailable.</p>
-      <p>Provider bindings are resolved from a registry, including whether a model is actually present on a given host — so a route to a model that isn't loaded fails over rather than erroring.</p>
+
+      <h3>Providers</h3>
+      <p>Self-hosted and cloud providers sit behind one interface, so a skill does not know or care which served it.</p>
+      <table class="tight">
+        <thead><tr><th>Provider</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>Self-hosted (primary)</td><td>Your own inference cluster. The default path — lowest cost, and your content stays put.</td></tr>
+          <tr><td>Self-hosted (secondary route)</td><td>A second address for the same cluster, so a routing failure isn't a capability failure.</td></tr>
+          <tr><td>Groq · OpenAI · Anthropic · Gemini</td><td>Cloud providers, used on fallback or when you deliberately select one.</td></tr>
+        </tbody>
+      </table>
+      <p>The registry knows which models a provider can actually serve — including whether a model is <em>currently loaded</em> on a self-hosted host. A request for a model that isn't there fails over instead of erroring.</p>
+
+      <h3>Fallback is a policy, not a hard-code</h3>
+      <p>Each tenant can define its own chain: a primary provider, then an ordered fallback list where every step names the conditions that trigger it.</p>
+<pre><code>{
+  "primary": { "provider": "self-hosted" },
+  "fallback_chain": [
+    { "provider": "groq",
+      "triggers": ["on_connection_error", "on_timeout", "on_5xx", "on_model_unavailable"] },
+    { "provider": "openai", "triggers": ["always"] }
+  ],
+  "enabled": true
+}</code></pre>
+      <p>Errors are classified before the chain is walked, so a timeout and a bad request are not treated the same way — only the steps whose triggers match are tried. Set no policy and you inherit the platform default. A circuit breaker sits in front of every provider, so one that is failing is skipped fast rather than retried into the ground.</p>
+      <div class="note">
+        <span class="lbl">Why this shape</span>
+        <p>Two things fall out of it. <strong>Cost</strong>: the expensive provider is a safety net, not the default path. <strong>Data control</strong>: content only leaves for a third party when a rule you wrote says it may — and on an enterprise deployment in your own cloud, you can write a policy where it never does.</p>
+      </div>
+
+      <h3>Per-skill affinity</h3>
+      <p>Above the tier, a skill can bind specific models to specific <em>contexts</em> — and the input is classified as simple or complex on the way in, so an easy call doesn't pay for a hard model. See <a href="#affinity">Model affinity</a>. Precedence at call time: an explicit override, then affinity plus complexity, then the declared tier, then the platform default.</p>
     </section>
 
     <section id="reliability">
@@ -408,7 +470,23 @@
     <section id="access">
       <h2>Availability &amp; access</h2>
       <p>Reasoning ships as part of the <strong>SeKondBrain platform</strong> — licensed, not open source. It runs in production today behind our own products; you buy the platform and integrate the engine through its MCP surface and REST API, with your organisation provisioned and isolated for you.</p>
-      <p>Provisioning gives you a host, credentials and your organisation identifier. Your instance also serves its own OpenAPI reference.</p>
+      <h3>Where it runs</h3>
+      <table class="tight">
+        <thead><tr><th>Model</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Multi-tenant cloud</strong></td><td>The default. We operate it; your organisation gets its own isolated tenant and its own endpoint.</td></tr>
+          <tr><td><strong>Your own cloud</strong></td><td>For enterprise. Deployed into your cloud account — which also means inference can stay entirely inside your boundary.</td></tr>
+        </tbody>
+      </table>
+      <h3>What you get when you're set up</h3>
+      <table class="tight">
+        <tbody>
+          <tr><td>A unique URL</td><td>Your organisation is issued its own endpoint — that is the <code>&lt;YOUR_REASONING_HOST&gt;</code> in every example on this page, and the address you give an MCP client.</td></tr>
+          <tr><td>Credentials</td><td>An API key for the agent surface and a token for the REST surface, scoped to your organisation.</td></tr>
+          <tr><td>A live API reference</td><td>Your instance serves its own OpenAPI, matching the version you are running.</td></tr>
+          <tr><td>Setup guide</td><td>Provisioning covers connecting your first client, seeding skills and running your first chain.</td></tr>
+        </tbody>
+      </table>
       <div class="note">
         <span class="lbl">Request access</span>
         <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Reasoning">hello@sekondbrain.ai</a> with the subject <em>“Access for Reasoning”</em> and tell us what you want to build.</p>

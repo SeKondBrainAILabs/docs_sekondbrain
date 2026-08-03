@@ -140,6 +140,32 @@
         </tbody>
       </table>
       <p>Domain agents have a lifecycle. One that goes unused is hibernated and its skills fold back into the general domain — so a system that spawns specialists opportunistically doesn't accumulate dormant ones forever.</p>
+
+      <h3>Seed skills</h3>
+      <p>The kernel boots with a deliberately small set of primitives. Everything else is built from them:</p>
+      <table class="tight">
+        <tbody>
+          <tr><td><code>code_execute</code></td><td>Run generated code in the sandbox.</td></tr>
+          <tr><td><code>llm_call</code></td><td>Reach a model through the reasoning engine.</td></tr>
+          <tr><td><code>web_search</code></td><td>Research an unfamiliar capability before drafting it.</td></tr>
+          <tr><td><code>skill_registry_query</code></td><td>Find out whether the capability already exists.</td></tr>
+          <tr><td><code>graph_query</code></td><td>Ask the concept graph what is already known.</td></tr>
+          <tr><td><code>featurebus_publish</code></td><td>Emit an event — including the one that starts a healing loop.</td></tr>
+          <tr><td><code>file_read_write</code></td><td>Read and write working files.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">A small seed set is the point: the smaller the trusted base, the less there is to get wrong when the system starts extending itself.</p>
+
+      <h3>Not everything deploys itself</h3>
+      <p>Generated capabilities are tiered by what they touch:</p>
+      <table class="tight">
+        <thead><tr><th>Tier</th><th>Path to production</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Evergreen</strong></td><td>Routine capability. Passes the sandbox and shadow testing, then deploys automatically.</td></tr>
+          <tr><td><strong>Sensitive</strong></td><td>Touches something that warrants judgement. Stops at a <strong>human approval gate</strong> no matter how clean the tests were.</td></tr>
+        </tbody>
+      </table>
+      <p>Where that line sits is yours to configure. Autonomy you can't scope isn't a feature.</p>
       <div class="note">
         <span class="lbl">Why separate Checker and Creator</span>
         <p>An agent reviewing its own output is a weak check — the same context that produced a flaw tends to excuse it. Splitting drafting from review, and giving a third agent the decision, is what makes the verification meaningful rather than ceremonial.</p>
@@ -205,7 +231,24 @@
     <section id="access">
       <h2>Availability &amp; access</h2>
       <p>Kora HAI is in <strong>alpha</strong>. The architecture is specified and core components are landing; it runs on the rest of the platform — reasoning for generation, the graph and memory for persistence, the event bus for detection. It ships as part of the SeKondBrain platform, licensed, not open source.</p>
-      <p>We're working directly with early partners on this one rather than handing over a stable SDK. If autonomous capability generation is interesting to you, the useful conversation is about your domain and your risk tolerance.</p>
+      <h3>Where it runs</h3>
+      <table class="tight">
+        <thead><tr><th>Model</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Multi-tenant cloud</strong></td><td>The default. We operate it; your organisation gets its own isolated tenant, skill registry and endpoint.</td></tr>
+          <tr><td><strong>Your own cloud</strong></td><td>For enterprise. Deployed into your cloud account — which for a system that generates and runs code is usually the answer.</td></tr>
+        </tbody>
+      </table>
+      <h3>What you get when you're set up</h3>
+      <table class="tight">
+        <tbody>
+          <tr><td>A unique URL</td><td>Your organisation's own endpoint, alongside the reasoning, graph and memory services it builds on.</td></tr>
+          <tr><td>Credentials</td><td>Scoped to your organisation; generated skills are registered in your registry, not a shared one.</td></tr>
+          <tr><td>Domain configuration</td><td>Which domains you start with, the retry and circuit-breaker budgets, and where the human approval gate sits.</td></tr>
+          <tr><td>Direct support</td><td>In alpha you work with our team rather than against a frozen SDK — interfaces will move, and we move them with you.</td></tr>
+        </tbody>
+      </table>
+      <p>We're working directly with early partners on this one. If autonomous capability generation is interesting to you, the useful conversation is about your domain and your risk tolerance.</p>
       <div class="note">
         <span class="lbl">Request access</span>
         <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kora%20HAI">hello@sekondbrain.ai</a> with the subject <em>“Access for Kora HAI”</em> and tell us what your agents keep failing to do.</p>

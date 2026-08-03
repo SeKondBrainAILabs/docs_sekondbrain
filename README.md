@@ -98,6 +98,19 @@ Two rules, both enforced by `tools/preflight.py`:
 `/legal/extension-privacy/` is the URL to give the Chrome Web Store listing as the extension's
 privacy policy.
 
+### Outstanding
+
+- **ICO registration number.** The application is pending. Both privacy pages say so in
+  plain terms and promise to publish the number once issued — replace that sentence in
+  `privacy/` §14.2 and `extension-privacy/` §2 when it arrives.
+- **`/subprocessors` does not exist yet** and three of the four documents link to it. This is
+  contractual, not cosmetic: Schedule 1 §3 grounds the general sub-processor authorisation in
+  that list, and §4 says transfers to inference providers occur only as disclosed there.
+- **Cookie Policy** has no URL, and both Terms documents incorporate it by reference.
+- Backup retention `[90]` days, and three unfilled Schedule 2 entries.
+- **Business Terms diverge from their source Doc**: finalised here (draft marker dropped,
+  effective 3 August 2026) while the Doc still shows the draft state. Update the Doc.
+
 ---
 
 ## Keeping the tool table honest

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reasoning — documentation | SeKondBrain</title>
+<meta name="description" content="The SeKondBrain reasoning engine: local-first LLM orchestration, a route–execute–validate pipeline, composable skills, and a traceable Graph of Thought.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/reasoning/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Reasoning — documentation">
+<meta property="og:description" content="The reasoning engine under the platform.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/reasoning/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: amber — the reasoning engine. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(242,139,104,.18); --veil-b:rgba(230,184,0,.14); }
+  .pill i{ background:var(--c-orange) }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Reasoning <span>· by SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="#build">Build</a>
+      <a href="#data">Data</a>
+      <a href="#access">Access</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Platform · reasoning engine</span>
+  <h1>Where the platform<br><em>thinks.</em></h1>
+  <p class="lede">Reasoning is SeKondBrain's cognitive backend — the engine that orchestrates every model call and turns freeform input into structured, validated output. It is what memory, the graph, and our agents reach for when they need to reason, not just retrieve.</p>
+  <p>It runs local-first on self-hosted models, falls back to the cloud only when it has to, and records a Graph of Thought so every decision it makes can be traced back to <em>why</em>.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Overview</div>
+    <a href="#what">What it is</a>
+    <a href="#build">What you can build</a>
+    <a href="#how">How it works</a>
+    <div class="grp">Operating</div>
+    <a href="#data">Your data</a>
+    <a href="#access">Availability &amp; access</a>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2>What it is</h2>
+      <p>Reasoning is a cognitive backend that sits between your agents and the models. Rather than call a single model and hope, it runs a disciplined three-stage pipeline — <strong>route → execute → validate</strong> — that picks the right model for the job, runs it, and checks the result against a schema before returning it. Get back validated, structured output, not a paragraph you have to parse.</p>
+      <p>It is the engine the rest of the platform is built on: memory consolidation, concept synthesis and enrichment all run through it. It is licensed as part of the platform, not a standalone open-source library.</p>
+    </section>
+
+    <section id="build">
+      <h2>What you can build</h2>
+      <table>
+        <thead><tr><th>Capability</th><th>What it gives you</th></tr></thead>
+        <tbody>
+          <tr><td>Multi-model orchestration</td><td>One call, local-first inference with automatic cloud fallback — the routing, retries and circuit-breaking are handled for you.</td></tr>
+          <tr><td>Council mode</td><td>Ask several heterogeneous models the same question and take the majority vote — higher-confidence classification and decisioning where a single model would be a coin-flip.</td></tr>
+          <tr><td>Structured extraction</td><td>Turn freeform text into schema-conformant JSON — concepts, goals, entities — validated before it reaches you.</td></tr>
+          <tr><td>Skills &amp; chains</td><td>Register composable skills with per-skill model affinity, then run them — on their own or over MCP.</td></tr>
+          <tr><td>Graph of Thought</td><td>Record reasoning chains and design decisions as a traceable DAG, and run semantic search across them — explainable agents, not black boxes.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p>Your agents reach Reasoning through an <strong>MCP server</strong> — the same connector model as Kemory — so a Claude-, Cursor- or Codex-style client can call its tools directly: list the skills available, run one, search the reasoning graph, or fetch a product manifest. Requests authenticate with an API key, and your organisation is always derived from that credential, never taken from the request body.</p>
+      <p>Underneath, the <strong>router</strong> classifies the task and chooses a model tier; the <strong>executor</strong> runs it — local-first, with cloud fallback and a circuit breaker so a provider outage degrades gracefully; and the <strong>validator</strong> checks the output shape. Council mode fans the same prompt out to several models and reconciles their answers.</p>
+      <div class="note">
+        <span class="lbl">Local-first by design</span>
+        <p>Primary inference runs on self-hosted models inside our own cluster. Cloud providers are a fallback, not the default path — which is what keeps latency, cost and data exposure under control at volume.</p>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p>Reasoning processes the prompts, conversation turns and embeddings you send it, isolated per organisation. It retains conversation and usage records so you can see what ran and what it cost. Every request is scoped to the organisation on its credential.</p>
+      <p>Inference is <strong>local-first</strong>: your content is reasoned over by self-hosted models by default. When a request falls back to a cloud provider — or you configure one deliberately — that prompt content leaves to that third party; which providers, and what they retain, is set out in the <a href="https://sekondbrain.ai/privacy">privacy policy</a>.</p>
+    </section>
+
+    <section id="access">
+      <h2>Availability &amp; access</h2>
+      <p>Reasoning ships as part of the <strong>SeKondBrain platform</strong> — licensed, not open source. It runs in production today behind our own products; you buy the platform and integrate the engine through its MCP surface and API, with your organisation provisioned and isolated for you.</p>
+      <div class="note">
+        <span class="lbl">Request access</span>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Reasoning">hello@sekondbrain.ai</a> with the subject <em>“Access for Reasoning”</em> and tell us what you want to build.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+      <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Reasoning">Request access</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

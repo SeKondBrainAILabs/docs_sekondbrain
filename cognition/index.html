@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cognition OS — documentation | SeKondBrain</title>
+<meta name="description" content="Cognition OS is SeKondBrain's multi-tenant knowledge-graph service — the layer that turns the entities your agents encounter into a living, queryable graph.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/cognition/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Cognition OS — documentation">
+<meta property="og:description" content="The knowledge graph your AI reasons over.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/cognition/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: mint — the knowledge graph. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(64,203,104,.18); --veil-b:rgba(95,196,240,.14); }
+  .pill i{ background:var(--c-mint) }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Cognition OS <span>· by SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="#build">Build</a>
+      <a href="#data">Data</a>
+      <a href="#access">Access</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Platform · knowledge graph</span>
+  <h1>The graph your AI<br><em>reasons over.</em></h1>
+  <p class="lede">Cognition OS turns the entities your agents encounter — people, concepts, projects, code — into a living, queryable knowledge graph. It stays isolated per organisation and keeps improving itself as it grows.</p>
+  <p>It is the layer that lets recall follow a thought sideways: when memory finds a fact, Cognition OS is what expands it into the related concepts nobody wrote down.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Overview</div>
+    <a href="#what">What it is</a>
+    <a href="#build">What you can build</a>
+    <a href="#how">How it works</a>
+    <div class="grp">Operating</div>
+    <a href="#data">Your data</a>
+    <a href="#access">Availability &amp; access</a>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2>What it is</h2>
+      <p>Cognition OS is a multi-tenant service that stores and reasons about knowledge graphs. Every organisation gets its own isolated graph. You write nodes and the relationships between them; it deduplicates, links, and — through a set of autonomous housekeeping agents — merges duplicates, infers new edges, and keeps the hierarchy coherent as the graph grows.</p>
+      <p>It is domain-agnostic: the same service backs a people graph, a project graph, a code graph, or a general concept graph. And it never calls a language model directly — extraction and synthesis are delegated to the <a href="../reasoning/">Reasoning</a> engine — so the graph stays a clean, permissioned record of what is known.</p>
+    </section>
+
+    <section id="build">
+      <h2>What you can build</h2>
+      <table>
+        <thead><tr><th>Capability</th><th>What it gives you</th></tr></thead>
+        <tbody>
+          <tr><td>Concept graph</td><td>Write entities from many systems and have them deduplicated and linked automatically — stable IDs make cross-system upserts safe.</td></tr>
+          <tr><td>Entity search</td><td>Ask for the right person, feature, or piece of code semantically, without passing labels — one archetype-aware search over your graph.</td></tr>
+          <tr><td>Concept resolution</td><td>Turn free text into anchored concepts in a single call — name match, then hierarchy, then vector discovery.</td></tr>
+          <tr><td>Graph-augmented recall</td><td>Expand a query with related concepts that were never written into memory — the pattern <a href="../kemory/">Kemory</a> uses to make recall follow a thought.</td></tr>
+          <tr><td>Decision graphs</td><td>Record reasoning chains and design decisions as a linked graph, so you can query <em>why</em> something exists, not only <em>what</em>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p>You work in <strong>nodes and relationships</strong>. A node has a name, a type — people, organisations, concepts and artefacts are the roots — a description, and free-form metadata. Relationships are typed: <em>parent of</em>, <em>contains</em>, <em>implements</em>, <em>related to</em>, <em>extracted from</em>. Writes are idempotent and deduplicated, so the same fact arriving from two systems lands once.</p>
+      <p>Every request carries your organisation, and the graph you read and write is scoped to it and to no one else's. Nodes can carry an access level — public, internal, confidential or restricted — and search is permission-filtered against it.</p>
+      <div class="note">
+        <span class="lbl">Where the intelligence comes from</span>
+        <p>Cognition OS holds the graph; the <a href="../reasoning/">Reasoning</a> engine does the thinking. Extraction, embedding and synthesis are delegated, and the results are written back as first-class nodes — so what an agent learns becomes part of the graph the next agent reads.</p>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p>Cognition OS stores the nodes and relationships you write, the metadata attached to them, and the embeddings computed for semantic search. Whatever an upstream product sends — for example, a memory Kemory promotes into the graph — becomes graph data and is indexed for search.</p>
+      <p>Isolation is by organisation and is enforced beneath the query layer: a request cannot read across organisations. Autonomous housekeeping may reshape your graph after a write — merging duplicates or adding inferred edges — and every such change is recorded so it can be traced. How content is retained and erased is set out in the <a href="https://sekondbrain.ai/privacy">privacy policy</a>.</p>
+    </section>
+
+    <section id="access">
+      <h2>Availability &amp; access</h2>
+      <p>Cognition OS ships as part of the <strong>SeKondBrain platform</strong>. It is licensed, not open source: you buy the platform and integrate the graph into your own stack, with your organisation's data isolated and provisioned for you. It already runs in production behind our own products — so what you integrate is proven, not a prototype.</p>
+      <div class="note">
+        <span class="lbl">Request access</span>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Cognition%20OS">hello@sekondbrain.ai</a> with the subject <em>“Access for Cognition OS”</em> and tell us what you want to build.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+      <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Cognition%20OS">Request access</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

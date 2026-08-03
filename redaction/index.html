@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redaktion — documentation | SeKondBrain Labs</title>
+<meta name="description" content="Redaktion is SeKondBrain Labs' document redaction engine: true content removal across English, Arabic and Hindi, with self-verification and a hash-only audit trail.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/redaction/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Redaktion — documentation | SeKondBrain Labs">
+<meta property="og:description" content="Sensitive information, found and truly removed.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/redaction/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: violet — the Labs surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(139,120,245,.18); --veil-b:rgba(226,74,242,.12); }
+  .pill i{ background:var(--c-purple) }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Redaktion <span>· SeKondBrain Labs</span></a>
+    <div class="top-links">
+      <a href="#build">Build</a>
+      <a href="#data">Data</a>
+      <a href="#access">Access</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Labs · document redaction</span>
+  <h1>Sensitive data,<br><em>truly gone.</em></h1>
+  <p class="lede">Redaktion finds sensitive information in a document and removes it for real — deleting the underlying text and pixels, not drawing a box over them. It works on native PDFs, scans and phone photos, and office files, across English, Arabic and Hindi.</p>
+  <p>Then it does the thing most redaction tools skip: it re-reads its own output and runs the whole detection stack again, so a redaction that missed something is caught and escalated — never shipped under a green tick.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Overview</div>
+    <a href="#what">What it is</a>
+    <a href="#build">What you can build</a>
+    <a href="#how">How it works</a>
+    <div class="grp">Operating</div>
+    <a href="#data">Your data</a>
+    <a href="#access">Availability &amp; access</a>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2>What it is</h2>
+      <p>Redaktion is an automated detect-and-remove engine for sensitive documents. It finds personal and confidential information across dozens of configurable categories, burns opaque boxes at exact coordinates with true content removal, strips document metadata, and produces a forensically inert file — not an image with a hidden layer underneath.</p>
+      <p>It began inside SeKondBrain's legal platform and now runs as a dedicated service. It is a <strong>Labs</strong> product: the engine is proven in production, and we are opening it up to integration partners.</p>
+    </section>
+
+    <section id="build">
+      <h2>What you can build</h2>
+      <table>
+        <thead><tr><th>Use case</th><th>What it gives you</th></tr></thead>
+        <tbody>
+          <tr><td>Bulk de-identification</td><td>Scrub archives before they enter a data lake, an analytics store, or an LLM training set.</td></tr>
+          <tr><td>Intake redaction</td><td>Automatically clean filings, contracts, ID cards and receipts as they're uploaded, with per-tenant rules for which categories to remove.</td></tr>
+          <tr><td>Multilingual documents</td><td>Redact English, Arabic (full right-to-left) and Hindi sets — including region-specific ID documents — where generic DLP is weak.</td></tr>
+          <tr><td>Compliance-grade removal</td><td>Get forensically inert artifacts plus an audit trail that records every removal without ever storing the sensitive text itself.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p>Three moves, in order. <strong>Detect</strong>: an ensemble finds sensitive spans across the configured categories, in all three languages. <strong>Remove</strong>: it deletes the underlying text and overwrites pixels at exact coordinates, then scrubs metadata, attachments and bookmarks from the output. <strong>Verify</strong>: it re-reads what it just produced and runs detection again — if anything survived, the document is escalated to human review rather than released.</p>
+      <div class="note">
+        <span class="lbl">Fail-closed by design</span>
+        <p>A page the pipeline cannot process confidently is blacked out in full rather than passed through. The original pixels never reach the redacted output — the safe failure is a page you can re-run, not a leak.</p>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p>Your source document is encrypted at rest with a per-file key; the redacted artifact is written back encrypted too. Removal is real — text is deleted, pixels overwritten, metadata stripped — so the output cannot be un-redacted by copying a layer or reading document properties.</p>
+      <p>The audit trail records <em>where</em> each redaction happened — page, position, category, confidence — but <strong>never the sensitive text itself</strong>: it stores a keyed one-way digest, so the log cannot be mined for the very data it removed. Working files are swept on a short timer, and processing runs on EU/Swiss-resident infrastructure. Full detail is in the <a href="https://sekondbrain.ai/privacy">privacy policy</a>.</p>
+    </section>
+
+    <section id="access">
+      <h2>Availability &amp; access</h2>
+      <p>Redaktion is a <strong>SeKondBrain Labs</strong> product. The engine runs in production inside our legal platform today; as a standalone service it is at early access — we integrate it with your pipeline and run redaction on your documents, rather than offering an open self-serve endpoint. It is licensed, not open source.</p>
+      <div class="note">
+        <span class="lbl">Request access</span>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Redaktion">hello@sekondbrain.ai</a> with the subject <em>“Access for Redaktion”</em> and tell us about the documents you need to redact.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+      <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Redaktion">Request access</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

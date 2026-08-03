@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HEVE — documentation | SeKondBrain</title>
+<meta name="description" content="HEVE is SeKondBrain's multimodal I/O layer in one: Dom Sentinel reads the web, Browser Control acts on it, Kora Voice speaks and listens, and Diarisation knows who is speaking.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/heve/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="HEVE — documentation">
+<meta property="og:description" content="Hands, eyes, voice and ears for your agents.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/heve/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: pink — the multimodal layer. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(254,147,253,.16); --veil-b:rgba(216,171,254,.16); }
+  .pill i{ background:var(--c-pink) }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">HEVE <span>· by SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="#build">Build</a>
+      <a href="#data">Data</a>
+      <a href="#access">Access</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Platform · multimodal I/O · preview</span>
+  <h1>Hands, eyes, voice<br>and <em>ears.</em></h1>
+  <p class="lede">HEVE is SeKondBrain's multimodal layer, in one place. It is four capabilities: <strong>Dom Sentinel</strong> reads the live web, <strong>Browser Control</strong> acts on it, <strong>Kora Voice</strong> speaks and listens, and <strong>Diarisation</strong> knows who is talking.</p>
+  <p>Where memory, the graph and reasoning give an agent a mind, HEVE gives it a body — a way to perceive the web and a room, to act, and to be heard.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">The four senses</div>
+    <a href="#sentinel">Dom Sentinel · eyes</a>
+    <a href="#control">Browser Control · hands</a>
+    <a href="#voice">Kora Voice · voice</a>
+    <a href="#diarisation">Diarisation · ears</a>
+    <div class="grp">Build &amp; operate</div>
+    <a href="#build">What you can build</a>
+    <a href="#data">Your data</a>
+    <a href="#access">Availability &amp; access</a>
+  </nav>
+
+  <main>
+
+    <section id="sentinel">
+      <h2>Dom Sentinel<br><span class="muted">— its eyes</span></h2>
+      <p>A browser-side engine that reads the live web — and heals itself when it changes. You describe the elements you care about by intent, each with an ordered chain of fallback selectors. Sentinel watches the page; when a site ships new markup and your selectors break, it captures a snapshot and a screenshot, asks a vision model for replacements, and hot-swaps them. No new build, no broken extractor.</p>
+    </section>
+
+    <section id="control">
+      <h2>Browser Control<br><span class="muted">— its hands</span></h2>
+      <p>Reading a page is half of it; HEVE can also act on one. Browser Control drives the browser the way a person would — opening and navigating pages, scrolling through long or virtualised feeds until they settle, and clicking through multi-step task interfaces — so an agent can <em>operate</em> a web app end to end, not only observe it. It runs on the same self-healing selector engine as Sentinel, so the actions survive the site shifting underneath them.</p>
+    </section>
+
+    <section id="voice">
+      <h2>Kora Voice<br><span class="muted">— its voice</span></h2>
+      <p>A full spoken-conversation layer: speech-to-text, text-to-speech, voice-activity and break detection, and a conversation state machine behind a drop-in UI. It knows when you have finished a sentence, replies out loud, and handles being interrupted — talking to it should feel like talking to a presence, not operating a debug overlay.</p>
+    </section>
+
+    <section id="diarisation">
+      <h2>Diarisation<br><span class="muted">— its ears</span></h2>
+      <p>Voice tells you <em>what</em> was said; diarisation tells you <em>who</em> said it. Enrol a speaker once and HEVE recognises them in real time in a room of several people — keeping per-person context and permissions, and greeting each by name. It is what turns a single-user voice assistant into one that works around a table.</p>
+    </section>
+
+    <section id="build">
+      <h2>What you can build</h2>
+      <table>
+        <thead><tr><th>With</th><th>You can build</th></tr></thead>
+        <tbody>
+          <tr><td>Dom Sentinel</td><td>Extractors and content scripts that survive site redesigns — define elements by intent and let the engine repair selectors when a platform changes underneath you.</td></tr>
+          <tr><td>Browser Control</td><td>Agents that operate web apps — navigate, scroll virtualised feeds to the end, and click through multi-step flows to complete a task, not just scrape a page.</td></tr>
+          <tr><td>Kora Voice</td><td>Voice-to-voice interfaces in any app — microphone capture, transcription, auto-send on silence, spoken replies and natural interruption handling.</td></tr>
+          <tr><td>Diarisation</td><td>Multi-person voice assistants that identify each speaker by voiceprint, greet them by name, keep per-person context, and route who hears what.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p><strong>On the web (Sentinel &amp; Browser Control).</strong> HEVE reads and acts only on the pages you enable it on, and only to do the job you asked. During a self-heal, a snapshot and screenshot of that page are sent to the vision provider you configure — so on a page holding private content, that content can reach the model provider you chose. You hold the provider key, and you hold the kill-switch.</p>
+      <div class="note">
+        <span class="lbl">Voice is biometric data</span>
+        <p><strong>In the room (Voice &amp; Diarisation).</strong> HEVE captures microphone audio, and diarisation creates a <strong>voiceprint</strong> — a biometric identifier, treated as special-category personal data. Enrolment is explicit; raw audio is not retained; voice signatures are encrypted at rest. If you choose a cloud transcription provider, audio is sent to it. Handling, consent and deletion are set out in the <a href="https://sekondbrain.ai/privacy">privacy policy</a>.</p>
+      </div>
+    </section>
+
+    <section id="access">
+      <h2>Availability &amp; access</h2>
+      <p>HEVE is in <strong>preview</strong>. All four capabilities are built and run inside SeKondBrain today; they ship as part of the platform — licensed, not open source — and we are onboarding integration partners rather than offering an open package. Tell us what you're building and we'll bring you in.</p>
+      <div class="note">
+        <span class="lbl">Request access</span>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20HEVE">hello@sekondbrain.ai</a> with the subject <em>“Access for HEVE”</em> — say which of the four capabilities you need.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="https://sekondbrain.ai/privacy">Privacy</a>
+      <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20HEVE">Request access</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

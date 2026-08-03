@@ -95,7 +95,8 @@ for page, label in [
 
 # internal drafting apparatus must never reach a published page. The source documents
 # carry drafting notes and risk flags addressed to us, not to the reader.
-INTERNAL = ["Internal drafting note", "RISK FLAG", "remove before signature", "ship gate"]
+INTERNAL = ["Internal drafting note", "RISK FLAG", "remove before signature", "ship gate",
+            "Draft for review", "DIVERGENCE FROM SOURCE"]
 for page in sorted(pages):
     body = open(page, encoding="utf-8").read()
     for needle in INTERNAL:

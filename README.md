@@ -108,8 +108,8 @@ privacy policy.
   that list, and §4 says transfers to inference providers occur only as disclosed there.
 - **Cookie Policy** has no URL, and both Terms documents incorporate it by reference.
 - Backup retention `[90]` days, and three unfilled Schedule 2 entries.
-- **Business Terms diverge from their source Doc**: finalised here (draft marker dropped,
-  effective 3 August 2026) while the Doc still shows the draft state. Update the Doc.
+- **Business Terms**: published as v1.0 effective 3 August 2026. Bring the source Doc in line
+  so the next mirror does not reintroduce an older state.
 
 ---
 

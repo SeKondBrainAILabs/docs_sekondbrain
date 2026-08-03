@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kora HAI — documentation | SeKondBrain</title>
+<meta name="description" content="Kora HAI is SeKondBrain's self-healing agent framework: when an agent hits a capability it does not have, it writes, reviews, sandboxes and deploys the missing skill itself — with blue/green rollback.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kora-hai/">
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Kora HAI — documentation">
+<meta property="og:description" content="An agent that writes the skill it is missing.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kora-hai/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  /* Page mood: amber-gold — the alpha kernel. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(230,184,0,.16); --veil-b:rgba(254,147,253,.13); }
+  .pill i{ background:var(--c-yellow) }
+  table.tight td{padding:8px 14px 8px 0}
+  .sig{font-family:var(--mono);font-size:12.5px;background:rgba(230,184,0,.10);
+       padding:3px 8px;border-radius:var(--r-sm);display:inline-block;margin:0 0 4px}
+  .step{display:flex;gap:14px;margin:0 0 16px;max-width:70ch}
+  .step .n{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--grey);
+           flex:none;width:26px;padding-top:3px}
+  .step p{margin:0}
+  .step h4{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+  .alpha{border-left:1.5px solid var(--c-yellow);padding:2px 0 2px 18px;margin:0 0 20px;max-width:70ch}
+  .alpha .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+              color:#8a6d00;display:block;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Kora HAI <span>· by SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="#loop">The loop</a>
+      <a href="#agents">Agents</a>
+      <a href="#safety">Safety</a>
+      <a href="#access">Access</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Platform · self-healing agents · alpha</span>
+  <h1>An agent that writes<br>the skill <em>it's missing.</em></h1>
+  <p class="lede">Kora HAI — Healing Autonomous Intelligence — is a self-healing agent framework. When an agent meets a task it has no capability for, it doesn't fail: it detects the gap, drafts the missing skill, has a second agent review it, tests it in a sandbox, and deploys it behind a blue/green cutover it can roll back.</p>
+  <p>Everything it does is written into the <a href="../cognition/">concept graph</a> and <a href="../kemory/">memory</a> — so the agent doesn't just gain a capability, it remembers why it needed one.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Concept</div>
+    <a href="#what">What it is</a>
+    <a href="#loop">The healing loop</a>
+    <a href="#decisions">Assessment</a>
+    <div class="grp">Design</div>
+    <a href="#agents">Agent tiers</a>
+    <a href="#sandbox">Validation sandbox</a>
+    <a href="#safety">Blue/green &amp; limits</a>
+    <a href="#memory">What it remembers</a>
+    <div class="grp">Operating</div>
+    <a href="#build">What you can build</a>
+    <a href="#access">Availability &amp; access</a>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2>What it is</h2>
+      <div class="alpha">
+        <span class="lbl">Alpha</span>
+        <p>Kora HAI is the newest and least settled of the platform pillars. The architecture below is specified and the core components are landing; treat interfaces as subject to change and expect to work with us directly rather than against a frozen API.</p>
+      </div>
+      <p>Most agent frameworks fail closed: no tool for the job means no answer. Kora HAI treats a missing capability as a <em>task</em> rather than a dead end. A gap raises an event, a set of specialised sub-agents turn that event into a candidate skill, a sandbox proves it, and a deployment manager puts it into service — or rolls it back if reality disagrees.</p>
+      <p>The pattern is deliberately composable. The same Creator / Checker / Validator loop can drive a coding agent, a research agent or a personal assistant; what changes is the domain, not the machinery.</p>
+    </section>
+
+    <section id="loop">
+      <h2>The healing loop</h2>
+      <div class="step"><span class="n">01</span><div>
+        <h4>Detect</h4>
+        <p>An agent hits a capability it doesn't have, or a skill fails in execution. That raises a <code>skill.missing</code> or <code>skill.execution.failed</code> event on the platform event bus — a signal, not an exception.</p>
+      </div></div>
+      <div class="step"><span class="n">02</span><div>
+        <h4>Assess</h4>
+        <p>An <strong>Assessor</strong> searches what already exists — the skill registry and the shared brain — before anything is written. Most gaps are not new; they are something already built, described differently.</p>
+      </div></div>
+      <div class="step"><span class="n">03</span><div>
+        <h4>Generate</h4>
+        <p>If something genuinely new is needed, a <strong>Creator</strong> drafts it, a <strong>Checker</strong> reviews it for security, correctness and standards, and a <strong>Validator</strong> decides: approve for testing, or return it to the Creator with the Checker's notes. That is a conversation between agents, not a single generation.</p>
+      </div></div>
+      <div class="step"><span class="n">04</span><div>
+        <h4>Test</h4>
+        <p>The draft runs in an isolated sandbox against mock inputs — including assertions on non-text outputs and, when extending an existing skill, that skill's original tests. Failure routes feedback back into the loop, bounded by a retry limit.</p>
+      </div></div>
+      <div class="step"><span class="n">05</span><div>
+        <h4>Deploy</h4>
+        <p>Blue/green. The proven version goes live only after shadow traffic agrees with it, and the previous version stays warm and ready to take back over.</p>
+      </div></div>
+      <div class="step"><span class="n">06</span><div>
+        <h4>Remember</h4>
+        <p>The gap, the reasoning, the decision and the outcome are persisted into the concept graph and memory — so the next occurrence starts from experience rather than from scratch.</p>
+      </div></div>
+    </section>
+
+    <section id="decisions">
+      <h2>Assessment: build is the last resort</h2>
+      <p>The Assessor's job is to avoid generating code. It emits one of a small set of decisions, in rough order of preference:</p>
+      <table class="tight">
+        <thead><tr><th>Decision</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>REUSE_SKILL</code></td><td>Something already does this — found by semantic search over the skill catalogue, not by exact name.</td></tr>
+          <tr><td><code>COMPOSE_CHAIN</code></td><td>Existing primitives can be assembled into the capability. <strong>No new code is written.</strong></td></tr>
+          <tr><td><code>EXTEND_SKILL</code></td><td>An existing skill nearly does it and can be widened — its original tests must still pass.</td></tr>
+          <tr><td><code>CREATE_SKILL</code></td><td>Genuinely new. Enter the full generate-and-verify loop.</td></tr>
+          <tr><td><code>CREATE_BACKEND</code></td><td>The capability needs somewhere to keep state or receive callbacks.</td></tr>
+          <tr><td><code>SPAWN_DOMAIN_AGENT</code></td><td>A recurring pattern is substantial enough to deserve its own specialist.</td></tr>
+        </tbody>
+      </table>
+      <p>The composition path matters more than it looks: a system that can assemble what it already owns grows capability without growing attack surface. Resolution is also fail-soft — if a reuse target can't be resolved, the loop degrades to creating the skill rather than erroring out.</p>
+    </section>
+
+    <section id="agents">
+      <h2>Agent tiers</h2>
+      <p>Agents are structured, not a flat swarm.</p>
+      <table class="tight">
+        <thead><tr><th>Tier</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>Kernel</td><td>The minimal always-present core, with a seed set of primitive skills — execute code, publish events, and the handful of things needed to bootstrap everything else.</td></tr>
+          <tr><td>Domain agents</td><td>Specialists that watch for gaps in their own area. The system boots with two: a <strong>general</strong> domain for everyday work, and a <strong>meta</strong> domain for self-improvement and monitoring the system itself.</td></tr>
+          <tr><td>Worker agents</td><td>The Assessor, Creator, Checker, Validator and chain composer — spawned per healing episode, not resident.</td></tr>
+        </tbody>
+      </table>
+      <p>Domain agents have a lifecycle. One that goes unused is hibernated and its skills fold back into the general domain — so a system that spawns specialists opportunistically doesn't accumulate dormant ones forever.</p>
+      <div class="note">
+        <span class="lbl">Why separate Checker and Creator</span>
+        <p>An agent reviewing its own output is a weak check — the same context that produced a flaw tends to excuse it. Splitting drafting from review, and giving a third agent the decision, is what makes the verification meaningful rather than ceremonial.</p>
+      </div>
+    </section>
+
+    <section id="sandbox">
+      <h2>Validation sandbox</h2>
+      <p>Nothing generated reaches production without executing somewhere it can do no harm first. Skills run in an isolated container against mock context, and the sandbox checks more than "did it return".</p>
+      <table class="tight">
+        <thead><tr><th>Assertion</th><th>What it catches</th></tr></thead>
+        <tbody>
+          <tr><td>Functional</td><td>Does it do the thing, on the mock inputs.</td></tr>
+          <tr><td>Multi-modal</td><td>Non-text outputs verified by a second model — an image is checked by looking at it, not by trusting a filename.</td></tr>
+          <tr><td>Security &amp; standards</td><td>The Checker's concerns, enforced rather than advisory.</td></tr>
+          <tr><td>Backward compatibility</td><td>When extending a skill, its <em>original</em> test suite runs — a widened capability must not quietly break the narrow one.</td></tr>
+        </tbody>
+      </table>
+      <p>Failures return to the generate loop with the reason attached, bounded by a retry limit so a hard problem ends in escalation rather than an infinite spend.</p>
+    </section>
+
+    <section id="safety">
+      <h2>Blue/green &amp; limits</h2>
+      <p>A system that modifies itself needs a way to be wrong safely. Kora HAI treats every change — to a skill, an agent, or the kernel — as a firmware update.</p>
+      <table class="tight">
+        <thead><tr><th>Stage</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Blue stays up</td><td>The current version keeps serving all live traffic. It is never paused while an upgrade is built.</td></tr>
+          <tr><td>Green is built aside</td><td>The new version is drafted, checked and sandboxed in an isolated namespace.</td></tr>
+          <tr><td>Repair, don't crash</td><td>A green failure returns to the Creator and Checker. Blue is unaffected — a failed self-upgrade is invisible to users.</td></tr>
+          <tr><td>Shadow first</td><td>Green takes a share of read-only traffic and its results are compared against blue before it earns promotion.</td></tr>
+          <tr><td>Cutover with a net</td><td>Green goes active only on a better outcome. Blue is held suspended, and a live failure in that window rolls straight back.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">The circuit breaker is the point</span>
+        <p>Repeated healing failures trip a breaker and escalate to a human instead of looping. Self-healing without a budget ceiling is just an expensive way to fail — the limit is what makes autonomy safe to switch on.</p>
+      </div>
+    </section>
+
+    <section id="memory">
+      <h2>What it remembers</h2>
+      <p>The healing loop is a first-class citizen of the platform's memory, not a log file.</p>
+      <p>Every event is retained and projected into the <a href="../cognition/">Cognition OS</a> graph, so the agent's history is queryable as structure — which gap led to which skill, which decision produced which outcome. Skills, chains and primitives are graph nodes with real types; episodes and reasoning land in <a href="../kemory/">Kemory</a>.</p>
+      <p>The relationships between them are <strong>weighted and evolving</strong>: edges between skills, tasks, agents and events strengthen with successful execution and frequent use, so the paths the system reasons along optimise from its own experience rather than from a static design.</p>
+      <p>This is the part that compounds. A framework that generates skills gets more capable; one that also remembers <em>why</em> gets better at deciding whether to generate at all.</p>
+    </section>
+
+    <section id="build">
+      <h2>What you can build</h2>
+      <table class="tight">
+        <thead><tr><th>Use case</th><th>What Kora HAI gives you</th></tr></thead>
+        <tbody>
+          <tr><td>Agents that don't dead-end</td><td>A capability gap becomes a queued piece of work with an audit trail, instead of an apology to the user.</td></tr>
+          <tr><td>A growing skill library</td><td>Capabilities accrue as reusable, tested, versioned skills — discoverable by meaning, so they get reused rather than rebuilt.</td></tr>
+          <tr><td>Domain specialists</td><td>Recurring patterns earn their own agent, with hibernation so the roster doesn't sprawl.</td></tr>
+          <tr><td>Self-improving operations</td><td>A meta domain that watches the system itself and proposes its own upgrades, behind the same review and rollback.</td></tr>
+          <tr><td>Explainable autonomy</td><td>Every generated capability traces back through the reasoning and the decision that produced it.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="access">
+      <h2>Availability &amp; access</h2>
+      <p>Kora HAI is in <strong>alpha</strong>. The architecture is specified and core components are landing; it runs on the rest of the platform — reasoning for generation, the graph and memory for persistence, the event bus for detection. It ships as part of the SeKondBrain platform, licensed, not open source.</p>
+      <p>We're working directly with early partners on this one rather than handing over a stable SDK. If autonomous capability generation is interesting to you, the useful conversation is about your domain and your risk tolerance.</p>
+      <div class="note">
+        <span class="lbl">Request access</span>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kora%20HAI">hello@sekondbrain.ai</a> with the subject <em>“Access for Kora HAI”</em> and tell us what your agents keep failing to do.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">All documentation</a>
+      <a href="../legal/privacy/">Privacy</a>
+      <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kora%20HAI">Request access</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

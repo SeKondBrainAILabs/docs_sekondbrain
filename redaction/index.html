@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Redaktion — documentation | SeKondBrain Labs</title>
-<meta name="description" content="Redaktion is SeKondBrain Labs' document redaction engine: true content removal across English, Arabic and Hindi, with self-verification and a hash-only audit trail.">
+<meta name="description" content="Redaktion is SeKondBrain Labs' document redaction engine. Integration reference: job and result contracts, 45 detection categories, regional ID packs, the verification pass, statuses and output guarantees.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/redaction/">
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <meta property="og:title" content="Redaktion — documentation | SeKondBrain Labs">
@@ -19,6 +19,11 @@
   /* Page mood: violet — the Labs surface. One veil, per Brand Book v6. */
   :root{ --veil-a:rgba(139,120,245,.18); --veil-b:rgba(226,74,242,.12); }
   .pill i{ background:var(--c-purple) }
+  table.tight td{padding:8px 14px 8px 0}
+  .kv{font-family:var(--mono);font-size:12.5px}
+  .lane{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;margin:0 0 6px;flex-wrap:wrap}
+  .lane b{font-weight:500;background:rgba(139,120,245,.10);padding:2px 7px;border-radius:var(--r-sm)}
+  .lane span.a{color:var(--grey)}
 </style>
 </head>
 <body>
@@ -28,29 +33,40 @@
     <img class="mark" src="../assets/mark.svg" alt="">
     <a class="brandline" href="../">Redaktion <span>· SeKondBrain Labs</span></a>
     <div class="top-links">
-      <a href="#build">Build</a>
-      <a href="#data">Data</a>
+      <a href="#integrate">Integrate</a>
+      <a href="#detects">Detects</a>
+      <a href="#guarantees">Guarantees</a>
       <a href="#access">Access</a>
-      <a href="../legal/privacy/">Privacy</a>
     </div>
   </div>
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>Labs · document redaction</span>
+  <span class="pill"><i></i>Labs · document redaction · queue API</span>
   <h1>Sensitive data,<br><em>truly gone.</em></h1>
-  <p class="lede">Redaktion finds sensitive information in a document and removes it for real — deleting the underlying text and pixels, not drawing a box over them. It works on native PDFs, scans and phone photos, and office files, across English, Arabic and Hindi.</p>
-  <p>Then it does the thing most redaction tools skip: it re-reads its own output and runs the whole detection stack again, so a redaction that missed something is caught and escalated — never shipped under a green tick.</p>
+  <p class="lede">Redaktion finds sensitive information in a document and removes it for real — deleting the underlying text and overwriting pixels, not drawing a box over them. Native PDFs, scans and phone photos, and office files, across English, Arabic and Hindi.</p>
+  <p>Then it does the thing most redaction tools skip: it re-reads its own output and runs the entire detection stack again. Anything still legible in the redacted file is, by definition, a leak — and the document is escalated for review rather than released with a green tick.</p>
 </div>
 
 <div class="wrap cols">
 
   <nav class="side" aria-label="On this page">
-    <div class="grp">Overview</div>
+    <div class="grp">Start</div>
     <a href="#what">What it is</a>
-    <a href="#build">What you can build</a>
-    <a href="#how">How it works</a>
+    <a href="#integrate">How you integrate</a>
+    <a href="#job">Job contract</a>
+    <a href="#events">Result &amp; progress</a>
+    <div class="grp">Detection</div>
+    <a href="#detects">What it detects</a>
+    <a href="#regional">Regional ID packs</a>
+    <a href="#stack">Detection stack</a>
+    <a href="#verify">Verification pass</a>
     <div class="grp">Operating</div>
+    <a href="#status">Statuses</a>
+    <a href="#config">Configuration</a>
+    <a href="#inputs">Supported inputs</a>
+    <a href="#guarantees">Output guarantees</a>
+    <a href="#failure">Failure &amp; retries</a>
     <a href="#data">Your data</a>
     <a href="#access">Availability &amp; access</a>
   </nav>
@@ -59,44 +75,315 @@
 
     <section id="what">
       <h2>What it is</h2>
-      <p>Redaktion is an automated detect-and-remove engine for sensitive documents. It finds personal and confidential information across dozens of configurable categories, burns opaque boxes at exact coordinates with true content removal, strips document metadata, and produces a forensically inert file — not an image with a hidden layer underneath.</p>
-      <p>It began inside SeKondBrain's legal platform and now runs as a dedicated service. It is a <strong>Labs</strong> product: the engine is proven in production, and we are opening it up to integration partners.</p>
-    </section>
-
-    <section id="build">
-      <h2>What you can build</h2>
-      <table>
-        <thead><tr><th>Use case</th><th>What it gives you</th></tr></thead>
+      <p>Redaktion is an automated detect-and-remove engine for sensitive documents. It finds personal and corporate information across <strong>45 configurable categories</strong>, burns opaque boxes at exact coordinates with true content removal, strips document metadata, and produces a forensically inert artifact — then verifies its own work before calling the job done.</p>
+      <p>It runs as a set of workers behind a queue. You hand it a document and a job notification; it hands back a redacted artifact, a structured summary, and a per-box audit trail that never contains the sensitive text itself.</p>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Bulk de-identification</td><td>Scrub archives before they enter a data lake, an analytics store, or an LLM training set.</td></tr>
-          <tr><td>Intake redaction</td><td>Automatically clean filings, contracts, ID cards and receipts as they're uploaded, with per-tenant rules for which categories to remove.</td></tr>
-          <tr><td>Multilingual documents</td><td>Redact English, Arabic (full right-to-left) and Hindi sets — including region-specific ID documents — where generic DLP is weak.</td></tr>
-          <tr><td>Compliance-grade removal</td><td>Get forensically inert artifacts plus an audit trail that records every removal without ever storing the sensitive text itself.</td></tr>
+          <tr><td>Integration surface</td><td>Message queue + object storage + a job record</td></tr>
+          <tr><td>Pipelines</td><td>Native PDF · OCR/image · Office documents</td></tr>
+          <tr><td>Languages</td><td>English · Arabic (full right-to-left) · Hindi/Devanagari</td></tr>
+          <tr><td>Categories</td><td>45 rule keys, individually toggleable per tenant</td></tr>
+          <tr><td>Verification</td><td>Unconditional post-redaction leak check on every job</td></tr>
+          <tr><td>Audit</td><td>One row per box; keyed one-way digest, never the text</td></tr>
         </tbody>
       </table>
     </section>
 
-    <section id="how">
-      <h2>How it works</h2>
-      <p>Three moves, in order. <strong>Detect</strong>: an ensemble finds sensitive spans across the configured categories, in all three languages. <strong>Remove</strong>: it deletes the underlying text and overwrites pixels at exact coordinates, then scrubs metadata, attachments and bookmarks from the output. <strong>Verify</strong>: it re-reads what it just produced and runs detection again — if anything survived, the document is escalated to human review rather than released.</p>
+    <section id="integrate">
+      <h2>How you integrate</h2>
+      <p>Redaktion is a <strong>queue-driven worker</strong>, not a REST endpoint. That is deliberate: redaction is a long, bursty, retry-heavy workload, and a durable queue plus a job record is a better contract for it than an HTTP request that can time out halfway through a 300-page scan.</p>
+      <p>Four steps, and the shape does not change with volume:</p>
+      <table class="tight">
+        <thead><tr><th>Step</th><th>What you do</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Encrypt &amp; store</td><td>Envelope-encrypt the source file and put it in object storage.</td></tr>
+          <tr><td>2 · Record the job</td><td>Insert a document row with status <code>pending</code> — this record, not the message, is the source of truth.</td></tr>
+          <tr><td>3 · Notify</td><td>Publish a small job message to the queue for the right pipeline.</td></tr>
+          <tr><td>4 · Consume</td><td>Read the result from the job record, or subscribe to result and progress events.</td></tr>
+        </tbody>
+      </table>
       <div class="note">
-        <span class="lbl">Fail-closed by design</span>
-        <p>A page the pipeline cannot process confidently is blacked out in full rather than passed through. The original pixels never reach the redacted output — the safe failure is a page you can re-run, not a leak.</p>
+        <span class="lbl">The message is a notification, not the job</span>
+        <p>Workers read <code>document_id</code> from the message and then load the authoritative record. That means a duplicate or out-of-order message is harmless, and the retry budget lives in one place instead of being split between your queue and ours.</p>
       </div>
+
+      <h3>Queues</h3>
+      <div class="lane"><b>redaction-pdf-queue</b><span class="a">→</span><span>native PDFs and images</span></div>
+      <div class="lane"><b>redaction-ocr-queue</b><span class="a">→</span><span>scanned documents (handed off automatically)</span></div>
+      <div class="lane"><b>redaction-ocr-xl-queue</b><span class="a">→</span><span>very large scans</span></div>
+      <div class="lane"><b>redaction-production-queue</b><span class="a">→</span><span>office documents</span></div>
+      <div class="lane"><b>redaction-result-queue</b><span class="a">·</span><b>redaction-progress-queue</b><span class="a">→</span><span>outbound events</span></div>
+      <p>Every queue is durable and dead-lettered — a matching <code>dlq-</code> queue receives anything that cannot be processed, so a poison message is quarantined rather than looping forever. Queues must be declared with the dead-letter arguments the workers expect; a mismatched declaration is rejected outright rather than silently accepted.</p>
+      <p class="muted">A PDF whose text layer is too thin is re-routed to the OCR pipeline automatically, and a very large scan to the extra-large lane — <strong>without consuming retry budget</strong>, because a handoff is not a failure.</p>
+    </section>
+
+    <section id="job">
+      <h2>Job contract</h2>
+      <p>What you publish:</p>
+<pre><code>{
+  "type": "redaction",
+  "document_id": "0f1e2d3c-…",
+  "case_id": null,
+  "client_id": "acme",
+  "file_name": "contract.pdf",
+  "file_path": "tenant/&lt;uuid&gt;/contract.pdf",
+  "file_extension": "pdf",
+  "redaction_type": "pdf",
+  "timestamp": "2026-08-03T09:12:44Z",
+  "storage_backend": "minio"
+}</code></pre>
+      <table class="tight">
+        <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code>type</code></td><td>yes</td><td>Literal <code>"redaction"</code>. Messages without it are dropped.</td></tr>
+          <tr><td><code>document_id</code></td><td>yes</td><td>The only field the PDF and OCR workers strictly need — everything else is read from the record.</td></tr>
+          <tr><td><code>file_name</code>, <code>file_path</code></td><td>office path</td><td>Storage object key and display name.</td></tr>
+          <tr><td><code>case_id</code>, <code>client_id</code></td><td>no</td><td>Carried through onto audit rows.</td></tr>
+          <tr><td><code>file_extension</code></td><td>no</td><td>Used to re-route a misfiled document to the right pipeline.</td></tr>
+          <tr><td><code>redaction_type</code></td><td>no</td><td><code>pdf</code> · <code>ocr</code> · <code>production</code>.</td></tr>
+          <tr><td><code>config</code></td><td>optional mode</td><td>A per-job snapshot of enabled rules and settings — see <a href="#config">Configuration</a>.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Workers consume with a prefetch of one, so a single worker takes one document at a time and a slow job never blocks a queue behind it.</p>
+    </section>
+
+    <section id="events">
+      <h2>Result &amp; progress events</h2>
+      <p>Rather than polling the record, you can subscribe. Both event types are versioned and field-locked across every worker implementation.</p>
+      <h3>Result</h3>
+<pre><code>{
+  "type": "redaction_result",
+  "timestamp": "2026-08-03T09:14:01Z",
+  "document_id": "0f1e2d3c-…",
+  "client_id": "acme",
+  "attempt": 1,
+  "outcome": "completed",
+  "status": "completed",
+  "redacted_file_path": "tenant/&lt;uuid&gt;/contract_redacted.pdf",
+  "redacted_file_size": 481233,
+  "redaction_summary": "{…}",
+  "redaction_has_warnings": false,
+  "redaction_vision_qa_verdict": "pass",
+  "redaction_quality_verdict": "ok",
+  "redaction_quality_issues": [],
+  "redaction_rules_version_applied": 7,
+  "audit_rows": [ … ]
+}</code></pre>
+      <table class="tight">
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>outcome</code></td><td><code>completed</code> · <code>failed</code> · <code>kick_back</code> — the disposition your consumer acts on.</td></tr>
+          <tr><td><code>attempt</code></td><td><strong>Attempt-fenced.</strong> Apply results conditionally on this, and a late result from a superseded attempt can never overwrite a fresh one.</td></tr>
+          <tr><td><code>status</code></td><td>The document status — see <a href="#status">Statuses</a>.</td></tr>
+          <tr><td><code>redaction_vision_qa_verdict</code></td><td><code>pass</code> · <code>low_confidence</code> · <code>fail</code>.</td></tr>
+          <tr><td><code>redaction_quality_verdict</code></td><td><code>ok</code> · <code>warn</code> · <code>block</code> — input legibility, not output correctness.</td></tr>
+          <tr><td><code>audit_rows</code></td><td>One entry per drawn box — see <a href="#guarantees">Output guarantees</a>.</td></tr>
+        </tbody>
+      </table>
+      <h3>Progress</h3>
+<pre><code>{ "type": "redaction_progress", "timestamp": "…", "document_id": "…",
+  "attempt": 1, "progress_page": 7, "processing_stage": "detect" }</code></pre>
+      <p>Stages are named and ordered, so a progress bar is a lookup rather than a guess: <code>preflight</code> → <code>detect</code> → <code>apply_and_verify</code> → <code>upload_and_complete</code> on the PDF path, and <code>ocr_preflight</code> → <code>ocr_pipeline</code> → <code>ocr_upload_and_complete</code> on the OCR path. Heartbeat-only events omit the page and stage.</p>
+      <p class="muted">Workers also expose <code>/health</code> and Prometheus <code>/metrics</code> for your own monitoring.</p>
+    </section>
+
+    <section id="detects">
+      <h2>What it detects</h2>
+      <p>Forty-five rule keys, each individually enabled or disabled per tenant.</p>
+      <table class="tight">
+        <thead><tr><th>Group</th><th>Rule keys</th></tr></thead>
+        <tbody>
+          <tr><td>Identity &amp; personal</td><td><code>individual_names</code> <code>date_of_birth</code> <code>photo</code> <code>signature</code> <code>biometric_identifiers</code> <code>family_registry_numbers</code></td></tr>
+          <tr><td>Contact &amp; digital</td><td><code>email_address</code> <code>phone_number</code> <code>addresses_all</code> <code>online_identifiers</code> <code>password</code></td></tr>
+          <tr><td>Government &amp; official IDs</td><td><code>national_ids</code> <code>passport_numbers</code> <code>license_numbers</code> <code>tax_id</code> <code>work_authorization</code> <code>vehicle_ids</code> <code>property_ids</code> <code>education_ids</code> <code>employee_ids</code> <code>insurance_numbers</code></td></tr>
+          <tr><td>Financial</td><td><code>bank_account_numbers</code> <code>bank_routing_codes</code> <code>credit_card</code> <code>monetary_amount</code> <code>financial_statement</code></td></tr>
+          <tr><td>Special category</td><td><code>health_information</code> <code>criminal_record</code> <code>ethnicity</code> <code>religion</code></td></tr>
+          <tr><td>Organisations</td><td><code>organization_names</code></td></tr>
+          <tr><td>Corporate entity</td><td><code>entity_legal_name</code> <code>entity_trade_name</code> <code>entity_parent_company</code> <code>entity_subsidiary</code> <code>entity_registration_number</code> <code>entity_license_number</code> <code>entity_tax_number</code> <code>entity_incorporation_number</code> <code>entity_commercial_registration</code> <code>entity_registered_address</code> <code>entity_office_address</code> <code>entity_email</code> <code>entity_phone</code> <code>entity_website</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>How toggles behave</h3>
+      <table class="tight">
+        <thead><tr><th>Case</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Known key, enabled</td><td>Redacted.</td></tr>
+          <tr><td>Known key, disabled</td><td>Not redacted — surfaced as a <em>suggestion</em> so a reviewer can see what was deliberately left.</td></tr>
+          <tr><td>Unrecognised type</td><td><strong>Redacted anyway.</strong> An unknown category is never silently dropped — over-redaction is recoverable, a leak is not.</td></tr>
+          <tr><td>Empty rule set</td><td>Everything is kept. A failed rules load can never cause silent under-redaction.</td></tr>
+          <tr><td>Faces &amp; signatures</td><td>Geometric detections bypass the toggle entirely, so a mis-set rule cannot expose a face.</td></tr>
+        </tbody>
+      </table>
+      <p>Detected values are also normalised through an alias map, so a model that reports <code>DOB</code>, <code>iban</code> or <code>Driver License</code> lands on the right canonical key rather than being lost.</p>
+    </section>
+
+    <section id="regional">
+      <h2>Regional ID packs</h2>
+      <p>Generic PII tools do badly on identity documents outside the US. Redaktion ships country packs where the pattern is paired with the <strong>checksum that proves it</strong> — and a value that fails its checksum is rejected rather than redacted, so look-alike numbers don't produce noise.</p>
+      <table class="tight">
+        <thead><tr><th>Profile</th><th>Covers</th></tr></thead>
+        <tbody>
+          <tr><td><strong>India</strong></td><td>Aadhaar and VID (checksum-validated), PAN, voter ID, driving licence, GSTIN (checksum-validated), IFSC, PIN code, phone</td></tr>
+          <tr><td><strong>UAE</strong></td><td>Emirates ID (checksum-validated), TRN, unified number, visa file number, trade licence, driving licence, PO box, Arabic address and road components, phone</td></tr>
+          <tr><td><strong>Gulf</strong></td><td>Saudi national ID (checksum-validated), Qatar QID, Bahrain CPR, Oman civil ID, Kuwait civil ID</td></tr>
+          <tr><td><strong>United States</strong></td><td>SSN (reserved ranges excluded), ITIN, EIN, passport, ABA routing (checksum-validated), Medicare beneficiary ID</td></tr>
+          <tr><td><strong>United Kingdom</strong></td><td>National Insurance number, NHS number (checksum-validated), UTR, passport, postcode</td></tr>
+          <tr><td><strong>Australia</strong></td><td>TFN, Medicare, ABN (all checksum-validated), passport</td></tr>
+          <tr><td><strong>Universal</strong></td><td>Email, credit card and masked PAN (Luhn), IBAN (mod-97), SWIFT/BIC, IPv4, Bitcoin and Ethereum wallets, monetary amounts, passport MRZ lines</td></tr>
+        </tbody>
+      </table>
+      <p>Machine-readable zones are always removed — an MRZ encodes every field on the page, so leaving it visible leaks the document you just redacted.</p>
+      <p class="muted">A further set of label-anchored patterns catches values that only a nearby label identifies. Those redact <strong>the value and not the label</strong>, so a form stays readable as a form.</p>
+    </section>
+
+    <section id="stack">
+      <h2>Detection stack</h2>
+      <p>Five layers, run in a fixed order, merged once with a defined precedence — deterministic matches beat statistical ones, and statistical beat generative.</p>
+      <table class="tight">
+        <thead><tr><th>#</th><th>Layer</th><th>What it contributes</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Regex + checksum</td><td>Deterministic identifiers. Full confidence when a checksum validates, high when the format alone matches.</td></tr>
+          <tr><td>2</td><td>Named-entity recognition</td><td>Names, organisations and places that no pattern can enumerate. Runs as a separate service.</td></tr>
+          <tr><td>3</td><td>Stoplist</td><td>Removes legal and procedural boilerplate that looks like a name but isn't.</td></tr>
+          <tr><td>4</td><td>Language model</td><td>Adjudicates the ambiguous remainder with document context.</td></tr>
+          <tr><td>5</td><td>Vision pass</td><td>Finds what is not in the text layer at all — faces, signatures, stamps, photos.</td></tr>
+        </tbody>
+      </table>
+      <p>The recognition layer runs remotely and is <strong>fail-soft</strong>: if it is unavailable, detection degrades to the deterministic layers and a circuit breaker stops the worker hammering a service that is down. A downed component slows detection; it does not take redaction offline.</p>
+      <h3>Document-type skills</h3>
+      <p>Fixed-layout identity documents get dedicated handling — Aadhaar, Emirates ID, and any ICAO-standard passport — that knows where the face, signature, number and MRZ sit rather than searching for them. A skill only takes over when it recognises the document confidently; otherwise the generic pipeline runs. Every skill failure path falls through rather than failing the job.</p>
+    </section>
+
+    <section id="verify">
+      <h2>The verification pass</h2>
+      <p>This is the part that separates Redaktion from a tool that draws rectangles.</p>
+      <p>After boxes are applied, the engine <strong>re-reads its own output</strong> — OCRs the redacted file and runs the same detection pipeline over what it can still see. Anything found there is a leak by definition. Because it reuses the same rules, its false-positive behaviour is identical to the primary pass, rather than a second, noisier detector second-guessing the first.</p>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Always on</td><td>Unconditional on every job. There is no flag to turn it off.</td></tr>
+          <tr><td>Dual engine</td><td>A second pass in sparse-text mode catches text the primary pass reads past.</td></tr>
+          <tr><td>Bounded</td><td>Page and time caps, checked before each page, so verification cannot run away on a huge document.</td></tr>
+          <tr><td>Context aware</td><td>Amounts and routing codes deliberately retained on receipts aren't reported as leaks.</td></tr>
+        </tbody>
+      </table>
+      <p>On the PDF path there is a further chain: a fast text-layer check, then an OCR check, then any residual is re-boxed and re-verified, with page rasterisation as the last resort. A <strong>vision QA</strong> pass then asks a model a deliberately narrow question — <em>we drew N boxes, do you see N boxes, and is anything still legible?</em> — because that is far more reliable than asking a model to find all PII from scratch.</p>
+      <p>Geometry is audited too: a job where boxes were drawn but landed over the wrong tokens is flagged, which is a failure mode a simple count check would pass.</p>
+    </section>
+
+    <section id="status">
+      <h2>Statuses</h2>
+      <table class="tight">
+        <thead><tr><th>Status</th><th>Meaning</th><th>Artifact</th></tr></thead>
+        <tbody>
+          <tr><td><code>pending</code></td><td>Recorded, awaiting a worker.</td><td>—</td></tr>
+          <tr><td><code>processing</code></td><td>Atomically claimed by one worker — the claim is a compare-and-set, so two workers cannot take the same document.</td><td>—</td></tr>
+          <tr><td><code>reprocessing</code></td><td>Re-running after a rules change.</td><td>previous</td></tr>
+          <tr><td><code>completed</code></td><td>Clean terminal success.</td><td><strong>yes</strong></td></tr>
+          <tr><td><code>needs_review</code></td><td>Pipeline finished but verification flagged something. The artifact exists and can be downloaded, <strong>but a human must review it before it is shared.</strong></td><td><strong>yes</strong></td></tr>
+          <tr><td><code>failed</code></td><td>Permanent failure, or retry budget exhausted.</td><td>no</td></tr>
+          <tr><td><code>not_supported</code></td><td>Input type not handled.</td><td>no</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">Why <code>needs_review</code> is its own status</span>
+        <p>It used to be a warning flag on a completed document. In practice people trust a green badge and ignore flags — so uncertain redactions shipped. Making it a distinct terminal status forces the review step instead of hoping for it. Gate your download or share action on the status, not on a warnings boolean.</p>
+      </div>
+      <p>Escalation is triggered by concrete signals, not a vague score: uncovered PII or low confidence from vision QA, partial OCR coverage, a degraded OCR engine, too few boxes for the entities found, boxes landing in the wrong place, a photo-mode document, or a low-quality scan where nothing was found at all.</p>
+    </section>
+
+    <section id="config">
+      <h2>Configuration</h2>
+      <p>Tenant settings, applied per job.</p>
+      <table class="tight">
+        <thead><tr><th>Setting</th><th>Default</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Country profiles</td><td><code>IN</code>, <code>AE</code></td><td>Which regional ID packs run. Universal patterns are always on.</td></tr>
+          <tr><td>Form policy</td><td><code>values_only</code></td><td><code>values_only</code> keeps "Name:" and redacts the value; <code>labels_and_values</code> removes both; <code>full_document</code> redacts the whole surface.</td></tr>
+          <tr><td>Vision QA pages</td><td>50</td><td>Cap on pages sent for visual verification.</td></tr>
+          <tr><td>Vision QA confidence</td><td>medium</td><td>Below this, a page is downgraded to low-confidence rather than passed.</td></tr>
+          <tr><td>Minimum DPI</td><td>300 (hard floor 150)</td><td>Below the floor a scan is flagged — optionally blocked.</td></tr>
+          <tr><td>Blur / skew thresholds</td><td>tunable</td><td>Legibility gates on the input, with warn and block behaviour separated.</td></tr>
+          <tr><td>Role policy</td><td>built-in per doc type</td><td>Who is redacted vs kept by role — e.g. the subject of a receipt vs the issuing merchant. <strong>Fail-closed:</strong> an undeterminable role is redacted.</td></tr>
+          <tr><td>Rules version</td><td>—</td><td>Stamped onto every result so you can prove which rule set produced an artifact.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Rule toggles take effect on the next job</strong> — the enabled set is re-read before each document, with no worker restart. A transient failure to load keeps the last good set rather than clearing it.</p>
+    </section>
+
+    <section id="inputs">
+      <h2>Supported inputs</h2>
+      <table class="tight">
+        <thead><tr><th>Pipeline</th><th>Accepts</th><th>Produces</th></tr></thead>
+        <tbody>
+          <tr><td>Native PDF</td><td>PDFs with a text layer, Markdown, embedded images</td><td><code>…_redacted.pdf</code></td></tr>
+          <tr><td>OCR / image</td><td>Scanned PDFs, JPG, PNG, TIFF, BMP, GIF, WebP, HEIC/HEIF</td><td><code>…_redacted.pdf</code> or <code>…_redacted.png</code></td></tr>
+          <tr><td>Office</td><td>DOCX, DOC, XLSX, XLS, PPTX, PPT, RTF, CSV, HTML, ODT, ODS, TXT</td><td><code>…_redacted.txt</code></td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">Two honest limits</span>
+        <p><strong>The office path does not preserve formatting</strong> — it returns redacted text, not a redacted DOCX. If you need the original layout, convert to PDF before submitting.</p>
+        <p><strong>Assurance is not uniform across pipelines.</strong> The full stack — document skills, vision verification and the post-redaction leak check — runs on the PDF and OCR paths. The office path runs pattern and model detection with recognition support. For regulated material, route through PDF.</p>
+      </div>
+      <p>Arabic is handled properly rather than nominally: right-to-left reordering, Arabic-Indic and Devanagari digit normalisation before matching — while the <em>original</em> characters are what get located on the page — plus Arabic address and road patterns.</p>
+    </section>
+
+    <section id="guarantees">
+      <h2>Output guarantees</h2>
+      <h3>Removal is real</h3>
+      <p>On PDFs the engine applies true redaction annotations that <strong>delete the underlying content</strong>, then scrubs metadata, embedded attachments and page remnants, and saves with full garbage collection. The result cannot be un-redacted by copying a layer, selecting invisible text, or reading document properties. On images the pixels are overwritten, not covered.</p>
+      <p>Box geometry is padded for serifs and shrunk slightly so bars don't bleed into adjacent rows, overlapping boxes are collapsed, and a form label is never drawn over.</p>
+      <h3>Fail-closed</h3>
+      <p>A page the pipeline cannot process confidently ships <strong>fully blacked out</strong> and the document is flagged. The safe failure is a page you re-run, not a page that leaks.</p>
+      <h3>The audit trail never holds the data</h3>
+      <p>One row per drawn box:</p>
+      <table class="tight">
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>page_index</code>, <code>bbox</code></td><td>Where the box was drawn.</td></tr>
+          <tr><td><code>rule_key</code>, <code>pattern</code>, <code>validator</code></td><td>What matched, and what proved it.</td></tr>
+          <tr><td><code>detector</code></td><td>Which layer found it — regex, recognition, model or vision.</td></tr>
+          <tr><td><code>confidence</code></td><td>Normalised score.</td></tr>
+          <tr><td><code>text_hash</code>, <code>text_length</code></td><td>A <strong>keyed</strong> one-way digest and a length. Never the text.</td></tr>
+        </tbody>
+      </table>
+      <p>The digest is keyed <em>per document</em>. That preserves duplicate analytics inside one file while making it impossible to correlate "this identifier appears in documents A, B and C" across your corpus — which an unkeyed hash would allow to anyone holding the table. Audit writes are best-effort by design: a failing audit insert never fails the redaction that produced it.</p>
+      <h3>Encryption</h3>
+      <p>Sources are read through an AES-256-GCM envelope and the redacted artifact is written back to the same backend, re-encrypted. The summary attached to each result reports counts and categories with <strong>fingerprints rather than examples</strong>, so a summary is safe to log.</p>
+    </section>
+
+    <section id="failure">
+      <h2>Failure &amp; retries</h2>
+      <p>Failures are typed, not generic — you can route on them. Hard failures include model timeouts and rate limits, OCR timeouts, empty text extraction, storage read/write failures, verification failures, unsupported input, files that are too large, and input quality below threshold. Warnings — partial chunk failures, suspicious zero-entity results, low-confidence vision QA, partial OCR coverage, misplaced boxes — surface on the result rather than failing the job, and escalate to review where they matter.</p>
+      <table class="tight">
+        <thead><tr><th>Mechanism</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Retry budget</td><td>Bounded per document, held in the job record so it can't be double-counted.</td></tr>
+          <tr><td>Transient failure</td><td>Returned to <code>pending</code>, attempt incremented.</td></tr>
+          <tr><td>Permanent failure</td><td>Terminal — no retry, because the input won't change between attempts.</td></tr>
+          <tr><td>Pipeline handoff</td><td>Does not consume retry budget.</td></tr>
+          <tr><td>Poison message</td><td>Acknowledged and dropped rather than looping.</td></tr>
+          <tr><td>Heartbeat</td><td>Long jobs heartbeat on a dedicated connection, so a slow document is never mistaken for a dead worker.</td></tr>
+          <tr><td>Queue outage</td><td>Workers fall back to polling the job record and keep draining.</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section id="data">
       <h2>Your data</h2>
-      <p>Your source document is encrypted at rest with a per-file key; the redacted artifact is written back encrypted too. Removal is real — text is deleted, pixels overwritten, metadata stripped — so the output cannot be un-redacted by copying a layer or reading document properties.</p>
-      <p>The audit trail records <em>where</em> each redaction happened — page, position, category, confidence — but <strong>never the sensitive text itself</strong>: it stores a keyed one-way digest, so the log cannot be mined for the very data it removed. Working files are swept on a short timer, and processing runs on EU/Swiss-resident infrastructure. Full detail is in the <a href="../legal/privacy/">privacy policy</a>.</p>
+      <p>Source documents stay encrypted at rest under a key you control, and redacted artifacts are written back encrypted. Removal is real, so a redacted file cannot be reversed into the original. The audit trail records where and why each redaction happened without ever storing the sensitive text.</p>
+      <p>Sensitive content is necessarily processed in memory to be detected, and detection uses model services to adjudicate ambiguous spans. Working files are swept on a short timer. Processing runs on EU/Swiss-resident infrastructure. Retention, subprocessors and erasure are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
     </section>
 
     <section id="access">
       <h2>Availability &amp; access</h2>
-      <p>Redaktion is a <strong>SeKondBrain Labs</strong> product. The engine runs in production inside our legal platform today; as a standalone service it is at early access — we integrate it with your pipeline and run redaction on your documents, rather than offering an open self-serve endpoint. It is licensed, not open source.</p>
+      <p><strong>Redaktion is a SeKondBrain Labs product.</strong> The engine runs in production inside our legal platform today. As a standalone service it is at <strong>early access</strong>: we integrate it with your pipeline and provision the queues, storage and credentials with you, rather than offering an open self-serve endpoint. It is licensed, not open source.</p>
+      <p>What you get on integration: the queue endpoints and credentials, an encryption key you control, your tenant rule configuration, and the contracts documented above.</p>
       <div class="note">
         <span class="lbl">Request access</span>
-        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Redaktion">hello@sekondbrain.ai</a> with the subject <em>“Access for Redaktion”</em> and tell us about the documents you need to redact.</p>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Redaktion">hello@sekondbrain.ai</a> with the subject <em>“Access for Redaktion”</em> — tell us the document types, languages and volumes you need to redact.</p>
       </div>
     </section>
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cognition OS — documentation | SeKondBrain</title>
-<meta name="description" content="Cognition OS is SeKondBrain's multi-tenant knowledge-graph service — the layer that turns the entities your agents encounter into a living, queryable graph.">
+<meta name="description" content="Cognition OS is SeKondBrain's multi-tenant knowledge-graph service. Full API reference: nodes, relationships, bulk writes, concept resolution, entity search, reasoning provenance, review queues and events.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/cognition/">
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <meta property="og:title" content="Cognition OS — documentation">
@@ -19,6 +19,16 @@
   /* Page mood: mint — the knowledge graph. One veil, per Brand Book v6. */
   :root{ --veil-a:rgba(64,203,104,.18); --veil-b:rgba(95,196,240,.14); }
   .pill i{ background:var(--c-mint) }
+  /* endpoint rows: method chip + path */
+  .ep{display:flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:13px;margin:0 0 8px;flex-wrap:wrap}
+  .m{font-size:10px;letter-spacing:.08em;font-weight:500;padding:2px 6px;border-radius:var(--r-sm);flex:none}
+  .m.get{background:rgba(61,214,128,.14);color:#1c7a45}
+  .m.post{background:rgba(26,138,246,.13);color:#0b5ca8}
+  .m.put{background:rgba(230,184,0,.18);color:#7a5c00}
+  .m.del{background:rgba(239,68,68,.12);color:#a32020}
+  .m.ws{background:rgba(139,120,245,.14);color:#4b3bb8}
+  .ep .d{font-family:var(--font);font-size:14px;color:var(--fg-2)}
+  table.tight td{padding:8px 14px 8px 0}
 </style>
 </head>
 <body>
@@ -28,29 +38,48 @@
     <img class="mark" src="../assets/mark.svg" alt="">
     <a class="brandline" href="../">Cognition OS <span>· by SeKondBrain</span></a>
     <div class="top-links">
-      <a href="#build">Build</a>
-      <a href="#data">Data</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#api">API</a>
+      <a href="#model">Data model</a>
       <a href="#access">Access</a>
-      <a href="../legal/privacy/">Privacy</a>
     </div>
   </div>
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>Platform · knowledge graph</span>
+  <span class="pill"><i></i>Platform · knowledge graph · REST</span>
   <h1>The graph your AI<br><em>reasons over.</em></h1>
-  <p class="lede">Cognition OS turns the entities your agents encounter — people, concepts, projects, code — into a living, queryable knowledge graph. It stays isolated per organisation and keeps improving itself as it grows.</p>
-  <p>It is the layer that lets recall follow a thought sideways: when memory finds a fact, Cognition OS is what expands it into the related concepts nobody wrote down.</p>
+  <p class="lede">Cognition OS is the semantic cognition layer of the SeKondBrain platform: a multi-tenant service that stores, reasons about and evolves knowledge graphs. Write nodes and relationships over REST; it deduplicates, links, resolves free text to concepts, and keeps improving the graph as it grows.</p>
+  <p>One service, any domain — people, product, code, or a schema you declare yourself. Every organisation gets an isolated graph, writes are idempotent, search spans graph, vector and full text, and every change is attributable.</p>
 </div>
 
 <div class="wrap cols">
 
   <nav class="side" aria-label="On this page">
-    <div class="grp">Overview</div>
+    <div class="grp">Start</div>
     <a href="#what">What it is</a>
-    <a href="#build">What you can build</a>
-    <a href="#how">How it works</a>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#auth">Authentication</a>
+    <div class="grp">Model</div>
+    <a href="#model">Data model</a>
+    <a href="#ontology">Ontology &amp; archetypes</a>
+    <div class="grp">API</div>
+    <a href="#graphs">Nodes &amp; relationships</a>
+    <a href="#bulk">Bulk &amp; dedup</a>
+    <a href="#entity-search">Entity search</a>
+    <a href="#concepts">Concepts &amp; resolution</a>
+    <a href="#search">Unified search</a>
+    <a href="#reasoning">Reasoning &amp; provenance</a>
+    <a href="#documents">Documents &amp; tasks</a>
+    <a href="#tenants">Tenants</a>
+    <a href="#privacy-api">Access control</a>
+    <a href="#ops">Agents, review &amp; DLQ</a>
+    <a href="#analyzers">Analyzers &amp; sync</a>
     <div class="grp">Operating</div>
+    <a href="#pipeline">Ingestion pipeline</a>
+    <a href="#events">Events</a>
+    <a href="#reliability">Reliability</a>
+    <a href="#errors">Errors</a>
     <a href="#data">Your data</a>
     <a href="#access">Availability &amp; access</a>
   </nav>
@@ -59,43 +88,416 @@
 
     <section id="what">
       <h2>What it is</h2>
-      <p>Cognition OS is a multi-tenant service that stores and reasons about knowledge graphs. Every organisation gets its own isolated graph. You write nodes and the relationships between them; it deduplicates, links, and — through a set of autonomous housekeeping agents — merges duplicates, infers new edges, and keeps the hierarchy coherent as the graph grows.</p>
-      <p>It is domain-agnostic: the same service backs a people graph, a project graph, a code graph, or a general concept graph. And it never calls a language model directly — extraction and synthesis are delegated to the <a href="../reasoning/">Reasoning</a> engine — so the graph stays a clean, permissioned record of what is known.</p>
-    </section>
-
-    <section id="build">
-      <h2>What you can build</h2>
-      <table>
-        <thead><tr><th>Capability</th><th>What it gives you</th></tr></thead>
+      <p>Cognition OS stores knowledge as a property graph and serves it back at every level a system needs: a single node, a neighbourhood, a semantic search, or a resolved set of concepts behind a sentence of free text. It is <strong>domain-agnostic</strong> — the same service backs people graphs, product-management graphs, code knowledge graphs and fully custom schemas, chosen per tenant rather than per deployment.</p>
+      <p>It never calls a language model directly. Extraction and synthesis are delegated to the <a href="../reasoning/">Reasoning</a> engine, which keeps the graph a clean, permissioned record of what is known — and keeps model choice out of your data layer.</p>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Concept graph</td><td>Write entities from many systems and have them deduplicated and linked automatically — stable IDs make cross-system upserts safe.</td></tr>
-          <tr><td>Entity search</td><td>Ask for the right person, feature, or piece of code semantically, without passing labels — one archetype-aware search over your graph.</td></tr>
-          <tr><td>Concept resolution</td><td>Turn free text into anchored concepts in a single call — name match, then hierarchy, then vector discovery.</td></tr>
-          <tr><td>Graph-augmented recall</td><td>Expand a query with related concepts that were never written into memory — the pattern <a href="../kemory/">Kemory</a> uses to make recall follow a thought.</td></tr>
-          <tr><td>Decision graphs</td><td>Record reasoning chains and design decisions as a linked graph, so you can query <em>why</em> something exists, not only <em>what</em>.</td></tr>
+          <tr><td>Protocol</td><td>REST over HTTPS, JSON in and out</td></tr>
+          <tr><td>Base path</td><td><code>/v1</code></td></tr>
+          <tr><td>Interactive reference</td><td>OpenAPI at <code>/docs</code> and <code>/redoc</code> on your instance</td></tr>
+          <tr><td>Tenancy</td><td>One isolated graph per organisation, selected by <code>X-Org-Id</code></td></tr>
+          <tr><td>Write semantics</td><td>Idempotent merge on <code>(id, org_id)</code> — safe to replay</td></tr>
+          <tr><td>Retrieval</td><td>Graph traversal · vector similarity · full text, fused and ranked</td></tr>
+          <tr><td>Realtime</td><td>WebSocket task progress; event bus with dead-letter queue</td></tr>
         </tbody>
       </table>
     </section>
 
-    <section id="how">
-      <h2>How it works</h2>
-      <p>You work in <strong>nodes and relationships</strong>. A node has a name, a type — people, organisations, concepts and artefacts are the roots — a description, and free-form metadata. Relationships are typed: <em>parent of</em>, <em>contains</em>, <em>implements</em>, <em>related to</em>, <em>extracted from</em>. Writes are idempotent and deduplicated, so the same fact arriving from two systems lands once.</p>
-      <p>Every request carries your organisation, and the graph you read and write is scoped to it and to no one else's. Nodes can carry an access level — public, internal, confidential or restricted — and search is permission-filtered against it.</p>
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <p>Provision a tenant, write a node, link it, find it back.</p>
+
+      <h3>1. Provision your tenant</h3>
+      <p>One-time per application. Creates the isolated graph, its anchor node and the managed vector collections. Idempotent — safe to call on every boot.</p>
+<pre><code>curl -X POST https://&lt;YOUR_COGNITION_HOST&gt;/v1/tenants/provision \
+  -H "Authorization: Bearer &lt;YOUR_SERVICE_TOKEN&gt;" \
+  -H "X-Org-Id: my-tenant" \
+  -H "Content-Type: application/json" \
+  -d '{ "tenant_id": "my-tenant", "template": "kora_hai" }'</code></pre>
+      <p class="muted">Pass <code>archetype</code> to declare your own subtype tree, <code>template</code> to load a shipped one, or <code>graph_type</code> for a stock shape (<code>product</code>, <code>people</code>, <code>code</code>, <code>kit</code>, <code>concept</code>, <code>custom</code>).</p>
+
+      <h3>2. Create a node</h3>
+<pre><code>curl -X POST https://&lt;YOUR_COGNITION_HOST&gt;/v1/graphs/nodes \
+  -H "X-Org-Id: my-tenant" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "id": "concept-ml",
+        "name": "Machine Learning",
+        "node_type": "Concept",
+        "description": "A branch of artificial intelligence",
+        "graph_type": "custom",
+        "graph_name": "my-graph",
+        "metadata": { "source": "my-app", "seniority": "principal" }
+      }'
+
+# 201 Created
+{ "id": "concept-ml", "message": "ok" }</code></pre>
+      <p class="muted">Supplying your own <code>id</code> keeps identifiers stable across systems; the write merges rather than duplicating, so replays are safe. <code>metadata</code> is persisted as flat node properties.</p>
+
+      <h3>3. Relate it</h3>
+<pre><code>curl -X POST https://&lt;YOUR_COGNITION_HOST&gt;/v1/graphs/relationships \
+  -H "X-Org-Id: my-tenant" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "source_id": "concept-ai",
+        "target_id": "concept-ml",
+        "rel_type": "PARENT_OF",
+        "source_label": "Concept",
+        "target_label": "Concept",
+        "properties": { "score": 0.91, "source": "vector_match" }
+      }'</code></pre>
+      <p class="muted">Passing <code>source_label</code> / <code>target_label</code> selects the indexed write path instead of a full scan — material on large graphs. Circular <code>PARENT_OF</code> / <code>CONTAINS</code> writes are rejected before they can corrupt the tree.</p>
+
+      <h3>4. Search it back</h3>
+<pre><code>curl -X POST https://&lt;YOUR_COGNITION_HOST&gt;/v1/search \
+  -H "X-Org-Id: my-tenant" \
+  -H "Content-Type: application/json" \
+  -d '{ "query": "artificial intelligence", "top_k": 10, "min_score": 0.0 }'
+
+{ "query": "artificial intelligence",
+  "results": [
+    { "entity_id": "concept-ml", "score": 0.83, "title": "Machine Learning",
+      "content": "A branch of artificial intelligence", "content_type": "Concept",
+      "source_backend": "graph", "match_explanation": "name match" }
+  ],
+  "total": 1, "backends_used": ["graph"] }</code></pre>
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <p>Two headers, two jobs. Most data routes need the first; administrative and reasoning routes need both.</p>
+      <table>
+        <thead><tr><th>Header</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>X-Org-Id</code></td><td><strong>The tenancy boundary.</strong> Required on every tenant-scoped route. Selects which organisation's graph you read and write; a request cannot reach another organisation's data.</td></tr>
+          <tr><td><code>Authorization: Bearer</code></td><td>Service identity, validated against the platform identity provider. Required on reasoning, documents, tenants, analyzers, privacy, review and administration routes.</td></tr>
+        </tbody>
+      </table>
       <div class="note">
-        <span class="lbl">Where the intelligence comes from</span>
-        <p>Cognition OS holds the graph; the <a href="../reasoning/">Reasoning</a> engine does the thinking. Extraction, embedding and synthesis are delegated, and the results are written back as first-class nodes — so what an agent learns becomes part of the graph the next agent reads.</p>
+        <span class="lbl">Provisioned, not self-serve</span>
+        <p>Your host, organisation identifier and service credentials are issued when your tenant is provisioned — see <a href="#access">Availability &amp; access</a>. There is no public sign-up endpoint.</p>
       </div>
+    </section>
+
+    <section id="model">
+      <h2>Data model</h2>
+      <p>Everything is a <strong>node</strong> with a type, or a typed <strong>relationship</strong> between two nodes.</p>
+      <h3>Node</h3>
+      <table class="tight">
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Optional. Your own stable identifier — reuse keys across systems, or let one be generated.</td></tr>
+          <tr><td><code>name</code></td><td>Required. The human label.</td></tr>
+          <tr><td><code>node_type</code></td><td>Required. A root primitive or a declared subtype.</td></tr>
+          <tr><td><code>description</code></td><td>Free text; this is what semantic search reads.</td></tr>
+          <tr><td><code>graph_type</code> / <code>graph_name</code></td><td>Which graph this belongs to. <code>graph_type</code> defaults to <code>custom</code>.</td></tr>
+          <tr><td><code>metadata</code></td><td>Arbitrary JSON, persisted as flat node properties.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Five root primitives</h3>
+      <p>Every node is rooted at exactly one of five types. Tenants don't invent roots — they declare subtypes beneath them.</p>
+      <table class="tight">
+        <thead><tr><th>Root</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>SuperRoot</code></td><td>Tenant graph anchor — one per tenant, carries the archetype configuration.</td></tr>
+          <tr><td><code>Person</code></td><td>Human entities.</td></tr>
+          <tr><td><code>Organisation</code></td><td>Companies, teams, agencies.</td></tr>
+          <tr><td><code>Concept</code></td><td>Abstractions — skills, features, requirements, personas.</td></tr>
+          <tr><td><code>Artefact</code></td><td>Concrete things — documents, emails, code files, reasoning nodes.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Subtypes are a label chain</h3>
+      <p>A subtype is written with its full ancestry, so both general and specific queries work without any schema migration:</p>
+<pre><code>(:Concept:Skill:SkillChain { id: "…", name: "…" })
+(:Artefact:Document:Email  { id: "…", subject: "…" })
+(:Artefact:ReasoningNode   { id: "…", kind: "inference" })</code></pre>
+      <p>Match <code>Concept</code> and you get every skill, feature and requirement. Match <code>SkillChain</code> and you get exactly that. Subtype names are validated at provision time — the parent must resolve to a root or an inherited subtype, cycles are rejected, and roots cannot be redefined.</p>
+
+      <h3>Relationship types</h3>
+      <table class="tight">
+        <thead><tr><th>Family</th><th>Types</th></tr></thead>
+        <tbody>
+          <tr><td>Hierarchy</td><td><code>PARENT_OF</code> <code>CONTAINS</code> <code>SUBCONCEPT_OF</code> <code>GENERALISES</code></td></tr>
+          <tr><td>Composition</td><td><code>HAS_JOURNEY</code> <code>HAS_FEATURE</code> <code>HAS_REQUIREMENT</code> <code>HAS_TASK</code></td></tr>
+          <tr><td>Association</td><td><code>RELATED_TO</code> <code>SIMILAR_TO</code> <code>VARIANT_OF</code> <code>ALIGNS_WITH</code> <code>DERIVED_FROM</code> <code>USES_CONCEPT</code></td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Edges carry <code>properties</code> — a match <code>score</code> and its <code>source</code>, or the reasoning step that produced it — so provenance lives on the edge itself.</p>
+    </section>
+
+    <section id="ontology">
+      <h2>Ontology &amp; archetypes</h2>
+      <p>Your graph's shape is declared, not hard-coded. An <strong>archetype</strong> composes platform ontology modules with your own subtypes, and is stored on the tenant anchor.</p>
+      <table class="tight">
+        <thead><tr><th>Module</th><th>Rooted at</th><th>Contributes</th></tr></thead>
+        <tbody>
+          <tr><td>Product</td><td>Concept</td><td><code>Feature</code> <code>Requirement</code> <code>Task</code> <code>Persona</code> <code>PainPoint</code> <code>Goal</code> <code>Metric</code> <code>Constraint</code> <code>Journey</code> <code>Story</code></td></tr>
+          <tr><td>Code</td><td>Artefact</td><td><code>CodeFile</code> <code>CodeComponent</code> <code>Module</code> <code>Package</code> <code>TestCase</code></td></tr>
+          <tr><td>People</td><td>Artefact</td><td><code>Document</code> <code>Email</code> <code>AgentLog</code></td></tr>
+          <tr><td>Reasoning</td><td>Artefact</td><td><code>ReasoningNode</code> <code>DesignDecision</code></td></tr>
+        </tbody>
+      </table>
+      <p>Declare your own subtypes in the archetype at provision time, or start from a shipped template. As patterns prove themselves across tenants, they can be promoted into the shared ontology — so the platform vocabulary grows from real usage rather than guesswork.</p>
+    </section>
+
+    <section id="api">
+      <h2>API reference</h2>
+      <p>All paths are relative to <code>/v1</code>. <strong>Org</strong> marks routes needing <code>X-Org-Id</code>; <strong>Token</strong> marks routes needing a bearer token.</p>
+      <div class="ep"><span class="m get">GET</span><span>/health</span><span class="d">Liveness.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/health/ready</span><span class="d">Readiness — validates every dependency. Returns <code>503</code> until they're all healthy.</span></div>
+    </section>
+
+    <section id="graphs">
+      <h2>Nodes &amp; relationships <span class="muted">· Org</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/nodes</span></div>
+      <p>Create or merge a node. <code>201</code> with the id. Unknown <code>node_type</code> or <code>graph_type</code> returns <code>400</code>.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/graphs/nodes/{node_id}</span></div>
+      <p>Fetch one node; optional <code>?graph_name=</code>. <code>404</code> if it isn't in your organisation's graph.</p>
+      <div class="ep"><span class="m put">PUT</span><span>/v1/graphs/nodes/{node_id}</span></div>
+      <p>Update name and description.</p>
+      <div class="ep"><span class="m del">DEL</span><span>/v1/graphs/nodes/{node_id}</span></div>
+      <p>Delete — <strong>soft by default</strong>; <code>?soft=false</code> removes outright. <code>204</code>.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/relationships</span></div>
+      <p>Typed edge with optional <code>properties</code>. Cycle detection guards <code>PARENT_OF</code> and <code>CONTAINS</code>.</p>
+      <div class="ep"><span class="m del">DEL</span><span>/v1/graphs/relationships</span></div>
+      <p>Remove a specific edge.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/graphs/nodes/{node_id}/neighbours</span></div>
+      <p>Outgoing neighbours — the primitive behind graph-augmented recall.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/graphs/stats</span></div>
+      <p>Node and edge counts for your graph.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/super-root</span></div>
+      <p>Create or fetch the tenant anchor.</p>
+    </section>
+
+    <section id="bulk">
+      <h2>Bulk &amp; dedup <span class="muted">· Org</span></h2>
+      <p>One request per node is the slow path. Two endpoints exist for volume.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/nodes/bulk</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/relationships/bulk</span></div>
+<pre><code>{
+  "graph_type": "custom",
+  "graph_name": "my-graph",
+  "nodes": [
+    { "id": "svc-1", "name": "Billing",   "node_type": "Module" },
+    { "id": "svc-2", "name": "Invoicing", "node_type": "Module" }
+  ]
+}
+
+# 201 Created
+{ "ids": ["svc-1", "svc-2"], "count": 2, "message": "ok" }</code></pre>
+      <p>Graph-level fields sit on the envelope; each row carries only its own data. Writes merge, so a replayed batch converges rather than duplicating. An invalid row fails that row with a <code>400</code>.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/dedup</span></div>
+      <p>Collapse duplicate nodes sharing an id. Idempotent — a clean graph reports zero removed. Always dry-run first:</p>
+<pre><code>{ "graph_name": "my-graph", "dry_run": true, "batch_size": 100 }
+
+{ "dry_run": true, "graph_name": "my-graph",
+  "results": [ { "label": "Concept", "dup_groups": 3, "extra_rows": 11, "removed": 0 } ] }</code></pre>
+      <p class="muted">Omit <code>label</code> to sweep every type. <code>batch_size</code> and an iteration cap keep each pass bounded on very large graphs.</p>
+    </section>
+
+    <section id="entity-search">
+      <h2>Entity search <span class="muted">· Org</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/graphs/entity-search</span></div>
+      <p><strong>Archetype-aware.</strong> The request carries no labels and no relationship names — your tenant's archetype supplies them. The same call finds people in a people graph, features in a product graph, or components in a code graph.</p>
+<pre><code>{ "target_concepts": ["kubernetes", "postgres"],
+  "strong_anchors":  ["kubernetes"],
+  "top_k": 10,
+  "return_properties": ["name", "seniority"] }</code></pre>
+      <p>Results are ranked by anchor coverage — how many of the concepts an entity actually connects to, weighted with average confidence and breadth — so a match on two of your three concepts outranks a strong match on one. Custom graphs may pass <code>entity_types</code> and <code>via_relationship</code> explicitly.</p>
+    </section>
+
+    <section id="concepts">
+      <h2>Concepts &amp; resolution <span class="muted">· Org</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/concepts</span></div>
+      <p>Add a concept, optionally under <code>parent_id</code>, with <code>knowledge_domain</code> and <code>confidence</code>.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/concepts/search?q=</span></div>
+      <p>Case-insensitive name search.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/concepts/resolve</span></div>
+      <p><strong>The query-understanding call.</strong> Free text in, anchored concepts out, through a three-tier cascade:</p>
+      <table class="tight">
+        <thead><tr><th>Tier</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Anchors</td><td>Name matches in your graph. <em>Strong</em> anchors match a whole query phrase exactly.</td></tr>
+          <tr><td>2 · Neighbours</td><td>Hierarchy traversal from those anchors — parents, children, siblings — in one query.</td></tr>
+          <tr><td>3 · Discoveries</td><td>Vector search for what the first two tiers missed.</td></tr>
+        </tbody>
+      </table>
+      <p>Returns <code>{ anchors, strong_anchors, neighbours, discoveries, all_concepts }</code>. Each tier fails soft, so one backend being down still returns useful matches. Query strings are always parameters, never interpolated into the graph query.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/concepts/vectors/search</span></div>
+      <p>Semantic search — returns <code>concept_id</code>, <code>name</code>, <code>node_type</code>, <code>score</code>.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/concepts/vectors/index</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/concepts/vectors/batch</span></div>
+      <div class="ep"><span class="m del">DEL</span><span>/v1/concepts/vectors/{entity_id}</span></div>
+      <p>Index one entity or many — batch returns <code>{ "indexed": n, "failed": n }</code> — and remove entities from the vector collections.</p>
+    </section>
+
+    <section id="search">
+      <h2>Unified search <span class="muted">· Org</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/search</span></div>
+      <p>One query across graph, vector and full-text backends, fused and ranked. Takes <code>query</code>, <code>top_k</code>, <code>min_score</code> and arbitrary <code>filters</code>. Every result carries the <code>source_backend</code> that produced it and a <code>match_explanation</code> — so you can show a user <em>why</em> something matched. The response reports <code>backends_used</code>.</p>
+    </section>
+
+    <section id="reasoning">
+      <h2>Reasoning &amp; provenance <span class="muted">· Token</span></h2>
+      <p>Record <em>why</em> the graph looks the way it does — a directed acyclic Graph of Thought, with node kinds of observation, inference, decision, question and answer.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/nodes</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/nodes/{id}</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/nodes/{id}/chain</span><span class="d">Root-to-node chain.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/nodes/{id}/children</span><span class="d">Immediate branches.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/provenance/{entity_id}</span></div>
+      <p>Ask any entity what produced it — creations, updates, merges, splits and links are all linked back to the reasoning that caused them.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/decisions</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/decisions</span><span class="d">Filterable by status.</span></div>
+      <div class="ep"><span class="m put">PATCH</span><span>/v1/reasoning/decisions/{id}/status</span></div>
+      <p>Design decisions carry context, rationale, alternatives considered and a lifecycle status.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/search</span></div>
+      <p>Semantic search over reasoning chains.</p>
+    </section>
+
+    <section id="documents">
+      <h2>Documents &amp; tasks <span class="muted">· Token</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/documents</span></div>
+      <p>Submit a document for asynchronous cognitive processing — extraction, structuring, integration and validation. Returns a task id.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/tasks/{task_id}</span></div>
+      <div class="ep"><span class="m ws">WS</span><span>/ws/tasks/{task_id}</span></div>
+      <p>Poll the task, or subscribe over WebSocket for live progress.</p>
+    </section>
+
+    <section id="tenants">
+      <h2>Tenants <span class="muted">· Token</span></h2>
+      <div class="ep"><span class="m post">POST</span><span>/v1/tenants/provision</span></div>
+      <p>Idempotent. Accepts <code>archetype</code> (your own subtype tree), <code>template</code> (a shipped one), or <code>graph_type</code> (a stock shape).</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/tenants</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/tenants/{tenant_id}</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/tenants/verify-access</span><span class="d">Confirm a node belongs to the calling tenant.</span></div>
+      <div class="ep"><span class="m del">DEL</span><span>/v1/tenants/{tenant_id}</span><span class="d">Destructive — removes all tenant data.</span></div>
+    </section>
+
+    <section id="privacy-api">
+      <h2>Access control <span class="muted">· Token</span></h2>
+      <p>Beyond tenant isolation, individual embeddings carry access levels — public, internal, confidential, restricted — and per-principal grants.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/access/grant</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/access/revoke</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/access/check</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/access/bulk-check</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/access/set-level</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/privacy/access/embeddings/{principal_id}</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/privacy/access/principals/{embedding_id}</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/privacy/search</span></div>
+      <p><strong>Permission-filtered search</strong> — results a principal may not see are never returned, rather than filtered in your application.</p>
+    </section>
+
+    <section id="ops">
+      <h2>Agents, review &amp; dead letters</h2>
+      <h3>Housekeeping agents <span class="muted">· Org</span></h3>
+      <div class="ep"><span class="m post">POST</span><span>/v1/agents/run</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/agents/status</span></div>
+      <p>Run the full batch with change detection, or name a subset. Six agents keep the graph coherent:</p>
+      <table class="tight">
+        <thead><tr><th>Agent</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>Merge / split</td><td>Collapses nodes that are the same thing; splits ones conflating two.</td></tr>
+          <tr><td>Link prediction</td><td>Proposes edges nobody stated but the data implies.</td></tr>
+          <tr><td>Hierarchy coherence</td><td>Repairs parentage that drifted as the graph grew.</td></tr>
+          <tr><td>Concept drift</td><td>Flags where a region stopped matching its own summary.</td></tr>
+          <tr><td>Quality</td><td>Audits naming and structural quality.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Each agent runs under its own timeout, so one hung agent can't block the scheduler.</p>
+
+      <h3>Human review <span class="muted">· Token + Org</span></h3>
+      <p>Extractions below the confidence threshold are staged rather than written into the graph. Reviewers triage them:</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/hitl/pending</span><span class="d">Filter by pending / approved / rejected.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/hitl/pending/stats</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/hitl/pending/{record_id}</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/hitl/pending/{record_id}/approve</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/hitl/pending/{record_id}/reject</span></div>
+
+      <h3>Dead letter queue</h3>
+      <p>A failed event handler publishes to a dead-letter topic instead of vanishing. Triage and replay:</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/dlq</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/dlq/{dlq_id}/replay</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/dlq/stats</span></div>
+      <div class="ep"><span class="m del">DEL</span><span>/v1/dlq/purge?status=completed</span></div>
+    </section>
+
+    <section id="analyzers">
+      <h2>Analyzers &amp; sync <span class="muted">· Token</span></h2>
+      <div class="ep"><span class="m get">GET</span><span>/v1/analyzers/stats</span><span class="d">Density and counts.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/analyzers/hierarchy</span><span class="d">Depth, breadth, balance.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/analyzers/validate</span><span class="d">Contents against schema.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/analyzers/quality</span><span class="d">Naming quality.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/analyzers/tree</span><span class="d">Text tree view.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/sync</span><span class="d">Run sync skills against a graph.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/sync/skills</span><span class="d">List registered sync skills.</span></div>
+    </section>
+
+    <section id="pipeline">
+      <h2>Ingestion pipeline</h2>
+      <p>Submitting a document runs a four-agent pipeline — <strong>Scribe</strong> extracts, <strong>Architect</strong> structures, <strong>Synthesizer</strong> integrates, <strong>Interrogator</strong> validates — alongside a four-phase progressive extraction: entities, then relationships, then hierarchy, then quality validation.</p>
+      <p>Everything then passes a <strong>confidence gate</strong>. High-confidence output is written to the graph and indexed for vector and full-text search. Low-confidence output is staged for human review instead of being written blind — the difference between a graph you can trust and one that slowly fills with plausible noise.</p>
+    </section>
+
+    <section id="events">
+      <h2>Events</h2>
+      <p>State changes publish to an event bus you can subscribe to, in-process or distributed:</p>
+      <table class="tight">
+        <thead><tr><th>Topic</th><th>Fires when</th></tr></thead>
+        <tbody>
+          <tr><td><code>document.ingested</code></td><td>A document has been accepted for processing.</td></tr>
+          <tr><td><code>concepts.extracted</code></td><td>Extraction produced concepts.</td></tr>
+          <tr><td><code>graph.updated</code></td><td>The graph changed.</td></tr>
+          <tr><td><code>graph.node.created</code></td><td>A node was created.</td></tr>
+          <tr><td><code>graph.node.deleted</code></td><td>A node was deleted.</td></tr>
+          <tr><td><code>vector.indexed</code></td><td>An entity was indexed for semantic search.</td></tr>
+          <tr><td><code>extraction.requested</code></td><td>Extraction was queued.</td></tr>
+          <tr><td><code>agent.task.queued</code></td><td>A housekeeping task was scheduled.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="reliability">
+      <h2>Reliability</h2>
+      <table class="tight">
+        <thead><tr><th>Guard</th><th>What it prevents</th></tr></thead>
+        <tbody>
+          <tr><td>Idempotent writes</td><td>A retried request creating a second copy. Writes merge on identity.</td></tr>
+          <tr><td>Cycle detection</td><td>A circular hierarchy corrupting the tree — rejected before insertion.</td></tr>
+          <tr><td>Startup gate</td><td>Serving traffic before storage and search are healthy; readiness stays <code>503</code> until they are.</td></tr>
+          <tr><td>Circuit breaker</td><td>A failing upstream turning into cascading timeouts — it fast-fails, then probes for recovery.</td></tr>
+          <tr><td>Per-agent timeouts</td><td>One hung housekeeping agent blocking the rest.</td></tr>
+          <tr><td>Dead letter queue</td><td>A failed event being silently lost — it lands somewhere you can replay it from.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <table class="tight">
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>400</code></td><td>Unknown <code>node_type</code>, <code>rel_type</code>, <code>graph_type</code> or label — the value isn't in your vocabulary. Also a rejected cycle.</td></tr>
+          <tr><td><code>401</code></td><td>Missing or invalid bearer token on a protected route.</td></tr>
+          <tr><td><code>404</code></td><td>No such node <em>in your organisation's graph</em>. Cross-tenant reads are indistinguishable from "not found", by design.</td></tr>
+          <tr><td><code>422</code></td><td>Request body failed schema validation.</td></tr>
+          <tr><td><code>503</code></td><td>Readiness gate — a dependency isn't healthy yet.</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section id="data">
       <h2>Your data</h2>
-      <p>Cognition OS stores the nodes and relationships you write, the metadata attached to them, and the embeddings computed for semantic search. Whatever an upstream product sends — for example, a memory Kemory promotes into the graph — becomes graph data and is indexed for search.</p>
-      <p>Isolation is by organisation and is enforced beneath the query layer: a request cannot read across organisations. Autonomous housekeeping may reshape your graph after a write — merging duplicates or adding inferred edges — and every such change is recorded so it can be traced. How content is retained and erased is set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
+      <p>Cognition OS stores the nodes and relationships you write, their metadata, and the embeddings computed for semantic search. Content is indexed into a vector store and a full-text index alongside the graph, so a single write produces derived copies used for retrieval.</p>
+      <p>Isolation is by organisation and enforced beneath the query layer — every tenant-scoped read carries an organisation filter, so a request cannot read across organisations. Embeddings additionally carry access levels and per-principal grants, and permission-filtered search honours them server-side. Because housekeeping <em>mutates</em> your graph, every change is recorded and attributable. Retention and erasure are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
     </section>
 
     <section id="access">
       <h2>Availability &amp; access</h2>
-      <p>Cognition OS ships as part of the <strong>SeKondBrain platform</strong>. It is licensed, not open source: you buy the platform and integrate the graph into your own stack, with your organisation's data isolated and provisioned for you. It already runs in production behind our own products — so what you integrate is proven, not a prototype.</p>
+      <p>Cognition OS ships as part of the <strong>SeKondBrain platform</strong>. It is licensed, not open source: you buy the platform and integrate the graph into your own stack, with your organisation's data isolated and provisioned for you. It already runs in production behind our own products — what you integrate is proven, not a prototype.</p>
+      <p>Provisioning gives you a host, an organisation identifier and service credentials. The API above is the contract you build against; your instance also serves its own live OpenAPI reference at <code>/docs</code>.</p>
       <div class="note">
         <span class="lbl">Request access</span>
         <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Cognition%20OS">hello@sekondbrain.ai</a> with the subject <em>“Access for Cognition OS”</em> and tell us what you want to build.</p>

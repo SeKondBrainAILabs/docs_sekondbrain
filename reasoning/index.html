@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reasoning — documentation | SeKondBrain</title>
-<meta name="description" content="The SeKondBrain reasoning engine: local-first LLM orchestration, a route–execute–validate pipeline, composable skills, and a traceable Graph of Thought.">
+<meta name="description" content="The SeKondBrain reasoning engine: MCP tools, executable skills, composable chains, a route–extract–validate pipeline, Graph of Thought provenance, events and model routing.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/reasoning/">
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <meta property="og:title" content="Reasoning — documentation">
@@ -19,6 +19,15 @@
   /* Page mood: amber — the reasoning engine. One veil, per Brand Book v6. */
   :root{ --veil-a:rgba(242,139,104,.18); --veil-b:rgba(230,184,0,.14); }
   .pill i{ background:var(--c-orange) }
+  .ep{display:flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:13px;margin:0 0 8px;flex-wrap:wrap}
+  .m{font-size:10px;letter-spacing:.08em;font-weight:500;padding:2px 6px;border-radius:var(--r-sm);flex:none}
+  .m.get{background:rgba(61,214,128,.14);color:#1c7a45}
+  .m.post{background:rgba(26,138,246,.13);color:#0b5ca8}
+  .m.put{background:rgba(230,184,0,.18);color:#7a5c00}
+  .m.del{background:rgba(239,68,68,.12);color:#a32020}
+  .m.tool{background:rgba(242,139,104,.16);color:#a04a26}
+  .ep .d{font-family:var(--font);font-size:14px;color:var(--fg-2)}
+  table.tight td{padding:8px 14px 8px 0}
 </style>
 </head>
 <body>
@@ -28,29 +37,42 @@
     <img class="mark" src="../assets/mark.svg" alt="">
     <a class="brandline" href="../">Reasoning <span>· by SeKondBrain</span></a>
     <div class="top-links">
-      <a href="#build">Build</a>
-      <a href="#data">Data</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#mcp">MCP</a>
+      <a href="#skills">Skills</a>
       <a href="#access">Access</a>
-      <a href="../legal/privacy/">Privacy</a>
     </div>
   </div>
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>Platform · reasoning engine</span>
+  <span class="pill"><i></i>Platform · reasoning engine · MCP + REST</span>
   <h1>Where the platform<br><em>thinks.</em></h1>
-  <p class="lede">Reasoning is SeKondBrain's cognitive backend — the engine that orchestrates every model call and turns freeform input into structured, validated output. It is what memory, the graph, and our agents reach for when they need to reason, not just retrieve.</p>
-  <p>It runs local-first on self-hosted models, falls back to the cloud only when it has to, and records a Graph of Thought so every decision it makes can be traced back to <em>why</em>.</p>
+  <p class="lede">Reasoning is SeKondBrain's cognitive backend — the engine that orchestrates every model call and turns freeform input into structured, validated output. Agents reach it over MCP; services reach it over REST.</p>
+  <p>It runs local-first on self-hosted models with cloud fallback, executes versioned skills and composable chains, and records a Graph of Thought so any decision can be traced back to why.</p>
 </div>
 
 <div class="wrap cols">
 
   <nav class="side" aria-label="On this page">
-    <div class="grp">Overview</div>
+    <div class="grp">Start</div>
     <a href="#what">What it is</a>
-    <a href="#build">What you can build</a>
-    <a href="#how">How it works</a>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#auth">Authentication</a>
+    <div class="grp">Agent surface</div>
+    <a href="#mcp">MCP tools</a>
+    <a href="#prompts">MCP prompts</a>
+    <div class="grp">Reference</div>
+    <a href="#skills">Skills</a>
+    <a href="#affinity">Model affinity</a>
+    <a href="#chains">Chains</a>
+    <a href="#pipeline">Understanding pipeline</a>
+    <a href="#got">Graph of Thought</a>
+    <a href="#events">Events</a>
     <div class="grp">Operating</div>
+    <a href="#routing">Model routing</a>
+    <a href="#reliability">Reliability</a>
+    <a href="#errors">Errors</a>
     <a href="#data">Your data</a>
     <a href="#access">Availability &amp; access</a>
   </nav>
@@ -59,43 +81,334 @@
 
     <section id="what">
       <h2>What it is</h2>
-      <p>Reasoning is a cognitive backend that sits between your agents and the models. Rather than call a single model and hope, it runs a disciplined three-stage pipeline — <strong>route → execute → validate</strong> — that picks the right model for the job, runs it, and checks the result against a schema before returning it. Get back validated, structured output, not a paragraph you have to parse.</p>
-      <p>It is the engine the rest of the platform is built on: memory consolidation, concept synthesis and enrichment all run through it. It is licensed as part of the platform, not a standalone open-source library.</p>
-    </section>
-
-    <section id="build">
-      <h2>What you can build</h2>
-      <table>
-        <thead><tr><th>Capability</th><th>What it gives you</th></tr></thead>
+      <p>Reasoning sits between your agents and the models. Rather than call one model and hope, it runs a disciplined pipeline — <strong>route → extract → validate</strong> — that picks the right handler for the input, extracts structure, and checks the result against a schema before returning it. You get validated JSON, not a paragraph to parse.</p>
+      <p>On top of that sit two reusable units of work: <strong>skills</strong> (a versioned, testable prompt with an input and output schema) and <strong>chains</strong> (skills and prompts composed into a pipeline with conditionals, parallelism, budgets and guardrails).</p>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Multi-model orchestration</td><td>One call, local-first inference with automatic cloud fallback — the routing, retries and circuit-breaking are handled for you.</td></tr>
-          <tr><td>Council mode</td><td>Ask several heterogeneous models the same question and take the majority vote — higher-confidence classification and decisioning where a single model would be a coin-flip.</td></tr>
-          <tr><td>Structured extraction</td><td>Turn freeform text into schema-conformant JSON — concepts, goals, entities — validated before it reaches you.</td></tr>
-          <tr><td>Skills &amp; chains</td><td>Register composable skills with per-skill model affinity, then run them — on their own or over MCP.</td></tr>
-          <tr><td>Graph of Thought</td><td>Record reasoning chains and design decisions as a traceable DAG, and run semantic search across them — explainable agents, not black boxes.</td></tr>
+          <tr><td>Agent surface</td><td>MCP over Streamable HTTP, or stdio</td></tr>
+          <tr><td>Service surface</td><td>REST over HTTPS, base path <code>/v1</code></td></tr>
+          <tr><td>Tenancy</td><td>Per-organisation; always derived from your credential, never from the request body</td></tr>
+          <tr><td>Inference</td><td>Local-first, with cloud fallback and per-tenant policy</td></tr>
+          <tr><td>Streaming</td><td>Server-sent events for chain execution</td></tr>
         </tbody>
       </table>
     </section>
 
-    <section id="how">
-      <h2>How it works</h2>
-      <p>Your agents reach Reasoning through an <strong>MCP server</strong> — the same connector model as Kemory — so a Claude-, Cursor- or Codex-style client can call its tools directly: list the skills available, run one, search the reasoning graph, or fetch a product manifest. Requests authenticate with an API key, and your organisation is always derived from that credential, never taken from the request body.</p>
-      <p>Underneath, the <strong>router</strong> classifies the task and chooses a model tier; the <strong>executor</strong> runs it — local-first, with cloud fallback and a circuit breaker so a provider outage degrades gracefully; and the <strong>validator</strong> checks the output shape. Council mode fans the same prompt out to several models and reconciles their answers.</p>
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <h3>1. Call a tool over MCP</h3>
+      <p>Point any MCP-capable client at the endpoint and authenticate with an API key.</p>
+<pre><code>curl -X POST https://&lt;YOUR_REASONING_HOST&gt;/v1/mcp \
+  -H "X-API-Key: &lt;YOUR_API_KEY&gt;" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+        "jsonrpc": "2.0", "id": 1,
+        "method": "tools/call",
+        "params": { "name": "list_skills", "arguments": {} }
+      }'
+
+{ "skills": [ { "name": "pm.generate_feature_spec_from_goal",
+                "description": "Draft a feature spec from a goal | Category: pm/spec_generation | Model: balanced",
+                "input_schema": { "type": "object", "properties": { … } } } ],
+  "count": 1 }</code></pre>
+
+      <h3>2. Run a skill</h3>
+<pre><code>curl -X POST https://&lt;YOUR_REASONING_HOST&gt;/v1/skills/run-by-name \
+  -H "Authorization: Bearer &lt;YOUR_TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "skill_name": "pm.generate_feature_spec_from_goal",
+        "inputs": { "goal": "Let users log in with SSO",
+                    "constraints": ["must support SAML"] },
+        "temperature": 0.7
+      }'
+
+{ "skill_id": "b1e7…", "skill_name": "pm.generate_feature_spec_from_goal",
+  "skill_version": 3,
+  "output": { "feature_name": "SSO Login", "acceptance_criteria": ["…"] },
+  "execution_id": "8f2c…", "outcome": "success", "duration_ms": 1240,
+  "model_used": "…", "tokens_used": 847, "validation_passed": true }</code></pre>
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <table class="tight">
+        <thead><tr><th>Credential</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>X-API-Key</code></td><td>Agent and service keys for the MCP surface. A per-agent key additionally identifies <em>which</em> agent is calling, which is what the audit log records.</td></tr>
+          <tr><td><code>Authorization: Bearer</code></td><td>A signed token for the REST surface. Reasoning and manifest routes require this.</td></tr>
+          <tr><td><code>X-Organization-ID</code></td><td>Optional. A <strong>service</strong> caller may set the acting organisation with it; a user caller cannot use it to reach another organisation.</td></tr>
+        </tbody>
+      </table>
+      <p>Your organisation is always resolved from the validated credential. A user caller that names a different organisation in a request body is refused rather than served, and a service caller must name one explicitly rather than defaulting.</p>
+      <p>The MCP endpoint publishes OAuth discovery documents and supports dynamic client registration, so a spec-compliant client can connect without manual configuration. Tool calls are rate limited per organisation; concurrent sessions are capped.</p>
       <div class="note">
-        <span class="lbl">Local-first by design</span>
-        <p>Primary inference runs on self-hosted models inside our own cluster. Cloud providers are a fallback, not the default path — which is what keeps latency, cost and data exposure under control at volume.</p>
+        <span class="lbl">Fail-closed where it counts</span>
+        <p>If the rate-limit store is unavailable, <strong>write</strong> tools fail closed and <strong>read</strong> tools fail open. Losing a counter should never become an accidental licence to mutate.</p>
       </div>
+    </section>
+
+    <section id="mcp">
+      <h2>MCP tools</h2>
+      <p>Seventeen tools, every one annotated so your client can distinguish reading from writing before it runs anything.</p>
+
+      <h3>Read — product &amp; specification</h3>
+      <div class="ep"><span class="m tool">TOOL</span><span>list_products</span><span class="d">Products available to your organisation.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_manifest</span><span class="d">The full specification, or one section of it.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_context_summary</span><span class="d">Name, vision and counts — a compact orientation under a token budget.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_feature</span><span class="d">Requirements, acceptance criteria, happy path, edge cases, technical spec, security.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_stories</span><span class="d">User stories, optionally filtered to an epic.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_product_spec</span><span class="d">Three-phase retrieval — <code>context</code>, <code>journeys</code>, <code>features</code> — each response naming the next phase.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_competitors</span><span class="d">Positioning, advantages, competitor profiles.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>semantic_search</span><span class="d">Ranked features and entities by meaning, with scores.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_journey_screens</span><span class="d">Rendered screen markup for a journey.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_product_design_system</span><span class="d">Design tokens as semantic CSS variables, a Tailwind theme block, and W3C DTCG JSON.</span></div>
+
+      <h3>Read — agent specifications</h3>
+      <div class="ep"><span class="m tool">TOOL</span><span>list_agents</span><span class="d">Agent products, status and trigger type.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>get_agent_spec</span><span class="d">System prompt, trigger and model configuration, memory, tool schemas, constraints, risks, test scenarios.</span></div>
+
+      <h3>Write — status</h3>
+      <div class="ep"><span class="m tool">TOOL</span><span>update_feature_status</span><span class="d"><code>backlog · defined · in_progress · developed · testing</code></span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>update_story_status</span><span class="d"><code>draft · in_progress · done</code></span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>update_agent_status</span><span class="d"><code>speccing · prompting · building · testing · deployed</code></span></div>
+      <p class="muted">Status writes are annotated non-destructive — full version history is retained, so a wrong status is correctable rather than lossy.</p>
+
+      <h3>Skills</h3>
+      <div class="ep"><span class="m tool">TOOL</span><span>list_skills</span><span class="d">Every executable skill in your organisation, with its input schema.</span></div>
+      <div class="ep"><span class="m tool">TOOL</span><span>run_skill</span><span class="d">Execute one by name with arguments.</span></div>
+      <p><code>run_skill</code> is deliberately annotated as destructive and non-idempotent — a skill can do anything, so the conservative hint is the honest one. It returns the output plus <code>outcome</code>, <code>skill_version</code>, <code>execution_id</code>, <code>duration_ms</code>, <code>model_used</code>, <code>tokens_used</code> and a trace id.</p>
+      <p class="muted">Tool errors come back as content with an <code>error</code> field rather than as transport failures, so an agent can read the reason and adapt — including when it has been rate limited or has reached across organisations.</p>
+    </section>
+
+    <section id="prompts">
+      <h2>MCP prompts</h2>
+      <p>The server also publishes prompts — parameterised starting points a client can offer directly to a user:</p>
+      <table class="tight">
+        <thead><tr><th>Prompt</th><th>For</th></tr></thead>
+        <tbody>
+          <tr><td><code>s9n-orient</code></td><td>Getting oriented in a product before doing anything.</td></tr>
+          <tr><td><code>s9n-implement-feature</code> · <code>s9n-implement-story</code></td><td>Implementing a specific feature or story.</td></tr>
+          <tr><td><code>s9n-review-spec</code></td><td>Reviewing a specification.</td></tr>
+          <tr><td><code>s9n-orient-agent</code> · <code>s9n-build-agent</code> · <code>s9n-test-agent</code> · <code>s9n-refine-agent-prompt</code></td><td>Working on an agent specification end to end.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <p>A skill is a versioned, executable prompt with schemas on both sides. Defining one is a POST, not a deploy.</p>
+      <table class="tight">
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code>, <code>description</code></td><td>Required. The description is what semantic discovery searches.</td></tr>
+          <tr><td><code>prompt_template</code></td><td><strong>Presence of this makes a skill executable.</strong> Rendered in a sandboxed template environment.</td></tr>
+          <tr><td><code>input_schema</code> / <code>output_schema</code></td><td>JSON Schema, enforced before and after the call.</td></tr>
+          <tr><td><code>system_prompt</code></td><td>Persona for the call.</td></tr>
+          <tr><td><code>model_tier</code></td><td><code>fast</code> · <code>balanced</code> · <code>capable</code> · <code>reasoning</code>.</td></tr>
+          <tr><td><code>category</code>, <code>language</code>, <code>frameworks</code>, <code>agent_types</code></td><td>Discovery metadata.</td></tr>
+          <tr><td><code>source</code>, <code>confidence</code></td><td><code>manual</code> · <code>learned</code> · <code>imported</code>, and a score.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Endpoints</h3>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills</span><span class="d">Create.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/skills</span><span class="d">Filter by source, confidence, promotion status, project, agent type.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/search</span><span class="d">Find by meaning.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/{id}/run</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/run-by-name</span><span class="d">Run without resolving an id first.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/skills/{id}/versions</span><span class="d">· and <code>POST …/rollback/{n}</code></span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/skills/{id}/executions</span><span class="d">· and <code>/history</code></span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/{id}/promote</span><span class="d">Promote a learned skill.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/detect-gaps</span><span class="d">Find capabilities you don't have.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/skills/import</span><span class="d">· <code>/export</code>, and skill packs via <code>/packs/upload</code></span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/skills/analytics/most-used</span><span class="d">· <code>/success-rate</code> · <code>/cost</code> · <code>/recommendations</code></span></div>
+      <div class="note">
+        <span class="lbl">Confidence is earned, not asserted</span>
+        <p>You cannot set a skill's confidence through the metrics endpoint — it is computed from execution history, with a penalty for going stale, and a skill promotes itself once it clears the bar. A number you can write is a number that means nothing.</p>
+      </div>
+    </section>
+
+    <section id="affinity">
+      <h2>Model affinity</h2>
+      <p>Different inputs deserve different models. Affinity binds a skill to an ordered model preference per context:</p>
+<pre><code>PUT /v1/skills/{skill_id}/affinity
+{
+  "affinities": [
+    { "context": "simple",  "models": ["&lt;fast-model&gt;"],                    "priority": 0 },
+    { "context": "complex", "models": ["&lt;strong-model&gt;", "&lt;fallback&gt;"],   "priority": 1 },
+    { "context": "default", "models": ["&lt;balanced-model&gt;"],                "priority": 2 }
+  ]
+}</code></pre>
+      <p>Models are tried in order; lower priority numbers win. Resolution runs: an explicit <code>model_override</code> on the call (validated against an allowlist), then affinity plus an automatic complexity assessment of the input, then the skill's declared tier, then the platform default.</p>
+      <p class="muted">The complexity assessor is lazy — it only runs when affinity rows exist, so the common path costs nothing.</p>
+    </section>
+
+    <section id="chains">
+      <h2>Chains</h2>
+      <p>A chain composes steps — a skill, a prompt, a raw model call, or another chain — into a pipeline.</p>
+<pre><code>POST /v1/chain
+{
+  "name": "spec_pipeline",
+  "routing_mode": "cloud",
+  "steps": [
+    { "name": "extract_requirements", "step_type": "skill",
+      "skill_name": "extract_goals" },
+    { "name": "generate_spec", "step_type": "prompt",
+      "prompt_template": "Given requirements: {{ previous_output }}\nGenerate a feature spec.",
+      "system_prompt": "You are a senior product manager.",
+      "uses_previous": true, "is_final_output": true }
+  ]
+}</code></pre>
+      <table class="tight">
+        <thead><tr><th>Capability</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>Sequencing</td><td><code>uses_previous</code> feeds the prior output forward; <code>is_final_output</code> marks the result.</td></tr>
+          <tr><td>Parallelism</td><td>Steps sharing a <code>parallel_group</code> run concurrently and merge by <code>merge_strategy</code> — <code>concat</code>, <code>merge</code>, <code>list</code> or <code>first_success</code>.</td></tr>
+          <tr><td>Conditionals</td><td>A <code>condition</code> on a field with comparison operators, plus <code>and</code>/<code>or</code>. Skip the step or jump to a named one — with loop detection.</td></tr>
+          <tr><td>Nesting</td><td>A step can be another chain, bounded in depth with circular-reference detection.</td></tr>
+          <tr><td>Budgets</td><td><code>max_cost_usd</code> and <code>max_latency_ms</code> with enforcement of <code>warn</code>, <code>downgrade</code> (switch to a faster model) or <code>abort</code>. Steps marked <code>skippable</code> are dropped first.</td></tr>
+          <tr><td>Guardrails</td><td>Pre, inter and post checks — length, quality threshold, basic PII — acting as <code>pass</code>, <code>warn</code> or <code>block</code>.</td></tr>
+          <tr><td>Failure policy</td><td><code>abort</code>, <code>retry_chain</code>, or fall back to a named chain.</td></tr>
+        </tbody>
+      </table>
+      <div class="ep"><span class="m post">POST</span><span>/v1/chain/{name}/execute</span></div>
+      <p>Returns <code>final_output</code>, every <code>intermediate_outputs</code> step, <code>errors</code>, <code>total_tokens</code>, <code>execution_time</code> and the <code>models_used</code>.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/chain/{name}/execute/stream</span></div>
+      <p>The same run as server-sent events: <code>chain_start</code>, <code>chain_step_start</code>, <code>chain_step_complete</code>, <code>chain_step_error</code>, <code>chain_complete</code>.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/chain/{id}/versions</span><span class="d">· <code>/rollback/{n}</code> — edits auto-snapshot.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/chain/{id}/analytics</span><span class="d">Runs, success rate, average duration, tokens and cost.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/chain/provider-keys</span><span class="d">Bring your own provider keys — responses return a masked preview, never the key.</span></div>
+    </section>
+
+    <section id="pipeline">
+      <h2>Understanding pipeline</h2>
+      <p>Underneath skills and chains is the primitive that turns text into structure. A <strong>unit</strong> is a semantic description plus typed slots; the description drives routing, the slots drive extraction and the schema.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/route</span><span class="d">Which unit handles this text — with candidates and scores.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/execute</span><span class="d">Route, extract and validate in one call.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/units</span><span class="d">Available units and their slots.</span></div>
+      <table class="tight">
+        <thead><tr><th>Stage</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Route</td><td>Semantic match against unit descriptions above a threshold. <strong>Total by design</strong> — empty input, no match or any internal error falls back to a default unit rather than raising.</td></tr>
+          <tr><td>Extract</td><td>Slots are rendered into a prompt and the model returns JSON at low temperature.</td></tr>
+          <tr><td>Validate</td><td>A JSON Schema is derived from the slots — types, required fields, lengths, ranges, enums, patterns, formats — and the result is checked against it.</td></tr>
+        </tbody>
+      </table>
+      <p>Slot types cover strings, numbers, integers, booleans, typed arrays, objects, and formatted strings for date, date-time, email and URL, each with its own constraints.</p>
+      <div class="note">
+        <span class="lbl">Validation coerces before it complains</span>
+        <p>By default validation is <em>lenient</em>: violations are collected and the value is coerced toward the declared type rather than rejected outright, so a nearly-right model response becomes usable data instead of an exception. Strict mode raises with the full error list when you'd rather fail than coerce — choose per call site.</p>
+      </div>
+    </section>
+
+    <section id="got">
+      <h2>Graph of Thought</h2>
+      <p>Record why, not only what. Reasoning nodes form a directed graph and link to the entities they produced.</p>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/nodes</span></div>
+      <p>A node has a <code>reasoning_type</code> of <code>observation</code>, <code>inference</code>, <code>decision</code>, <code>question</code> or <code>answer</code>, plus content, a confidence, and parent nodes.</p>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/nodes/{id}/chain</span><span class="d">Walk root to node.</span></div>
+      <div class="ep"><span class="m get">GET</span><span>/v1/reasoning/concepts/{type}/{id}/provenance</span><span class="d">Ask an entity what produced it.</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/decisions</span></div>
+      <p>A design decision carries title, context, decision, rationale, alternatives considered and consequences, with a lifecycle of <code>proposed</code> → <code>accepted</code> · <code>rejected</code> · <code>deprecated</code>.</p>
+      <div class="ep"><span class="m put">PATCH</span><span>/v1/reasoning/decisions/{id}/status</span></div>
+      <div class="ep"><span class="m post">POST</span><span>/v1/reasoning/search/epics</span><span class="d">· <code>/search/stories</code> · <code>/search/code</code></span></div>
+      <p>Semantic search across specification and code, filterable by component type and minimum similarity.</p>
+      <p class="muted">Reads are filtered to your organisation; a caller cannot walk another tenant's reasoning. These routes are service-to-service in shape — they expect embeddings supplied by the caller.</p>
+    </section>
+
+    <section id="events">
+      <h2>Events</h2>
+      <p>State changes publish through a transactional outbox, so an event is committed with the change that caused it rather than best-effort afterwards. Consumption is idempotent through an inbox.</p>
+<pre><code>{ "type": "concept.updated", "version": "1.0",
+  "timestamp": "2026-08-03T12:00:00Z",
+  "event_id": "…", "idempotency_key": "…",
+  "producer": "reasoning", "org_id": "…", "project_id": "…",
+  "payload": { "concept_id": "…", "concept_type": "Feature",
+               "properties": { "name": "My Feature", "status": "backlog" } } }</code></pre>
+      <table class="tight">
+        <thead><tr><th>Family</th><th>Events</th></tr></thead>
+        <tbody>
+          <tr><td>Concepts</td><td><code>concept.created</code> · <code>concept.updated</code> · <code>concept.linked</code> · <code>concept.relationship.created</code> · <code>concept.batch.ingestion</code></td></tr>
+          <tr><td>Specification</td><td><code>manifest.updated</code> · <code>manifest.item_deleted</code></td></tr>
+          <tr><td>Extraction</td><td><code>extraction.started</code> · <code>extraction.completed</code> · <code>extraction.entities</code> · <code>cascade.started</code> · <code>cascade.completed</code></td></tr>
+          <tr><td>Reasoning</td><td><code>reasoning.decision.created</code> · <code>contradiction.detected</code></td></tr>
+          <tr><td>Skills</td><td><code>skill.promotion.requested</code></td></tr>
+        </tbody>
+      </table>
+      <p>Webhook deliveries carry the event type, a stable idempotency key that survives retries, and an HMAC signature over the raw body. Delivery is <strong>at-least-once</strong> with exponential backoff and a bounded retry count before an event is marked failed — so consumers must be idempotent. Ordering is guaranteed per organisation, not globally.</p>
+      <p class="muted">Two idempotency concepts are separate on purpose: a transport key that is stable across retries of the same delivery, and a domain key that dedupes the same logical event.</p>
+    </section>
+
+    <section id="routing">
+      <h2>Model routing</h2>
+      <p>Skills declare a <strong>tier</strong>, not a model — so a model change is a configuration change, not a rewrite.</p>
+      <table class="tight">
+        <thead><tr><th>Tier</th><th>For</th></tr></thead>
+        <tbody>
+          <tr><td><code>fast</code></td><td>Always-hot small model — classification, routing, cheap transforms.</td></tr>
+          <tr><td><code>balanced</code></td><td>The default for most work.</td></tr>
+          <tr><td><code>capable</code></td><td>Harder reasoning and longer synthesis.</td></tr>
+          <tr><td><code>reasoning</code></td><td>The strongest available for the hardest calls.</td></tr>
+        </tbody>
+      </table>
+      <p>Inference is <strong>local-first</strong>: requests prefer self-hosted models, then a secondary self-hosted route, then a cloud provider. A per-tenant policy can override the chain — naming a primary provider and an ordered fallback list with explicit triggers such as connection error, timeout, upstream error or model unavailable.</p>
+      <p>Provider bindings are resolved from a registry, including whether a model is actually present on a given host — so a route to a model that isn't loaded fails over rather than erroring.</p>
+    </section>
+
+    <section id="reliability">
+      <h2>Reliability</h2>
+      <table class="tight">
+        <thead><tr><th>Guard</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Circuit breakers</td><td>Per dependency — inference hosts, vector search, the graph, sibling services. After repeated failures the breaker opens and calls fail fast, then a single trial probes recovery.</td></tr>
+          <tr><td>Health surface</td><td>Breaker state, failure and success counts are exposed for your own monitoring.</td></tr>
+          <tr><td>Skill retries</td><td>Chain steps carry their own retry count; chains carry a failure strategy.</td></tr>
+          <tr><td>Outbox</td><td>Events survive a consumer being down — they are retried with backoff, then parked as failed rather than lost.</td></tr>
+          <tr><td>Rate limits</td><td>Per organisation on the agent surface, with the fail-closed-on-writes rule above.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <h3>Skill outcomes</h3>
+      <table class="tight">
+        <thead><tr><th>Outcome</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>success</code></td><td>Ran, and the output matched its schema.</td></tr>
+          <tr><td><code>partial</code></td><td>Ran and produced output, but it <strong>failed output-schema validation</strong>. Returned with <code>validation_passed: false</code> — <em>and a 200</em>. Check the field, not just the status code.</td></tr>
+          <tr><td><code>failure</code></td><td>Input validation, a guardrail block, a template error, a model failure or an unparseable response. The error is in the output body.</td></tr>
+        </tbody>
+      </table>
+      <h3>Status codes</h3>
+      <table class="tight">
+        <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>400</code></td><td>Skill has no prompt template and can't execute; model override outside the allowlist; a service caller that didn't name an organisation.</td></tr>
+          <tr><td><code>401</code></td><td>Missing or malformed credential.</td></tr>
+          <tr><td><code>403</code></td><td>Reaching across organisations.</td></tr>
+          <tr><td><code>404</code></td><td>No such skill, chain, decision or unit <em>in your organisation</em>.</td></tr>
+          <tr><td><code>422</code></td><td>Request body failed schema validation.</td></tr>
+          <tr><td><code>429</code></td><td>Too many concurrent agent sessions.</td></tr>
+          <tr><td><code>503</code></td><td>A required dependency is unavailable.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Every response carries a correlation id header — quote it when reporting an issue and the whole call is retrievable.</p>
     </section>
 
     <section id="data">
       <h2>Your data</h2>
-      <p>Reasoning processes the prompts, conversation turns and embeddings you send it, isolated per organisation. It retains conversation and usage records so you can see what ran and what it cost. Every request is scoped to the organisation on its credential.</p>
-      <p>Inference is <strong>local-first</strong>: your content is reasoned over by self-hosted models by default. When a request falls back to a cloud provider — or you configure one deliberately — that prompt content leaves to that third party; which providers, and what they retain, is set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
+      <p>Reasoning processes the prompts, conversation turns and embeddings you send it, isolated per organisation and always scoped to the credential that made the call. It retains execution and usage records so you can see what ran, on which model, and at what cost.</p>
+      <p>Inference is <strong>local-first</strong>: your content is reasoned over by self-hosted models by default. When a request falls back to a cloud provider — or you configure one deliberately, including with your own provider keys — that prompt content leaves to that third party. Which providers, and what they retain, is set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
     </section>
 
     <section id="access">
       <h2>Availability &amp; access</h2>
-      <p>Reasoning ships as part of the <strong>SeKondBrain platform</strong> — licensed, not open source. It runs in production today behind our own products; you buy the platform and integrate the engine through its MCP surface and API, with your organisation provisioned and isolated for you.</p>
+      <p>Reasoning ships as part of the <strong>SeKondBrain platform</strong> — licensed, not open source. It runs in production today behind our own products; you buy the platform and integrate the engine through its MCP surface and REST API, with your organisation provisioned and isolated for you.</p>
+      <p>Provisioning gives you a host, credentials and your organisation identifier. Your instance also serves its own OpenAPI reference.</p>
       <div class="note">
         <span class="lbl">Request access</span>
         <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Reasoning">hello@sekondbrain.ai</a> with the subject <em>“Access for Reasoning”</em> and tell us what you want to build.</p>

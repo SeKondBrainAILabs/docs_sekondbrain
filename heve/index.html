@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HEVE — documentation | SeKondBrain</title>
-<meta name="description" content="HEVE is SeKondBrain's multimodal I/O layer in one: Dom Sentinel reads the web, Browser Control acts on it, Kora Voice speaks and listens, and Diarisation knows who is speaking.">
+<meta name="description" content="HEVE is SeKondBrain's multimodal I/O layer: Dom Sentinel (self-healing web reading), Browser Control, Kora Voice (spoken conversation) and Diarisation (speaker identification). Library and API reference.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/heve/">
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <meta property="og:title" content="HEVE — documentation">
@@ -19,6 +19,12 @@
   /* Page mood: pink — the multimodal layer. One veil, per Brand Book v6. */
   :root{ --veil-a:rgba(254,147,253,.16); --veil-b:rgba(216,171,254,.16); }
   .pill i{ background:var(--c-pink) }
+  table.tight td{padding:8px 14px 8px 0}
+  .sig{font-family:var(--mono);font-size:12.5px;background:rgba(139,120,245,.07);
+       padding:3px 8px;border-radius:var(--r-sm);display:inline-block;margin:0 0 4px}
+  .cap{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+  .cap i{width:8px;height:8px;border-radius:999px;flex:none;background:var(--c-pink)}
+  .cap b{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);font-weight:400}
 </style>
 </head>
 <body>
@@ -28,10 +34,10 @@
     <img class="mark" src="../assets/mark.svg" alt="">
     <a class="brandline" href="../">HEVE <span>· by SeKondBrain</span></a>
     <div class="top-links">
-      <a href="#build">Build</a>
-      <a href="#data">Data</a>
-      <a href="#access">Access</a>
-      <a href="../legal/privacy/">Privacy</a>
+      <a href="#sentinel">Sentinel</a>
+      <a href="#control">Control</a>
+      <a href="#voice">Voice</a>
+      <a href="#diarisation">Diarisation</a>
     </div>
   </div>
 </header>
@@ -39,20 +45,26 @@
 <div class="wrap hero">
   <span class="pill"><i></i>Platform · multimodal I/O · preview</span>
   <h1>Hands, eyes, voice<br>and <em>ears.</em></h1>
-  <p class="lede">HEVE is SeKondBrain's multimodal layer, in one place. It is four capabilities: <strong>Dom Sentinel</strong> reads the live web, <strong>Browser Control</strong> acts on it, <strong>Kora Voice</strong> speaks and listens, and <strong>Diarisation</strong> knows who is talking.</p>
+  <p class="lede">HEVE is SeKondBrain's multimodal layer, in one place. Four capabilities: <strong>Dom Sentinel</strong> reads the live web and repairs itself when sites change, <strong>Browser Control</strong> acts on it, <strong>Kora Voice</strong> holds a spoken conversation, and <strong>Diarisation</strong> knows who is speaking.</p>
   <p>Where memory, the graph and reasoning give an agent a mind, HEVE gives it a body — a way to perceive the web and a room, to act, and to be heard.</p>
 </div>
 
 <div class="wrap cols">
 
   <nav class="side" aria-label="On this page">
-    <div class="grp">The four senses</div>
-    <a href="#sentinel">Dom Sentinel · eyes</a>
-    <a href="#control">Browser Control · hands</a>
-    <a href="#voice">Kora Voice · voice</a>
-    <a href="#diarisation">Diarisation · ears</a>
-    <div class="grp">Build &amp; operate</div>
-    <a href="#build">What you can build</a>
+    <div class="grp">Eyes</div>
+    <a href="#sentinel">Dom Sentinel</a>
+    <a href="#elements">Element definitions</a>
+    <a href="#healing">Self-healing</a>
+    <a href="#capture">Media capture</a>
+    <div class="grp">Hands</div>
+    <a href="#control">Browser Control</a>
+    <div class="grp">Voice &amp; ears</div>
+    <a href="#voice">Kora Voice</a>
+    <a href="#voice-config">Configuration</a>
+    <a href="#voice-hooks">Hooks &amp; state</a>
+    <a href="#diarisation">Diarisation</a>
+    <div class="grp">Operating</div>
     <a href="#data">Your data</a>
     <a href="#access">Availability &amp; access</a>
   </nav>
@@ -60,53 +72,302 @@
   <main>
 
     <section id="sentinel">
-      <h2>Dom Sentinel<br><span class="muted">— its eyes</span></h2>
-      <p>A browser-side engine that reads the live web — and heals itself when it changes. You describe the elements you care about by intent, each with an ordered chain of fallback selectors. Sentinel watches the page; when a site ships new markup and your selectors break, it captures a snapshot and a screenshot, asks a vision model for replacements, and hot-swaps them. No new build, no broken extractor.</p>
+      <h2>Dom Sentinel <span class="muted">· eyes</span></h2>
+      <p>A browser-side engine that reads the live web and heals itself when it changes. You describe the elements you care about by intent, each with an ordered chain of fallback selectors. Sentinel watches the page; when a site ships new markup and your selectors break, it detects that, proposes replacements, and you swap them in — without shipping a new build.</p>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Shape</td><td>Browser JavaScript library, ES modules</td></tr>
+          <tr><td>Runtime dependencies</td><td><strong>None required.</strong> Vision providers are optional peers.</td></tr>
+          <tr><td>Backend</td><td>None — it makes no network calls of its own</td></tr>
+          <tr><td>Types</td><td>JSDoc-typed source; ambient declarations maintained by the consumer</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Getting started</h3>
+<pre><code>import { DOMSentinel } from '@sekondbrainailabs/kora-sentinel';
+import { GroqProvider } from '@sekondbrainailabs/kora-sentinel/providers/groq';
+
+const sentinel = new DOMSentinel({
+  appId: 'my-app',
+  elements: {
+    postContainer: {
+      selectors: ['[role="listitem"]', 'article', '.feed-item'],  // ordered fallback chain
+      description: 'A feed post container with title and author',
+      required: true,
+      expectedCount: { min: 1, max: 50 },
+    },
+  },
+  visionAdapter: new GroqProvider({ apiKey: '&lt;YOUR_PROVIDER_KEY&gt;' }),
+  onResetDetected: async (result) =&gt; {
+    if (result.reason !== 'dom_reset') return;
+    const { proposedSelectors } = await sentinel.analyze();
+    if (proposedSelectors.postContainer) {
+      sentinel.updateSelectors('postContainer', proposedSelectors.postContainer);
+    }
+  },
+});
+
+sentinel.start();
+sentinel.watch('postContainer', (els) =&gt; console.log(`${els.length} posts`));</code></pre>
+
+      <h3>Constructor options</h3>
+      <table class="tight">
+        <thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>appId</code></td><td>—</td><td><strong>Required.</strong> Namespaces stored state.</td></tr>
+          <tr><td><code>elements</code></td><td>—</td><td><strong>Required.</strong> Your element definitions.</td></tr>
+          <tr><td><code>visionAdapter</code></td><td>null provider</td><td>Optional. Supplies selector proposals when healing.</td></tr>
+          <tr><td><code>screenshotFn</code></td><td>—</td><td>Async function returning a base64 screenshot.</td></tr>
+          <tr><td><code>onResetDetected</code></td><td>—</td><td>Fires when the page structure breaks. Branch on <code>result.reason</code>.</td></tr>
+          <tr><td><code>onSelectorsUpdated</code></td><td>—</td><td>Fires when a selector chain is replaced — persist it here.</td></tr>
+          <tr><td><code>resetThresholds</code></td><td>see below</td><td>Cooldowns and sensitivity.</td></tr>
+          <tr><td><code>observerDebounceMs</code></td><td><code>500</code></td><td>Mutation batching window.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Methods</h3>
+      <div class="sig">start(target?) · stop() · isRunning()</div>
+      <p>Attach and detach the observer. Attributes are deliberately not observed — modern frameworks rewrite <code>data-</code> and <code>aria-</code> on every render, and watching them is pure noise.</p>
+      <div class="sig">extract(elementId, scope?) → Element[]</div>
+      <p>Walks the selector chain and returns the <strong>first non-empty</strong> result. Invalid selectors are skipped rather than thrown.</p>
+      <div class="sig">extractFields(elementId, parentEl) → Record&lt;string, string|null&gt;</div>
+      <p>Pulls named fields out of a matched element using its extract specs.</p>
+      <div class="sig">checkHealth(doc?, { withFieldHealth }) → HealthReport</div>
+      <p>Per-element found / count / matched-selector / in-expected-range, and a document-level <code>healthy</code> flag that is false when any <em>required</em> element matched nothing.</p>
+      <div class="sig">watch(elementId, cb) · unwatch(elementId)</div>
+      <p>Subscribe to a debounced batch. Callback errors are caught, so one bad handler can't stop the observer.</p>
+      <div class="sig">analyze(doc?) → Promise&lt;AnalysisReport&gt;</div>
+      <p>Health check, then a capture, then ask the vision provider for replacement selectors. Returns <code>healthBefore</code>, <code>proposedSelectors</code> and <code>visionAvailable</code>. Provider failures are caught, not thrown.</p>
+      <div class="sig">updateSelectors(id, selectors) · updateFieldSelectors(id, field, spec)</div>
+      <p>Swap a chain at runtime. Both fire <code>onSelectorsUpdated</code> so you can persist the repair.</p>
+      <div class="sig">registerElement(id, definition) · getRegistry()</div>
+      <p>Add elements after construction, or reach the registry directly.</p>
+    </section>
+
+    <section id="elements">
+      <h2>Element definitions</h2>
+      <p>An element is described by <em>what it is</em>, not only by how to find it — the description is what a model reads when proposing a repair.</p>
+<pre><code>{
+  selectors: ['[data-testid="msg"]', 'article', '.message'],  // required, ordered
+  description: 'A chat message bubble',                        // required — read by the healer
+  required: true,                    // zero matches ⇒ structural break
+  expectedCount: { min: 1, max: 200 },
+  scope: 'document',                 // or an Element
+  fields: {
+    author: { selectors: ['.author'], extract: 'text', description: 'Sender name' },
+    href:   { selectors: ['a'], extract: 'attr:href | text', description: 'Permalink' },
+    posted: { selectors: ['time'], extract: 'attr:datetime',
+              validator: '^\\d{4}-\\d{2}-\\d{2}', description: 'ISO timestamp' }
+  }
+}</code></pre>
+      <table class="tight">
+        <thead><tr><th>Extract spec</th><th>Yields</th></tr></thead>
+        <tbody>
+          <tr><td><code>text</code></td><td>Trimmed text content.</td></tr>
+          <tr><td><code>attr:NAME</code></td><td>That attribute, trimmed.</td></tr>
+          <tr><td><code>regex:PATTERN</code></td><td>First capture group, matched case-insensitively.</td></tr>
+          <tr><td><code>A | B | C</code></td><td>Fallback chain — first non-empty wins.</td></tr>
+        </tbody>
+      </table>
+      <p>A <code>validator</code> regex discards values that don't match, so a mis-healed selector yields nothing rather than garbage. Definitions are validated on registration with precise errors — a missing <code>description</code> or an <code>expectedCount</code> whose min exceeds its max throws immediately rather than failing mysteriously later.</p>
+    </section>
+
+    <section id="healing">
+      <h2>Self-healing</h2>
+      <p>Two independent mechanisms — use either, or both.</p>
+
+      <h3>Detection</h3>
+      <p>Every debounced mutation batch runs a check. Results carry a <code>reason</code>:</p>
+      <table class="tight">
+        <thead><tr><th>Reason</th><th>Fires when</th></tr></thead>
+        <tbody>
+          <tr><td><code>dom_reset</code></td><td>A required element matched nothing — the structural break you care about.</td></tr>
+          <tr><td><code>quality_drop</code></td><td>Extractions are matching but coming back empty or too short.</td></tr>
+          <tr><td><code>daily_check</code></td><td>A scheduled once-a-day nudge. <strong>Fires even on a healthy page</strong> — always branch on <code>reason</code>.</td></tr>
+        </tbody>
+      </table>
+      <p>Detections are rate-limited by cooldown — a six-hour window for structural breaks, an hour for quality drops — so a thrashing page can't trigger a repair storm. State persists in extension storage where available, memory otherwise.</p>
+
+      <h3>Repair, without a model</h3>
+      <p>The interesting path needs no LLM at all. Fingerprint an element while it works, and later find it again by similarity:</p>
+      <div class="sig">healElement({ fingerprint, otherFingerprint?, root?, priorCount }) → { selector, verdict, candidateCount }</div>
+      <p>A fingerprint captures role, ARIA, heading presence, depth, child count, text shape and neighbouring text. Candidates are scored against it, a stable selector is synthesised for the winner, and an oracle decides whether to accept — rejecting on <code>zero-match</code>, <code>count-explosion</code>, <code>includes-other-role</code> or <code>low-similarity</code>.</p>
+      <p>Selector synthesis prefers what survives a redesign: roles and ARIA first, then stable data attributes, then ids and classes — explicitly skipping framework-generated hashes and build-time class noise. A proposal is only accepted if it matches tightly, and <code>healElement</code> <strong>returns a proposal without mutating your registry</strong>, so you decide whether to trust it.</p>
+      <div class="note">
+        <span class="lbl">Similarity beats the model here</span>
+        <p>An optional model tiebreak was measured and removed — pure structural similarity scored better. The model path is for proposing selectors from a description; the fingerprint path is for re-finding a known element, and it is faster, free and offline.</p>
+      </div>
+
+      <h3>Vision providers</h3>
+      <p>Bring your own. A provider implements three calls — propose selectors from a DOM chunk, count elements visually, and verify an injection. Groq and OpenAI providers ship; the interface is small enough to implement against any model.</p>
+    </section>
+
+    <section id="capture">
+      <h2>Media capture</h2>
+      <div class="sig">extractMedia(elementId, options?) → MediaCapture[]</div>
+      <p>Materialises images before their object URLs expire, scaling the longest edge down and encoding to base64. Cross-origin images are skipped rather than silently producing a tainted canvas, and avatars, logos and tracking pixels are filtered out by default.</p>
+      <div class="sig">watchFileInputs(elementId, cb, { maxFileSizeBytes }) → unsubscribe</div>
+      <p>Intercepts a user's file selection <em>before</em> the page uploads it, returning name, MIME type, size and contents. It attaches both directly and via capture-phase delegation, so inputs a framework creates later are still caught. Oversized files are reported with metadata and no payload.</p>
+      <div class="note">
+        <span class="lbl">Conversation text never leaves in a capture</span>
+        <p>When Sentinel serialises a page for a vision provider, it detects conversational content — message and response containers, article and log roles, long leaf text — and replaces it with a redaction marker. The provider receives <em>structure</em>, not what was said. Remaining text is truncated. This is on by default, not a setting you have to find.</p>
+      </div>
     </section>
 
     <section id="control">
-      <h2>Browser Control<br><span class="muted">— its hands</span></h2>
-      <p>Reading a page is half of it; HEVE can also act on one. Browser Control drives the browser the way a person would — opening and navigating pages, scrolling through long or virtualised feeds until they settle, and clicking through multi-step task interfaces — so an agent can <em>operate</em> a web app end to end, not only observe it. It runs on the same self-healing selector engine as Sentinel, so the actions survive the site shifting underneath them.</p>
+      <h2>Browser Control <span class="muted">· hands</span></h2>
+      <p>Reading a page is half of it. Browser Control drives one — opening and navigating conversations, scrolling long or virtualised feeds until they settle, and clicking through multi-step task interfaces — so an agent can <em>operate</em> a web app rather than only observe it. It runs on the same self-healing selector engine, so actions survive a redesign.</p>
+      <div class="sig">crawl(options?) → Promise&lt;CrawlResult&gt;</div>
+      <div class="sig">enumerate(options?) → Promise&lt;Conversation[]&gt;</div>
+      <div class="sig">captureCurrent(conversation, readyTimeoutMs?) → Promise&lt;{ captured, chars, attachments }&gt;</div>
+      <div class="sig">stop()</div>
+      <table class="tight">
+        <thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>onProgress</code></td><td>—</td><td>Progress callback for long crawls.</td></tr>
+          <tr><td><code>maxConversations</code></td><td>unbounded</td><td>Cap the run.</td></tr>
+          <tr><td><code>delayBetweenMs</code></td><td><code>1500</code></td><td>Human-paced gap between navigations.</td></tr>
+          <tr><td><code>navigationTimeoutMs</code></td><td><code>12000</code></td><td>Per-navigation ceiling.</td></tr>
+          <tr><td><code>sidebarScrollPasses</code></td><td><code>5</code></td><td>Minimum passes before convergence checks.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Scroll until settled, not scroll N times</h3>
+      <p>Infinite feeds don't finish — they converge. Control scrolls in bounded passes and stops when the content stops growing across several consecutive passes, rather than guessing a fixed count. It finds the real scroll container instead of scrolling the window, waits for the message count to hold steady before extracting, and recognises "load more" affordances. Every loop carries a hard pass and time ceiling, so a pathological page ends the crawl instead of hanging it.</p>
+
+      <h3>Supported surfaces</h3>
+      <div class="cap"><i></i><b>ChatGPT · Claude · Gemini · Manus · Perplexity</b></div>
+      <p>Each surface has an adapter supplying its navigation, conversation list and message extraction, behind one interface. Where a platform offers no navigable links, Control enumerates by clicking through the list instead — with stall detection so it stops rather than spinning.</p>
+      <p>Capture is resilient by design: consecutive extraction failures trip a threshold that marks the session degraded and triggers a heal attempt, rather than quietly returning empty results.</p>
+      <div class="note">
+        <span class="lbl">Operate what the user can already see</span>
+        <p>Control acts on pages in the user's own signed-in browser, on sites they have enabled, at human pace, with a kill-switch. Automating a third-party interface can conflict with that platform's terms — that judgement stays with you, and the pacing and fallback behaviour exist to keep it conservative.</p>
+      </div>
     </section>
 
     <section id="voice">
-      <h2>Kora Voice<br><span class="muted">— its voice</span></h2>
-      <p>A full spoken-conversation layer: speech-to-text, text-to-speech, voice-activity and break detection, and a conversation state machine behind a drop-in UI. It knows when you have finished a sentence, replies out loud, and handles being interrupted — talking to it should feel like talking to a presence, not operating a debug overlay.</p>
+      <h2>Kora Voice <span class="muted">· voice</span></h2>
+      <p>A complete spoken-conversation layer for React: speech-to-text, text-to-speech, voice-activity detection, break detection, a conversation state machine and a waveform UI. You supply one function — how to answer a message — and it handles the rest.</p>
+<pre><code>import { VoiceConversationProvider, VoiceConversationUI } from '@kora/voice-conversation';
+
+&lt;VoiceConversationProvider
+  config={{
+    breakDetection: { enabled: true, silenceThreshold: 1500,
+                      volumeThreshold: 20, minSpeechDuration: 500,
+                      continuationWindow: 2000 },
+    autoSend: { enabled: true, confirmationRequired: false, showTranscript: true },
+    providers: {
+      stt: { provider: 'openai', apiKey: '&lt;YOUR_KEY&gt;', model: 'whisper-1' },
+      tts: { provider: 'openai', apiKey: '&lt;YOUR_KEY&gt;', voice: 'alloy' },
+    },
+  }}
+  onSendMessage={async (text, history) =&gt; (await myBackend(text, history)).reply}
+&gt;
+  &lt;VoiceConversationUI /&gt;
+&lt;/VoiceConversationProvider&gt;</code></pre>
+      <p>Providers are pluggable: browser-native speech (no key), OpenAI, or Groq for transcription; browser or OpenAI for speech. A custom provider is two methods.</p>
+    </section>
+
+    <section id="voice-config">
+      <h2>Voice configuration</h2>
+      <h3>Break detection — knowing when you've finished</h3>
+      <p>The hard part of voice isn't transcription, it's deciding when a person has actually stopped talking rather than drawn breath. Break detection is a pure, testable function over volume and elapsed time:</p>
+      <table class="tight">
+        <thead><tr><th>Setting</th><th>Default</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>silenceThreshold</code></td><td><code>1500</code> ms</td><td>Silence after speech that counts as a finished utterance.</td></tr>
+          <tr><td><code>volumeThreshold</code></td><td><code>20</code></td><td>Level above which audio counts as speech.</td></tr>
+          <tr><td><code>minSpeechDuration</code></td><td><code>500</code> ms</td><td>Ignore blips shorter than this.</td></tr>
+          <tr><td><code>continuationWindow</code></td><td><code>2000</code> ms</td><td>Resume within this and it's the same thought; after it, a new utterance.</td></tr>
+        </tbody>
+      </table>
+      <p>That continuation window is why a pause mid-sentence doesn't fire the message off early — the outcomes are explicit: <code>speaking</code>, <code>silence</code>, <code>continuation</code>, <code>new_utterance</code> or <code>break</code>.</p>
+      <h3>Other settings</h3>
+      <table class="tight">
+        <thead><tr><th>Group</th><th>Controls</th></tr></thead>
+        <tbody>
+          <tr><td><code>autoSend</code></td><td>Send on break, require confirmation, show the transcript.</td></tr>
+          <tr><td><code>conversation</code></td><td>Auto-play replies, allow interruption, keep context, history length (default 50).</td></tr>
+          <tr><td><code>ui</code></td><td>Waveform, transcript, controls, light/dark/auto.</td></tr>
+          <tr><td><code>callbacks</code></td><td>State changes, transcripts, messages, errors, break and continuation.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Pass <code>providers</code> and <code>ui</code> complete — they replace defaults rather than merging.</p>
+    </section>
+
+    <section id="voice-hooks">
+      <h2>Hooks &amp; state</h2>
+      <p>The provider component is a convenience. Every layer is available on its own:</p>
+      <table class="tight">
+        <thead><tr><th>Hook</th><th>Gives you</th></tr></thead>
+        <tbody>
+          <tr><td><code>useVoiceConversation</code></td><td>The whole orchestrator — state, transcripts, messages, volume, and <code>startListening</code>, <code>sendMessage</code>, <code>interrupt</code>, <code>pause</code>, <code>resume</code>, <code>reset</code>.</td></tr>
+          <tr><td><code>useVoiceInput</code></td><td>Recording, live and accumulated transcript, silence and speech duration.</td></tr>
+          <tr><td><code>useVoiceOutput</code></td><td>Playback with <code>speak</code>, <code>stop</code>, <code>pause</code>, <code>resume</code> — plus a spoken-character index for karaoke-style highlighting.</td></tr>
+          <tr><td><code>useVoiceActivityDetection</code></td><td>Raw <code>isSpeaking</code>, <code>volume</code>, silence and speech duration.</td></tr>
+          <tr><td><code>detectBreak</code></td><td>The pure break-detection function, unit-testable in isolation.</td></tr>
+        </tbody>
+      </table>
+      <h3>The state machine is explicit</h3>
+      <p><code>idle</code> → <code>listening</code> → <code>processing</code> → <code>sending</code> → <code>thinking</code> → <code>speaking</code> → <code>idle</code>, with <code>waiting_send</code> when you require confirmation and <code>error</code> as a dead end that only <code>reset</code> leaves. A continuation returns <code>listening</code> to itself; an interrupt during <code>thinking</code> or <code>speaking</code> goes straight back to <code>listening</code>. Transitions are exported and validatable, so illegal states are unreachable rather than merely unlikely.</p>
+      <p>Transcription results carry more than text where the provider supports it — timed segments, per-word timings and speaker labels — which is what makes the diarisation below possible.</p>
     </section>
 
     <section id="diarisation">
-      <h2>Diarisation<br><span class="muted">— its ears</span></h2>
-      <p>Voice tells you <em>what</em> was said; diarisation tells you <em>who</em> said it. Enrol a speaker once and HEVE recognises them in real time in a room of several people — keeping per-person context and permissions, and greeting each by name. It is what turns a single-user voice assistant into one that works around a table.</p>
-    </section>
+      <h2>Diarisation <span class="muted">· ears</span></h2>
+      <p>Voice tells you <em>what</em> was said. Diarisation tells you <em>who</em> said it. Enrol a speaker once, then identify them in real time in a room of several people — with per-person context and permissions.</p>
 
-    <section id="build">
-      <h2>What you can build</h2>
-      <table>
-        <thead><tr><th>With</th><th>You can build</th></tr></thead>
+      <h3>Client</h3>
+      <div class="sig">enrollVoice(userId, audioBlob) · reEnrollVoice(userId, audioBlob)</div>
+      <div class="sig">identifySpeaker(audioBlob) → { userId, score, confidence }</div>
+      <div class="sig">verifyVoice(userId, audioBlob) → { verified, score }</div>
+      <div class="sig">getEnrollmentStatus(userId) · deleteEnrollment(userId)</div>
+      <p>A <code>useSpeakerIdentification</code> hook wraps this with attempt limits and caching — once identified it stops asking — and a drop-in <code>VoiceEnrollment</code> component handles the capture flow, requesting a 16 kHz mono stream with echo cancellation and noise suppression.</p>
+
+      <h3>Identification is two-stage, and says when it isn't sure</h3>
+      <p>A single similarity score is not enough to act on. The engine returns a decision built from several signals:</p>
+      <table class="tight">
+        <thead><tr><th>Signal</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td>Dom Sentinel</td><td>Extractors and content scripts that survive site redesigns — define elements by intent and let the engine repair selectors when a platform changes underneath you.</td></tr>
-          <tr><td>Browser Control</td><td>Agents that operate web apps — navigate, scroll virtualised feeds to the end, and click through multi-step flows to complete a task, not just scrape a page.</td></tr>
-          <tr><td>Kora Voice</td><td>Voice-to-voice interfaces in any app — microphone capture, transcription, auto-send on silence, spoken replies and natural interruption handling.</td></tr>
-          <tr><td>Diarisation</td><td>Multi-person voice assistants that identify each speaker by voiceprint, greet them by name, keep per-person context, and route who hears what.</td></tr>
+          <tr><td><code>identified</code></td><td>Best match cleared the identification floor.</td></tr>
+          <tr><td><code>verified</code></td><td>Cleared the higher confirmation floor <em>and</em> was unambiguous <em>and</em> in-session. This is the one to gate on.</td></tr>
+          <tr><td><code>ambiguous</code></td><td>Top match didn't beat the runner-up by enough — two similar voices, so no claim is made.</td></tr>
+          <tr><td><code>out_of_session</code></td><td>Someone outside the expected roster matched better than anyone in it — meaning the real speaker isn't enrolled here, so the in-room runner-up must <strong>not</strong> be trusted.</td></tr>
+          <tr><td><code>all_scores</code></td><td>Every candidate's score, so you can show your own working.</td></tr>
         </tbody>
       </table>
+      <p>Enrolment is collision-checked: a new voice too close to a <em>different</em> enrolled user is rejected rather than quietly creating a second identity for the same person.</p>
+
+      <h3>Beyond identification</h3>
+      <table class="tight">
+        <thead><tr><th>Capability</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>Diarisation</td><td>Segments a recording into who-spoke-when using a sliding window, merging consecutive turns. Unmatched speech is labelled as a guest rather than guessed.</td></tr>
+          <tr><td>Transcript</td><td>Diarised segments with spoken text attached, where transcription is available.</td></tr>
+          <tr><td>Floor control</td><td>Push-to-talk with a holder and a queue, so several people share one agent without talking over each other.</td></tr>
+          <tr><td>Wake check</td><td>Order-independent wake-phrase matching, tolerant of homophones and near-misses.</td></tr>
+        </tbody>
+      </table>
+      <p>Voice signatures are compact embeddings — two engines are selectable, and audio is conditioned first: noise reduction, a speech-band filter, pre-emphasis and level normalisation. Multiple enrolments average into one profile per speaker.</p>
     </section>
 
     <section id="data">
       <h2>Your data</h2>
-      <p><strong>On the web (Sentinel &amp; Browser Control).</strong> HEVE reads and acts only on the pages you enable it on, and only to do the job you asked. During a self-heal, a snapshot and screenshot of that page are sent to the vision provider you configure — so on a page holding private content, that content can reach the model provider you chose. You hold the provider key, and you hold the kill-switch.</p>
+      <p><strong>On the web.</strong> Sentinel and Control read and act only on the pages you enable, and only to do the job you asked. During a self-heal, page structure is sent to the vision provider <em>you</em> configure, with conversational content redacted before it leaves. You hold the provider key. The fingerprint-based repair path sends nothing anywhere.</p>
       <div class="note">
         <span class="lbl">Voice is biometric data</span>
-        <p><strong>In the room (Voice &amp; Diarisation).</strong> HEVE captures microphone audio, and diarisation creates a <strong>voiceprint</strong> — a biometric identifier, treated as special-category personal data. Enrolment is explicit; raw audio is not retained; voice signatures are encrypted at rest. If you choose a cloud transcription provider, audio is sent to it. Handling, consent and deletion are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
+        <p>Diarisation creates a <strong>voiceprint</strong> — a biometric identifier, and special-category personal data in most jurisdictions. Enrolment must be explicit and informed. Raw audio is not retained; profiles are stored as embeddings and are deletable per user. If you select a cloud transcription provider, audio is sent to it — a browser-native provider keeps it on the device. Handling, consent and erasure are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
       </div>
     </section>
 
     <section id="access">
       <h2>Availability &amp; access</h2>
-      <p>HEVE is in <strong>preview</strong>. All four capabilities are built and run inside SeKondBrain today; they ship as part of the platform — licensed, not open source — and we are onboarding integration partners rather than offering an open package. Tell us what you're building and we'll bring you in.</p>
+      <p>HEVE is in <strong>preview</strong>. All four capabilities are built and run inside SeKondBrain today. They ship as part of the platform — licensed, not open source — and the packages are distributed to integration partners rather than published openly, so the APIs above describe what you get on access rather than something you can install unaided.</p>
+      <p>Tell us which capabilities you need and we'll provision the packages, the provider configuration and, for diarisation, the identity service.</p>
       <div class="note">
         <span class="lbl">Request access</span>
-        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20HEVE">hello@sekondbrain.ai</a> with the subject <em>“Access for HEVE”</em> — say which of the four capabilities you need.</p>
+        <p>Email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20HEVE">hello@sekondbrain.ai</a> with the subject <em>“Access for HEVE”</em> — say which of the four you need: Dom Sentinel, Browser Control, Kora Voice, Diarisation.</p>
       </div>
     </section>
 

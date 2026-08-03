@@ -296,7 +296,7 @@ Memory content is processed by third-party language models for enrichment, compr
 embedding. Which providers, what is retained, how long, and how to have material erased are
 set out in full in the privacy policy.
 
-**Privacy policy:** https://sekondbrain.ai/privacy
+**Privacy policy:** https://docs.sekondbrain.ai/legal/privacy/
 
 `kemory_delete_memory` is a soft delete: the memory stops being returned by any read tool.
 The privacy policy describes what the audit trail retains afterwards and how to request
@@ -328,7 +328,7 @@ configuration. Reconnect it.
 ## Support
 
 - **Support:** support@sekondbrain.ai
-- **Privacy policy:** https://sekondbrain.ai/privacy
+- **Privacy policy:** https://docs.sekondbrain.ai/legal/privacy/
 
 Kemory is built by SeKondBrain AI Labs. We own and operate the API, the domain and the
 infrastructure this connector reaches.

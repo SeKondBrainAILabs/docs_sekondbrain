@@ -29,8 +29,15 @@ claiming a credential.
 ├── kemory/
 │   ├── index.html          THE published page
 │   └── docs.md             copy source of truth (prose)
+├── legal/                  the four legal documents — see below
+│   ├── index.html
+│   ├── privacy/            master Privacy Policy v2.2
+│   ├── terms/              Terms of Service — Individuals v2.1
+│   ├── business-terms/     Business Terms v1.0 + DPA (Schedules 1 and 2)
+│   └── extension-privacy/  Kora for Chrome & Kemory privacy companion
 ├── tools/
-│   └── gen_tools_table.py  regenerates the tool table from live tools/list
+│   ├── gen_tools_table.py  regenerates the tool table from live tools/list
+│   └── preflight.py        tag balance, link resolution, no leaked internal notes
 └── .github/workflows/
     ├── pages.yml           deploy
     └── tools-drift.yml     fails if the published tool table has drifted
@@ -61,6 +68,35 @@ hand-edit it.
    subdomain over if our DNS record ever outlives this repo. Cheap, and it applies to every
    future subdomain we publish.
 5. **Confirm** `curl -I https://docs.sekondbrain.ai/kemory/` returns `200`.
+
+---
+
+## The legal documents
+
+Four documents, one page each, at `/legal/`. **The source of truth is Google Drive, not this
+repo** — each page carries its source document's name and file ID in an HTML comment at the
+top. Edit the Doc first, then mirror the change here; never let the two diverge silently.
+
+| Page | Document | Version |
+|---|---|---|
+| `/legal/privacy/` | Privacy Policy | 2.2 |
+| `/legal/terms/` | Terms of Service — Individuals | 2.1 |
+| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.0 |
+| `/legal/extension-privacy/` | Kora for Chrome & Kemory | companion to 2.2 |
+
+Two rules, both enforced by `tools/preflight.py`:
+
+- **Internal drafting apparatus never ships.** The source documents carry drafting notes and
+  risk flags addressed to us. The build fails if `Internal drafting note`, `RISK FLAG`,
+  `remove before signature` or `ship gate` appears in any published HTML — including inside
+  an HTML comment, which is served to the public just like the body.
+- **Unfilled brackets are marked, never guessed.** Where a source document still has a `[●]`
+  placeholder, it renders as `<span class="gap">` — a visible amber marker. Do not invent a
+  value to make a page look finished; an ICO number or an effective date that we made up is
+  worse than an obvious gap.
+
+`/legal/extension-privacy/` is the URL to give the Chrome Web Store listing as the extension's
+privacy policy.
 
 ---
 

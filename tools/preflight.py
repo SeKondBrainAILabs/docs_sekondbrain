@@ -69,7 +69,7 @@ kem = open("kemory/index.html", encoding="utf-8").read()
 for needle, label in [
     ("TOOLS:BEGIN", "tool-table marker"),
     ("kemory_REPLACE_WITH_YOUR_KEY", "placeholder key, not a live credential"),
-    ("sekondbrain.ai/privacy", "privacy policy link"),
+    ("legal/privacy/", "privacy policy link"),
     ('id="scoping"', "scoping section"),
 ]:
     if needle not in kem:
@@ -80,6 +80,27 @@ if tool_rows < 17:
     failures.append(f"kemory/index.html: only {tool_rows} tool rows, expected >= 17")
 else:
     print(f"tool rows in table: {tool_rows}")
+
+# the legal documents must all be present — they are linked from the index, the
+# footers and the Chrome Web Store listing
+for page, label in [
+    ("legal/index.html", "legal index"),
+    ("legal/privacy/index.html", "Privacy Policy"),
+    ("legal/terms/index.html", "Terms of Service"),
+    ("legal/business-terms/index.html", "Business Terms and DPA"),
+    ("legal/extension-privacy/index.html", "extension privacy policy"),
+]:
+    if not os.path.exists(page):
+        failures.append(f"{page}: missing — {label} is linked from published pages")
+
+# internal drafting apparatus must never reach a published page. The source documents
+# carry drafting notes and risk flags addressed to us, not to the reader.
+INTERNAL = ["Internal drafting note", "RISK FLAG", "remove before signature", "ship gate"]
+for page in sorted(pages):
+    body = open(page, encoding="utf-8").read()
+    for needle in INTERNAL:
+        if needle.lower() in body.lower():
+            failures.append(f"{page}: internal drafting apparatus leaked -> {needle!r}")
 
 # no live credential must ever be committed
 for dirpath, dirnames, filenames in os.walk(ROOT):

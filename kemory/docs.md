@@ -253,6 +253,20 @@ connected by different people do not.
 
 ---
 
+## Benchmarks
+
+Kemory scores **87.8%** — 439 of 500 — on the LongMemEval-S oracle benchmark. That is
+*end-to-end answer accuracy*: retrieve, generate, then judge the answer against the reference.
+It is not a retrieval-recall figure, which is the number most memory systems publish and is
+not the same thing.
+
+The method, the per-category breakdown, the run-to-run variance and the two places our harness
+departs from the original paper are all set out in full — along with how to reproduce it.
+
+**Full method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/
+
+---
+
 ## Capture with Kora for Chrome
 
 Kemory is the memory; **Kora** is one way to fill it. Kora is a Chrome extension that

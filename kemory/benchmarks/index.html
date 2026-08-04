@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory benchmarks — LongMemEval | SeKondBrain</title>
+<meta name="description" content="Kemory scores 87.8% end-to-end on the 500-question LongMemEval-S oracle benchmark. The method, the dataset, the per-category results, the caveats, and how to reproduce it.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/">
+<link rel="icon" href="../../assets/mark.svg" type="image/svg+xml">
+<meta property="og:title" content="Kemory benchmarks — LongMemEval">
+<meta property="og:description" content="87.8% end-to-end on LongMemEval-S. Method, results and caveats.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  /* Page mood: blue — the Kemory surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+  table.tight td{padding:8px 14px 8px 0}
+  /* headline score */
+  .score{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+         padding:22px 24px;background:#fff;border:1px solid var(--hair);
+         border-radius:var(--r-lg);max-width:640px;margin:var(--sp-6) 0 var(--sp-5)}
+  .score .big{font-size:52px;line-height:1;letter-spacing:-.04em;font-weight:600}
+  .score .of{font-family:var(--mono);font-size:13px;color:var(--grey)}
+  .score .what{font-size:14px;color:var(--fg-2);max-width:30ch}
+  /* result bars */
+  .bar{display:grid;grid-template-columns:190px 1fr 74px;align-items:center;gap:12px;margin:0 0 9px;max-width:760px}
+  .bar .lbl{font-size:13.5px}
+  .bar .track{height:7px;background:rgba(0,0,0,.06);border-radius:999px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:999px;background:var(--c-blue)}
+  .bar .fill.hi{background:var(--c-mint)}
+  .bar .fill.lo{background:var(--c-yellow)}
+  .bar .num{font-family:var(--mono);font-size:12.5px;color:var(--fg-2);text-align:right}
+  .phase{display:flex;gap:14px;margin:0 0 16px;max-width:70ch}
+  .phase .n{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--grey);flex:none;width:56px;padding-top:3px}
+  .phase h4{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+  .phase p{margin:0}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.svg" alt="">
+    <a class="brandline" href="../">Kemory <span>· benchmarks</span></a>
+    <div class="top-links">
+      <a href="../">Documentation</a>
+      <a href="#results">Results</a>
+      <a href="#caveats">Caveats</a>
+      <a href="#reproduce">Reproduce</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Benchmark · LongMemEval-S oracle</span>
+  <h1>87.8%, end to end,<br><em>and here's the method.</em></h1>
+  <p class="lede">Kemory answers 439 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer. Not a retrieval metric.</p>
+  <p>Everything below is what we actually ran: the dataset, the three phases, the per-category breakdown, the run-to-run variance, and the two places our method departs from the original paper. The harness and the dataset are preserved so the number can be re-derived rather than taken on trust.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Result</div>
+    <a href="#headline">Headline</a>
+    <a href="#results">By category</a>
+    <a href="#runs">Run history</a>
+    <div class="grp">Method</div>
+    <a href="#dataset">The dataset</a>
+    <a href="#how">How we ran it</a>
+    <a href="#retrieval">What retrieval did</a>
+    <div class="grp">Honesty</div>
+    <a href="#caveats">Caveats</a>
+    <a href="#comparison">On comparisons</a>
+    <a href="#reproduce">Reproduce it</a>
+  </nav>
+
+  <main>
+
+    <section id="headline">
+      <h2>The headline</h2>
+      <div class="score">
+        <span class="big">87.8%</span>
+        <span class="of">439 / 500</span>
+        <span class="what">End-to-end answer accuracy on the LongMemEval-S oracle set, LLM-judged.</span>
+      </div>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Benchmark</td><td>LongMemEval (ICLR 2025), <code>-S</code> oracle configuration</td></tr>
+          <tr><td>Questions</td><td>500, across six question types</td></tr>
+          <tr><td>Haystack</td><td>10,960 memories ingested</td></tr>
+          <tr><td>Metric</td><td><strong>End-to-end answer accuracy</strong> — retrieve, generate, then judge against the reference</td></tr>
+          <tr><td>Reader &amp; judge</td><td>Llama-3.3-70B (see <a href="#caveats">caveats</a> — the paper uses GPT-4o as judge)</td></tr>
+          <tr><td>Retrieval depth</td><td>top-<em>k</em> 10; 16.4 memories reaching the reader on average</td></tr>
+          <tr><td>Run</td><td>Canonical full run, 28 April 2026</td></tr>
+          <tr><td>Hardware</td><td>A single Kemory instance on commodity hardware</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="results">
+      <h2>By category</h2>
+      <p>Six question types, weighted as the benchmark defines them. Where Kemory is strong and where it isn't:</p>
+
+      <div class="bar"><span class="lbl">single-session-assistant</span><span class="track"><span class="fill hi" style="width:100%"></span></span><span class="num">100.0%</span></div>
+      <div class="bar"><span class="lbl">single-session-user</span><span class="track"><span class="fill hi" style="width:97.1%"></span></span><span class="num">97.1%</span></div>
+      <div class="bar"><span class="lbl">knowledge-update</span><span class="track"><span class="fill hi" style="width:94.9%"></span></span><span class="num">94.9%</span></div>
+      <div class="bar"><span class="lbl">temporal-reasoning</span><span class="track"><span class="fill" style="width:82.7%"></span></span><span class="num">82.7%</span></div>
+      <div class="bar"><span class="lbl">multi-session</span><span class="track"><span class="fill" style="width:82.0%"></span></span><span class="num">82.0%</span></div>
+      <div class="bar"><span class="lbl">single-session-preference</span><span class="track"><span class="fill lo" style="width:73.3%"></span></span><span class="num">73.3%</span></div>
+
+      <table class="tight">
+        <thead><tr><th>Type</th><th>Correct</th><th>Accuracy</th><th>What it tests</th></tr></thead>
+        <tbody>
+          <tr><td>single-session-assistant</td><td>56 / 56</td><td>100.0%</td><td>Recalling what the assistant said within one session.</td></tr>
+          <tr><td>single-session-user</td><td>68 / 70</td><td>97.1%</td><td>Recalling what the user stated within one session.</td></tr>
+          <tr><td>knowledge-update</td><td>74 / 78</td><td>94.9%</td><td>A fact changed later — does the <em>current</em> value win?</td></tr>
+          <tr><td>temporal-reasoning</td><td>110 / 133</td><td>82.7%</td><td>Ordering, elapsed time, and counting across dates.</td></tr>
+          <tr><td>multi-session</td><td>109 / 133</td><td>82.0%</td><td>Evidence spread across several conversations.</td></tr>
+          <tr><td>single-session-preference</td><td>22 / 30</td><td>73.3%</td><td>Applying a stated preference, scored against a rubric.</td></tr>
+          <tr><td><strong>Overall</strong></td><td><strong>439 / 500</strong></td><td><strong>87.8%</strong></td><td></td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <span class="lbl">Reading the weak spots honestly</span>
+        <p><strong>Preference</strong> is the lowest, and it is the fuzziest to score — the rubric rewards applying a taste, not retrieving a fact, so partial credit is a judgement call. <strong>Temporal reasoning</strong> and <strong>multi-session</strong> sit together in the low 80s and are the genuinely hard cases: both need several memories assembled in the right order, which is a retrieval problem and an arithmetic problem at once. Counting and elapsed-day questions are where most of the remaining errors live.</p>
+      </div>
+    </section>
+
+    <section id="runs">
+      <h2>Run history</h2>
+      <p>The same harness, run three times. We publish all three because a single number without its variance is not a result.</p>
+      <table class="tight">
+        <thead><tr><th>Run</th><th>Result</th><th>What was different</th></tr></thead>
+        <tbody>
+          <tr><td><strong>28 Apr 2026</strong> — canonical</td><td><strong>87.8%</strong> (439/500)</td><td>Full three-phase run including ingest. <strong>This is the published figure.</strong></td></tr>
+          <tr><td>9 May 2026 — reproduce</td><td>86.2% (431/500)</td><td>Ingest phase skipped; the vault was already populated. Same harness, same dataset.</td></tr>
+          <tr><td>9 May 2026 — experimental</td><td>88.0% (440/500)</td><td>Adds self-consistency voting on counting and duration questions. Not the published figure — it is a change to the method, not a re-run of it.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Run-to-run variance is roughly ±2 points</strong> on most categories. Multi-session is the most prompt-sensitive and has swung about 7 points between runs. Treat 87.8% as the centre of a range, not a precision measurement — anyone quoting a memory benchmark to a tenth of a point is overstating what these harnesses can resolve.</p>
+    </section>
+
+    <section id="dataset">
+      <h2>The dataset</h2>
+      <p><strong>LongMemEval</strong> (ICLR 2025) tests long-term memory in chat assistants: a haystack of prior sessions, then a question whose answer is buried somewhere in it. We use the <strong>oracle</strong> configuration of LongMemEval-S — the sessions containing the evidence, without the full distractor corpus.</p>
+      <table class="tight">
+        <thead><tr><th>Question type</th><th>Count</th></tr></thead>
+        <tbody>
+          <tr><td>temporal-reasoning</td><td>133</td></tr>
+          <tr><td>multi-session</td><td>133</td></tr>
+          <tr><td>knowledge-update</td><td>78</td></tr>
+          <tr><td>single-session-user</td><td>70</td></tr>
+          <tr><td>single-session-assistant</td><td>56</td></tr>
+          <tr><td>single-session-preference</td><td>30</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>500</strong></td></tr>
+        </tbody>
+      </table>
+      <p>A subset carries an abstention marker — questions whose answer is <em>not</em> in the history, where the correct behaviour is to decline rather than invent. A memory system that confabulates scores badly on these by design.</p>
+      <p class="muted">We hold the oracle corpus alongside the harness rather than fetching it at run time, so a result stays reproducible even if the upstream mirror moves.</p>
+    </section>
+
+    <section id="how">
+      <h2>How we ran it</h2>
+      <p>Three phases, each independently resumable — a 500-question run is long enough that restartability matters.</p>
+      <div class="phase"><span class="n">PHASE 1</span><div>
+        <h4>Ingest</h4>
+        <p>Every haystack session is written into Kemory through the normal write path — the same API any user calls, with no benchmark-only shortcut. Each question's history lands in its own namespace, so retrieval for one question cannot accidentally see another's evidence. <strong>10,960 memories, zero terminal failures.</strong> Wall clock: 97.7 minutes.</p>
+      </div></div>
+      <div class="phase"><span class="n">PHASE 2</span><div>
+        <h4>Retrieve &amp; generate</h4>
+        <p>For each question, Kemory's own context-assembly path retrieves against that question's namespace at top-<em>k</em> 10, and a reader model is asked to answer from what came back. Retrieval is Kemory doing its ordinary job — hybrid search with reranking — not a bespoke benchmark retriever. Wall clock: ~16 minutes.</p>
+      </div></div>
+      <div class="phase"><span class="n">PHASE 3</span><div>
+        <h4>Judge</h4>
+        <p>Each answer is scored against the reference using <strong>the official LongMemEval judge prompts, unmodified</strong> — including the separate rubric the paper specifies for preference questions. Wall clock: ~1 minute.</p>
+      </div></div>
+      <p>Total: about 115 minutes for a full canonical run from an empty vault, on one instance running on commodity hardware.</p>
+    </section>
+
+    <section id="retrieval">
+      <h2>What retrieval actually did</h2>
+      <p>The number depends as much on what reached the reader as on the reader itself.</p>
+      <table class="tight">
+        <tbody>
+          <tr><td>Retrieval depth</td><td>top-<em>k</em> 10 per question</td></tr>
+          <tr><td>Memories reaching the reader</td><td>16.4 on average — a retrieved item can carry more than one memory once summaries and concept rows are folded in</td></tr>
+          <tr><td>Method</td><td>Kemory's standard hybrid retrieval — vector similarity and full-text, fused and re-ranked</td></tr>
+          <tr><td>Scope</td><td>Namespace-scoped per question, so cross-question leakage is structurally impossible</td></tr>
+        </tbody>
+      </table>
+      <p>Worth stating plainly: <strong>a low top-<em>k</em> is a harder test, not an easier one.</strong> Flooding the reader with 100 memories would raise the chance the evidence is somewhere in the window, at the cost of pretending retrieval quality doesn't matter. Ten is close to what a real agent can afford in a real context budget.</p>
+    </section>
+
+    <section id="caveats">
+      <h2>Caveats</h2>
+      <p>Two places our method departs from the original paper, and one thing this benchmark does not tell you. All three matter when comparing numbers.</p>
+
+      <h3>1. A different judge</h3>
+      <p>The paper judges with GPT-4o. We judge with <strong>Llama-3.3-70B</strong>, using the paper's prompt templates verbatim. The prompts are identical; the model grading them is not. LLM judges disagree at the margins, so our figure is not strictly interchangeable with a GPT-4o-judged one. We use the same model as reader and judge, which is a further deviation worth knowing about.</p>
+
+      <h3>2. The oracle configuration</h3>
+      <p>We run the <strong>oracle</strong> set — the evidence-bearing sessions, without the full distractor haystack. That is a legitimate configuration of the benchmark and the one many published numbers use, but it is an easier retrieval problem than the full corpus. A number on the oracle set should be compared with other oracle-set numbers.</p>
+
+      <h3>3. Variance</h3>
+      <p>±2 points run to run, ~7 on multi-session. The 86.2% reproduce run above is the same system on the same data. We publish the canonical run as the headline and the spread alongside it, rather than quietly reporting our best day.</p>
+
+      <div class="note">
+        <span class="lbl">What we have not done</span>
+        <p>We have <strong>not</strong> run a head-to-head against Mem0, Letta, Zep or Honcho on identical hardware with an identical harness. Until that exists, treat any cross-system ranking — including one that flatters us — as unproven.</p>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <h2>On comparing this to other numbers</h2>
+      <p>The most common mistake with memory benchmarks is comparing two figures that measure different things.</p>
+      <table class="tight">
+        <thead><tr><th>Metric</th><th>What it asks</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Retrieval recall</strong> (R@5, R@10)</td><td>Did the right document appear in the top <em>k</em>? Says nothing about whether the system answered correctly.</td></tr>
+          <tr><td><strong>End-to-end accuracy</strong></td><td>Was the final answer right? Retrieval, assembly and generation all have to work.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>87.8% is the second kind.</strong> Recall figures are usually higher than end-to-end figures on the same system, because finding the evidence is easier than using it. A published R@5 in the mid-90s and an end-to-end score in the high-80s can describe systems of similar quality — they are not on the same axis, and setting them side by side is a category error rather than a result.</p>
+    </section>
+
+    <section id="reproduce">
+      <h2>Reproduce it</h2>
+      <p>The harness, the oracle dataset and the raw run output are preserved together — hypotheses and judge results for every one of the 500 questions, so any individual answer can be inspected rather than trusted.</p>
+      <p>The three phases run against a live Kemory instance with your own credentials:</p>
+<pre><code># Phase 1 — ingest the haystack into Kemory
+python3 ingest.py --data longmemeval_oracle.json \
+                  --out output/ingestion_state.json --resume
+
+# Phase 2 — retrieve and generate
+python3 run.py --data longmemeval_oracle.json \
+               --state output/ingestion_state.json \
+               --out output/hypotheses.jsonl --topk 10 --resume
+
+# Phase 3 — judge against the reference answers
+python3 score.py --hyp output/hypotheses.jsonl \
+                 --ref longmemeval_oracle.json \
+                 --out output/results.json --resume</code></pre>
+      <p>Every phase takes <code>--resume</code>, so an interrupted run continues rather than restarting. Phase 1 is the expensive one and only needs running once per vault.</p>
+      <div class="note">
+        <span class="lbl">Want to verify it yourself?</span>
+        <p>If you are evaluating Kemory seriously and want to run this — on the oracle set, the full haystack, or your own corpus — email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kemory%20benchmarks">hello@sekondbrain.ai</a> and we'll set you up with an instance and the harness. A benchmark you ran yourself is worth more than one we published.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Kemory documentation</a>
+      <a href="../../">All documentation</a>
+      <a href="../../legal/privacy/">Privacy</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

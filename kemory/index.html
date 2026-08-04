@@ -30,6 +30,7 @@
       <a href="#connect-web">Connect</a>
       <a href="#tools">Tools</a>
       <a href="#scoping">Scoping</a>
+      <a href="benchmarks/">Benchmarks</a>
       <a href="../legal/privacy/">Privacy</a>
     </div>
   </div>
@@ -58,6 +59,7 @@
     <a href="#tools">The tools</a>
     <a href="#auth">Authentication</a>
     <a href="#scoping">Scoping and sharing</a>
+    <a href="benchmarks/">Benchmarks</a>
     <div class="grp">Operating</div>
     <a href="#kora">Kora for Chrome</a>
     <a href="#data">Your data</a>
@@ -231,6 +233,13 @@ Never write credentials, keys or passwords into memory.</code></pre>
       <p>If you are unsure whether something would be visible to a colleague, <code>kemory_check_access</code> answers the question without changing anything.</p>
       <h3>What agents can see</h3>
       <p>An agent sees exactly what the person who connected it can see — no more. Two agents connected by the same person share that person's memory. Two agents connected by different people do not.</p>
+    </section>
+
+    <section id="benchmarks">
+      <h2>Benchmarks</h2>
+      <p>Kemory scores <strong>87.8%</strong> — 439 of 500 — on the LongMemEval-S oracle benchmark. That is <em>end-to-end answer accuracy</em>: retrieve, generate, then judge the answer against the reference. It is not a retrieval-recall figure, which is the number most memory systems publish and is not the same thing.</p>
+      <p>The method, the per-category breakdown, the run-to-run variance and the two places our harness departs from the original paper are all set out in full — along with how to reproduce it.</p>
+      <p><a href="benchmarks/">Read the benchmark method and results →</a></p>
     </section>
 
     <section id="kora">

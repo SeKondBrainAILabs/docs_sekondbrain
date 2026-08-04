@@ -89,6 +89,8 @@ for page, label in [
     ("legal/terms/index.html", "Terms of Service"),
     ("legal/business-terms/index.html", "Business Terms and DPA"),
     ("legal/extension-privacy/index.html", "extension privacy policy"),
+    ("legal/refunds/index.html", "Refund Policy required by Paddle domain review"),
+    ("legal/cookies/index.html", "Cookie Policy incorporated by ToS 1.2 and 13.1"),
     ("subprocessors/index.html", "sub-processor disclosure cited by the DPA"),
 ]:
     if not os.path.exists(page):

@@ -59,7 +59,7 @@
   <span class="pill"><i></i>Benchmark · LongMemEval-S oracle</span>
   <h1>87.8%, end to end,<br><em>and here's the method.</em></h1>
   <p class="lede">Kemory answers 439 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer. Not a retrieval metric.</p>
-  <p>Everything below is what we actually ran: the dataset, the three phases, the per-category breakdown, the run-to-run variance, and the two places our method departs from the original paper. The harness and the dataset are preserved so the number can be re-derived rather than taken on trust.</p>
+  <p>Everything below is what we actually ran: the dataset and its configuration, the three phases in detail, the per-category breakdown, the run-to-run variance, and the four caveats that matter when you compare this to anyone else's number — including where the harness is tuned to the benchmark. The harness, the dataset and the raw run output are preserved so the number can be re-derived rather than taken on trust.</p>
 </div>
 
 <div class="wrap cols">
@@ -96,7 +96,7 @@
           <tr><td>Haystack</td><td>10,960 memories ingested</td></tr>
           <tr><td>Metric</td><td><strong>End-to-end answer accuracy</strong> — retrieve, generate, then judge against the reference</td></tr>
           <tr><td>Reader &amp; judge</td><td>Llama-3.3-70B (see <a href="#caveats">caveats</a> — the paper uses GPT-4o as judge)</td></tr>
-          <tr><td>Retrieval depth</td><td>top-<em>k</em> 10; 16.4 memories reaching the reader on average</td></tr>
+          <tr><td>Retrieval depth</td><td>Per question type, top-<em>k</em> 10–30; 16.4 memories reaching the reader on average</td></tr>
           <tr><td>Run</td><td>Canonical full run, 28 April 2026</td></tr>
           <tr><td>Hardware</td><td>A single Kemory instance on commodity hardware</td></tr>
         </tbody>
@@ -163,7 +163,18 @@
         </tbody>
       </table>
       <p>A subset carries an abstention marker — questions whose answer is <em>not</em> in the history, where the correct behaviour is to decline rather than invent. A memory system that confabulates scores badly on these by design.</p>
-      <p class="muted">We hold the oracle corpus alongside the harness rather than fetching it at run time, so a result stays reproducible even if the upstream mirror moves.</p>
+
+      <h3>Which configuration, and why it matters</h3>
+      <p>LongMemEval ships in more than one size. The distinction is how much irrelevant history surrounds the evidence:</p>
+      <table class="tight">
+        <thead><tr><th>Configuration</th><th>What it contains</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Oracle</strong> — what we ran</td><td>Only the sessions that contain the evidence. Tests whether the system can find and use the right turn.</td></tr>
+          <tr><td><code>-S</code> / <code>-M</code></td><td>The evidence plus a large distractor haystack. Also tests resistance to being misled by irrelevant history.</td></tr>
+        </tbody>
+      </table>
+      <p>Oracle is a legitimate and widely-reported configuration, and it is the harder-to-fake one in that retrieval still has to pick the right turn out of a real conversation. But it is <strong>not</strong> the full-haystack test, and a number produced on it should only be set against other oracle numbers. We have not yet published a full-haystack run.</p>
+      <p class="muted">Provenance: the corpus is the official release accompanying the LongMemEval paper (ICLR 2025). We hold it alongside the harness rather than fetching it at run time, so a result stays reproducible even if the upstream mirror moves — and so the exact bytes behind a published number are pinned rather than assumed.</p>
     </section>
 
     <section id="how">
@@ -171,17 +182,41 @@
       <p>Three phases, each independently resumable — a 500-question run is long enough that restartability matters.</p>
       <div class="phase"><span class="n">PHASE 1</span><div>
         <h4>Ingest</h4>
-        <p>Every haystack session is written into Kemory through the normal write path — the same API any user calls, with no benchmark-only shortcut. Each question's history lands in its own namespace, so retrieval for one question cannot accidentally see another's evidence. <strong>10,960 memories, zero terminal failures.</strong> Wall clock: 97.7 minutes.</p>
+        <p>Every haystack session is written into Kemory through the <strong>normal public write path</strong> — <code>POST /api/v1/memories</code>, the same call any user makes, with no benchmark-only ingestion route.</p>
+        <p>Each conversation <strong>turn is stored as its own memory</strong> rather than the session as a block, so retrieval has to find the right turn instead of being handed a whole session that happens to contain it. Turns are written as <code>conversation</code> content type, sixteen concurrently, and each question's history lands in its own namespace — <code>lme_oracle_&lt;question_id&gt;</code> — so retrieval for one question <em>structurally cannot</em> see another's evidence.</p>
+        <p>A state file maps every question to the memory IDs it produced, which is what makes the phase resumable and cleanly reversible. <strong>10,960 memories, zero terminal failures.</strong> Wall clock: 97.7 minutes.</p>
       </div></div>
       <div class="phase"><span class="n">PHASE 2</span><div>
         <h4>Retrieve &amp; generate</h4>
-        <p>For each question, Kemory's own context-assembly path retrieves against that question's namespace at top-<em>k</em> 10, and a reader model is asked to answer from what came back. Retrieval is Kemory doing its ordinary job — hybrid search with reranking — not a bespoke benchmark retriever. Wall clock: ~16 minutes.</p>
+        <p>For each question the harness searches that question's namespace through Kemory's ordinary hybrid search — <code>POST /api/v1/memories/search</code>, vector plus full-text, fused and re-ranked — then asks a reader model to answer from what came back.</p>
+        <p>Three things are tuned per question type rather than held flat, and they are the reason this section exists:</p>
+        <table class="tight">
+          <thead><tr><th>Question type</th><th>top-<em>k</em></th><th>Also</th></tr></thead>
+          <tbody>
+            <tr><td>multi-session</td><td>30</td><td>Two-pass verification on counting questions</td></tr>
+            <tr><td>single-session-preference</td><td>25</td><td>Needs broad context for the rubric</td></tr>
+            <tr><td>temporal-reasoning</td><td>15</td><td></td></tr>
+            <tr><td>knowledge-update</td><td>15</td><td>Results sorted chronologically, so the latest value is last</td></tr>
+            <tr><td>single-session-user / -assistant</td><td>10</td><td></td></tr>
+          </tbody>
+        </table>
+        <p>Some questions also get an <strong>entity-extraction pass</strong> first: a model pulls the named entities out of the question, each is searched separately, and the results are merged — a two-pass retrieval for questions where one embedding of the whole question retrieves poorly. Answer prompts are written per question type. Wall clock: ~16 minutes.</p>
       </div></div>
       <div class="phase"><span class="n">PHASE 3</span><div>
         <h4>Judge</h4>
-        <p>Each answer is scored against the reference using <strong>the official LongMemEval judge prompts, unmodified</strong> — including the separate rubric the paper specifies for preference questions. Wall clock: ~1 minute.</p>
+        <p>Each answer is scored against the reference using <strong>the official LongMemEval judge prompts</strong>, per question type as the paper specifies them:</p>
+        <table class="tight">
+          <tbody>
+            <tr><td>Standard</td><td>Does the response contain the correct answer?</td></tr>
+            <tr><td>Temporal reasoning</td><td>Same, with off-by-one tolerance on day counts — the dataset's own reference answers give both readings.</td></tr>
+            <tr><td>Knowledge update</td><td>Accepts the updated answer even when the superseded value also appears.</td></tr>
+            <tr><td>Preference</td><td>Rubric — did it recall the preference <em>and</em> apply it?</td></tr>
+            <tr><td>Abstention</td><td>Correct only if the model identifies the question as unanswerable.</td></tr>
+          </tbody>
+        </table>
+        <p>Wall clock: ~1 minute.</p>
       </div></div>
-      <p>Total: about 115 minutes for a full canonical run from an empty vault, on one instance running on commodity hardware.</p>
+      <p>Total: about 115 minutes for a full canonical run from an empty vault, on one instance running on commodity hardware. All three phases take <code>--resume</code>; the run output records the hypothesis and the judge's verdict for every one of the 500 questions.</p>
     </section>
 
     <section id="retrieval">
@@ -189,26 +224,34 @@
       <p>The number depends as much on what reached the reader as on the reader itself.</p>
       <table class="tight">
         <tbody>
-          <tr><td>Retrieval depth</td><td>top-<em>k</em> 10 per question</td></tr>
-          <tr><td>Memories reaching the reader</td><td>16.4 on average — a retrieved item can carry more than one memory once summaries and concept rows are folded in</td></tr>
+          <tr><td>Retrieval depth</td><td>10 for single-session types, 15 for temporal and knowledge-update, 25 for preference, 30 for multi-session</td></tr>
+          <tr><td>Memories reaching the reader</td><td>16.4 on average across the run</td></tr>
+          <tr><td>Granularity</td><td>One memory per conversation turn — retrieval finds turns, not whole sessions</td></tr>
           <tr><td>Method</td><td>Kemory's standard hybrid retrieval — vector similarity and full-text, fused and re-ranked</td></tr>
           <tr><td>Scope</td><td>Namespace-scoped per question, so cross-question leakage is structurally impossible</td></tr>
         </tbody>
       </table>
-      <p>Worth stating plainly: <strong>a low top-<em>k</em> is a harder test, not an easier one.</strong> Flooding the reader with 100 memories would raise the chance the evidence is somewhere in the window, at the cost of pretending retrieval quality doesn't matter. Ten is close to what a real agent can afford in a real context budget.</p>
+      <p>Two honest observations about those numbers.</p>
+      <p><strong>Depth is tuned per question type, and that flatters the result.</strong> Multi-session gets three times the retrieval budget of a single-session question. That is a defensible engineering choice — a question whose evidence is spread across five conversations genuinely needs a wider window than one answered by a single turn — but it is a choice made <em>with knowledge of the question type</em>, which a live system does not always have. A flat top-<em>k</em> 10 across all types would score lower.</p>
+      <p><strong>Turn-level granularity cuts the other way.</strong> Storing each turn as its own memory makes retrieval harder, not easier: the system has to locate the specific exchange rather than being handed a whole session that happens to contain the answer. That is also how Kemory stores real conversations, so it is the honest configuration rather than a benchmark convenience.</p>
     </section>
 
     <section id="caveats">
       <h2>Caveats</h2>
-      <p>Two places our method departs from the original paper, and one thing this benchmark does not tell you. All three matter when comparing numbers.</p>
+      <p>Four things a careful reader should know before comparing this number to anything else. We would rather state them than have someone find them.</p>
 
-      <h3>1. A different judge</h3>
+      <h3>1. The harness is tuned to this benchmark</h3>
+      <p>This is the most important one. The answer prompts are written <strong>per question type</strong>, and they were refined using <strong>failure analysis from earlier runs on this same dataset</strong>. Retrieval depth is likewise set per question type. Neither was arrived at blind.</p>
+      <p>That makes the figure a measure of <em>Kemory retrieving well when the harness around it has been tuned for the task</em> — not a zero-shot result on unseen data. It is the normal way these numbers are produced across the field, and the per-type judge protocol in the benchmark itself invites per-type handling. But anyone comparing our number to a system evaluated with a single flat prompt is not comparing like with like, and we would rather say so than let the number imply otherwise.</p>
+      <p>What is <em>not</em> tuned: the storage and retrieval path. Ingestion goes through the public write API, retrieval through ordinary hybrid search, and every question is isolated in its own namespace.</p>
+
+      <h3>2. A different judge</h3>
       <p>The paper judges with GPT-4o. We judge with <strong>Llama-3.3-70B</strong>, using the paper's prompt templates verbatim. The prompts are identical; the model grading them is not. LLM judges disagree at the margins, so our figure is not strictly interchangeable with a GPT-4o-judged one. We use the same model as reader and judge, which is a further deviation worth knowing about.</p>
 
-      <h3>2. The oracle configuration</h3>
+      <h3>3. The oracle configuration</h3>
       <p>We run the <strong>oracle</strong> set — the evidence-bearing sessions, without the full distractor haystack. That is a legitimate configuration of the benchmark and the one many published numbers use, but it is an easier retrieval problem than the full corpus. A number on the oracle set should be compared with other oracle-set numbers.</p>
 
-      <h3>3. Variance</h3>
+      <h3>4. Variance</h3>
       <p>±2 points run to run, ~7 on multi-session. The 86.2% reproduce run above is the same system on the same data. We publish the canonical run as the headline and the spread alongside it, rather than quietly reporting our best day.</p>
 
       <div class="note">
@@ -248,6 +291,11 @@ python3 score.py --hyp output/hypotheses.jsonl \
                  --ref longmemeval_oracle.json \
                  --out output/results.json --resume</code></pre>
       <p>Every phase takes <code>--resume</code>, so an interrupted run continues rather than restarting. Phase 1 is the expensive one and only needs running once per vault.</p>
+
+      <h3>Re-score our answers with a different judge</h3>
+      <p>Phase 2 writes <code>hypotheses.jsonl</code> in the format the <strong>official LongMemEval evaluator</strong> expects. That means our answers can be graded by the paper's own scoring script, with GPT-4o, without re-running anything:</p>
+<pre><code>python3 evaluate_qa.py gpt-4o hypotheses.jsonl longmemeval_oracle.json</code></pre>
+      <p>This is the direct answer to the judge caveat above. If you do not trust a Llama-judged score, you do not have to take ours — take our raw answers and grade them yourself, with whatever judge you consider authoritative.</p>
       <div class="note">
         <span class="lbl">Want to verify it yourself?</span>
         <p>If you are evaluating Kemory seriously and want to run this — on the oracle set, the full haystack, or your own corpus — email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kemory%20benchmarks">hello@sekondbrain.ai</a> and we'll set you up with an instance and the harness. A benchmark you ran yourself is worth more than one we published.</p>

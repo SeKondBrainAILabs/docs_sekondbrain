@@ -72,18 +72,23 @@
         <tbody>
           <tr><td>macOS, Apple Silicon</td><td>Homebrew, above</td></tr>
           <tr><td>Linux, x86-64 and arm64</td><td>Homebrew, above</td></tr>
-          <tr><td>macOS, Intel</td><td>Not in the tap — install from source (needs Python 3.11+)</td></tr>
-          <tr><td>Windows, x86-64</td><td>A zip archive is published with each release; extract it and put the folder on your <code>PATH</code></td></tr>
+          <tr><td>Windows, x86-64</td><td>Download <code>kemory-windows-x64.zip</code> from the <a href="https://github.com/SeKondBrainAILabs/homebrew-s9n/releases">releases page</a>, extract it, and put the folder on your <code>PATH</code></td></tr>
+          <tr><td>macOS, Intel</td><td>Not available — see below</td></tr>
         </tbody>
       </table>
       <p>Check it worked:</p>
 <pre><code>kemory --version</code></pre>
+      <p>Every command takes <code>--help</code>, and <code>kemory --help</code> lists them all. This page covers the ones you are likely to need.</p>
+      <div class="note">
+        <span class="lbl">Intel Macs</span>
+        <p>There is no prebuilt binary for Intel Macs, and no supported way to install the CLI on one. You are not locked out of Kemory, though — the CLI is optional, and the config-file route in <a href="../#connect-local">Connect a local client</a> works on any machine. Use that instead.</p>
+      </div>
     </section>
 
     <section id="signin">
       <h2>Sign in</h2>
 <pre><code>kemory login</code></pre>
-      <p>This opens a browser, signs you in through SeKondBrain's identity service, and stores a short-lived token that refreshes itself. Kemory never sees or holds your password, and nothing secret is typed into your shell history.</p>
+      <p>This opens a browser, signs you in through SeKondBrain's identity service, and stores a short-lived token that refreshes itself. Kemory never sees or holds your password, and because there is no key to paste, nothing secret ends up in your shell history.</p>
       <p>Confirm it worked:</p>
 <pre><code>kemory whoami</code></pre>
       <p>That prints the account and organisation your token resolves to. <code>kemory logout</code> removes the stored credentials.</p>
@@ -124,6 +129,7 @@ kemory keys rotate &lt;agent-id&gt;</code></pre>
         <p>Without <code>--write</code>, a key can recall memories but not store them — least privilege by default. If an agent reads your memories happily but never seems to save anything, this is almost always why.</p>
       </div>
       <p>A new key is displayed once and never shown again — copy it when you create it. To retire a key, <code>rotate</code> it, which invalidates the previous value, or delete it from the dashboard.</p>
+      <p>A newly created agent may need an administrator to approve it before its key starts working, depending on how your organisation is configured. If a fresh key is refused, that is the first thing to check — <code>kemory doctor</code> reports the agent's status.</p>
     </section>
 
     <section id="orgs">

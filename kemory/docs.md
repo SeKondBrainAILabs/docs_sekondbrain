@@ -103,6 +103,10 @@ A key inherits the organisation of the person who created it, so an agent holdin
 inside your tenant. Keys can be listed and revoked from the dashboard, and revocation takes
 effect on the next call. Never commit one.
 
+There is also a command-line tool that writes this entry for you, using a browser login
+instead of a key in a file — useful if you are wiring several clients on one machine. See
+the [Kemory CLI](cli/).
+
 ### Making an AI actually use memory
 
 Most clients treat a tool as something to reach for when asked. Put this in your project

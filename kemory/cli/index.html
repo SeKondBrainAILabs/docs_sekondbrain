@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory CLI — install, sign in, connect | SeKondBrain</title>
+<meta name="description" content="The kemory command: install with Homebrew, sign in through your browser, wire a local client into Kemory in one command, mint keys, switch organisations, and diagnose a connection.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/cli/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<meta property="og:title" content="Kemory CLI">
+<meta property="og:description" content="Install, sign in, and wire a local client into Kemory in one command.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/cli/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  /* Page mood: blue — the Kemory surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+  table.tight td{padding:8px 14px 8px 0}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· CLI</span></a>
+    <div class="top-links">
+      <a href="../">Documentation</a>
+      <a href="#install">Install</a>
+      <a href="#connect">Connect a client</a>
+      <a href="#doctor">Diagnosing</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Command-line tool · optional</span>
+  <h1>One command to wire<br><em>a client to your memory.</em></h1>
+  <p class="lede">You do not need the CLI to use Kemory. A web AI connects with nothing installed, and a local client needs only a config entry and an API key — both covered in <a href="../">the main guide</a>.</p>
+  <p>The <code>kemory</code> command is for the cases where that is not enough: wiring several clients on one machine at once, holding a browser login that refreshes itself instead of a long-lived key in a file, switching between organisations, and finding out what broke when a connection misbehaves.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Setting up</div>
+    <a href="#install">Install</a>
+    <a href="#signin">Sign in</a>
+    <a href="#connect">Connect a local client</a>
+    <div class="grp">Using it</div>
+    <a href="#keys">API keys</a>
+    <a href="#orgs">Organisations</a>
+    <a href="#doctor">Diagnosing</a>
+    <div class="grp">Housekeeping</div>
+    <a href="#upgrade">Self-update</a>
+    <a href="#telemetry">Telemetry</a>
+    <a href="#support">Support</a>
+  </nav>
+
+  <main>
+
+    <section id="install">
+      <h2>Install</h2>
+      <p><strong>macOS and Linux.</strong> A native binary — no Python, no GitHub account, nothing to authenticate.</p>
+<pre><code>brew install sekondbrainailabs/s9n/kemory</code></pre>
+      <p>Upgrade later with <code>brew upgrade kemory</code>.</p>
+      <table class="tight">
+        <thead><tr><th>Platform</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>macOS, Apple Silicon</td><td>Homebrew, above</td></tr>
+          <tr><td>Linux, x86-64 and arm64</td><td>Homebrew, above</td></tr>
+          <tr><td>macOS, Intel</td><td>Not in the tap — install from source (needs Python 3.11+)</td></tr>
+          <tr><td>Windows, x86-64</td><td>A zip archive is published with each release; extract it and put the folder on your <code>PATH</code></td></tr>
+        </tbody>
+      </table>
+      <p>Check it worked:</p>
+<pre><code>kemory --version</code></pre>
+    </section>
+
+    <section id="signin">
+      <h2>Sign in</h2>
+<pre><code>kemory login</code></pre>
+      <p>This opens a browser, signs you in through SeKondBrain's identity service, and stores a short-lived token that refreshes itself. Kemory never sees or holds your password, and nothing secret is typed into your shell history.</p>
+      <p>Confirm it worked:</p>
+<pre><code>kemory whoami</code></pre>
+      <p>That prints the account and organisation your token resolves to. <code>kemory logout</code> removes the stored credentials.</p>
+    </section>
+
+    <section id="connect">
+      <h2>Connect a local client</h2>
+      <p>One command writes the Kemory MCP server into a client's config file:</p>
+<pre><code>kemory mcp install --host claude-code</code></pre>
+      <table class="tight">
+        <thead><tr><th><code>--host</code></th><th>Client</th></tr></thead>
+        <tbody>
+          <tr><td><code>claude-code</code></td><td>Claude Code — the default if you omit <code>--host</code></td></tr>
+          <tr><td><code>claude-desktop</code></td><td>Claude Desktop</td></tr>
+          <tr><td><code>cursor</code></td><td>Cursor</td></tr>
+          <tr><td><code>continue</code></td><td>Continue.dev</td></tr>
+          <tr><td><code>warp</code></td><td>Warp</td></tr>
+          <tr><td><code>all</code></td><td>Every supported client found on this machine</td></tr>
+        </tbody>
+      </table>
+      <p><code>--host</code> may be repeated to do several at once.</p>
+      <p>Restart the client fully afterwards — quitting the window is not enough. Warp is the exception; it picks the change up on save.</p>
+      <div class="note">
+        <span class="lbl">Why prefer this over a hand-written config?</span>
+        <p>The entry it writes runs a local bridge that speaks MCP to your client and HTTPS to Kemory, authenticating with your browser login. No API key is written into the file — so your client configs stay safe to sync between machines, or commit.</p>
+      </div>
+      <p>This path is for clients running on your own machine. An agent that cannot start a local subprocess — a hosted or cloud agent — should connect to the remote endpoint directly instead. See <a href="../#connect-web">Connect a web AI</a>.</p>
+    </section>
+
+    <section id="keys">
+      <h2>API keys</h2>
+      <p>Keys are for clients you are configuring by hand, and for CI. Most people never need this command and can mint a key from <strong>Dashboard → Keys</strong> instead.</p>
+<pre><code>kemory keys list
+kemory keys create --name my-agent --write
+kemory keys rotate &lt;agent-id&gt;</code></pre>
+      <div class="note">
+        <span class="lbl">Keys are read-only unless you ask for more.</span>
+        <p>Without <code>--write</code>, a key can recall memories but not store them — least privilege by default. If an agent reads your memories happily but never seems to save anything, this is almost always why.</p>
+      </div>
+      <p>A new key is displayed once and never shown again — copy it when you create it. To retire a key, <code>rotate</code> it, which invalidates the previous value, or delete it from the dashboard.</p>
+    </section>
+
+    <section id="orgs">
+      <h2>Organisations</h2>
+      <p>If your account belongs to more than one organisation, memories are scoped to whichever one is active.</p>
+<pre><code>kemory orgs               # list them; the active one is marked
+kemory use "Acme Corp"    # switch — by name, id, or id prefix</code></pre>
+      <p>The switch persists and applies to the next command. Membership is re-checked on the server for every request, so switching cannot grant you access you do not already have.</p>
+    </section>
+
+    <section id="doctor">
+      <h2>Diagnosing</h2>
+<pre><code>kemory doctor</code></pre>
+      <p>This walks the whole path end to end: reads your stored credentials, checks the service is healthy, confirms the credentials resolve to an account, lists the tools the server is offering, verifies your organisation is set, and reports how many namespaces you have and when a memory was last written.</p>
+      <table>
+        <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td><code>401</code> on every call</td><td>The stored login expired or was revoked</td><td><code>kemory login</code></td></tr>
+          <tr><td>Organisation empty</td><td>Your account's organisation has not reached the identity service</td><td>Contact support — this is not fixable from the CLI</td></tr>
+          <tr><td>Client does not list the tools after <code>mcp install</code></td><td>The client was not fully restarted</td><td>Quit it completely and reopen</td></tr>
+          <tr><td>The bridge exits immediately</td><td>The client is passing environment variables that override your stored login</td><td>Re-run <code>kemory mcp install</code> for that client</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="upgrade">
+      <h2>Self-update</h2>
+<pre><code>kemory upgrade            # --check to look without installing</code></pre>
+      <p>If you installed through Homebrew, use <code>brew upgrade kemory</code> instead — <code>upgrade</code> detects a Homebrew install and tells you so rather than fighting it.</p>
+    </section>
+
+    <section id="telemetry">
+      <h2>Telemetry</h2>
+      <p>Off by default, opt-in only.</p>
+<pre><code>kemory telemetry status
+kemory telemetry on
+kemory telemetry off</code></pre>
+      <p>When enabled it records anonymous usage counts against a random install id. It never collects your identity, your memory contents, file paths, or the values of any argument you type.</p>
+    </section>
+
+    <section id="support">
+      <h2>Support</h2>
+      <p>The output of <code>kemory doctor</code> is the most useful thing to include in a support request — it says which step broke without exposing your memories or your credentials.</p>
+      <p><a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a></p>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Kemory documentation</a>
+      <a href="../../">All documentation</a>
+      <a href="../../legal/privacy/">Privacy</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

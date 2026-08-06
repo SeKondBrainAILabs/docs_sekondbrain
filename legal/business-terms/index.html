@@ -11,8 +11,12 @@
   The source's [address] bracket is resolved from the registered office stated in the
   Privacy Policy. Any remaining unfilled bracket is rendered with class="gap" — never guessed.
 
-  This page is v1.0, effective 3 August 2026, matching the other three documents. If the
-  source Doc says otherwise, the Doc is behind — reconcile it before the next edit.
+  This page is v1.2, effective 5 August 2026, matching the other three documents. The
+  source still carries an unfilled date bracket; the date is set here for consistency with
+  Privacy v2.5, Terms v2.4 and the extension policy v1.1. Reconcile the source.
+  v1.2 changes from v1.0: adds 6.0 (third-party systems), 8.0 (UAE billing entity) and
+  section 14A (waiver, 12-month claims bar, no class actions), and widens the customer
+  indemnity in 13.2 to cover platform measures.
 -->
 <head>
 <meta charset="utf-8">
@@ -56,9 +60,9 @@
   <p>Individual and self-serve accounts are governed by the <a href="../terms/">Terms of Service for Individuals</a> instead. Enterprise deals on the KIT Master Subscription Agreement or bespoke paper continue on that paper.</p>
   <div class="addr">
     <span class="k">Version</span>
-    <code>1.0</code>
+    <code>1.2</code>
     <span class="k">Effective</span>
-    <code>3 August 2026</code>
+    <code>5 August 2026</code>
   </div>
 </div>
 
@@ -81,6 +85,7 @@
     <a href="#s12">12. Warranties</a>
     <a href="#s13">13. Indemnities</a>
     <a href="#s14">14. Liability</a>
+    <a href="#s14a">14A. Waiver and claims bar</a>
     <a href="#s15">15. Data protection</a>
     <a href="#s16">16. General</a>
     <div class="grp">Schedules</div>
@@ -127,6 +132,7 @@
 
     <section id="s6">
       <h2>6. Third-party services, connectors and agents</h2>
+      <p>6.0 <strong>How the Services use third-party systems.</strong> The Services interoperate with third-party systems as follows: (a) <strong>supported AI platforms</strong> (currently ChatGPT, Claude, Gemini, Perplexity and Manus) &mdash; at an Authorised User&rsquo;s direction, the browser extension reads that user&rsquo;s own conversations as displayed in their browser, imports existing history from native export files or via authenticated, rate-limited requests using the user&rsquo;s own signed-in session, and places selected context into a target platform&rsquo;s input; Customer is responsible for its and its Authorised Users&rsquo; compliance with those platforms&rsquo; terms, and acknowledges platforms may change interfaces or restrict automated access, in which case affected features may stop working without liability on SeKondBrain; (b) <strong>inference providers</strong> &mdash; as per clause 4.4 and the sub-processor list; (c) <strong>cloud infrastructure</strong> &mdash; Google Cloud (Switzerland or India per the selected region); (d) <strong>billing</strong> &mdash; per clause 8.0. SeKondBrain is not affiliated with the operators of the supported AI platforms; their marks identify compatibility only.</p>
       <p>6.1 Customer may connect third-party services (email, calendar, storage, communications and other connectors) and MCP-compatible agents. Third-party services are governed by their own terms; SeKondBrain does not control them and is not responsible for them. When Customer connects or authorises a third party, Customer instructs SeKondBrain to exchange the relevant data with it under the permissions Customer configures.</p>
     </section>
 
@@ -137,6 +143,7 @@
 
     <section id="s8">
       <h2>8. Fees and payment</h2>
+      <p>8.0 <strong>Billing entity.</strong> The Agreement is with SeKondBrain AI Labs Limited under the laws of England and Wales. Invoicing and collection are administered globally by SeKondBrain&rsquo;s affiliate <strong>SeKondBrain AI Labs FZCO, United Arab Emirates</strong> (the &ldquo;Billing Entity&rdquo;) acting as billing and collection agent, and/or through SeKondBrain&rsquo;s designated payment provider, as stated on the Order or invoice. Payment to the Billing Entity in accordance with the invoice discharges Customer&rsquo;s payment obligation. The billing arrangement does not change the contracting parties, the governing law, or the parties&rsquo; rights and obligations under the Agreement.</p>
       <p>8.1 Customer will pay the fees stated in the Order. Unless the Order says otherwise: fees are exclusive of VAT and other applicable taxes, which Customer will pay in addition; subscription fees are invoiced annually or monthly in advance per the Order; usage-based fees are invoiced in arrears; invoices are payable within 30 days; and seats added mid-term are charged pro rata. Fees are non-refundable except as expressly stated in the Agreement.</p>
       <p>8.2 SeKondBrain may charge interest on overdue undisputed sums at 4% per annum above the Bank of England base rate, and may suspend the Services for undisputed sums more than 30 days overdue after at least 14 days&rsquo; written notice.</p>
       <p>8.3 Renewal pricing may change with at least 60 days&rsquo; notice before the renewal date.</p>
@@ -169,7 +176,7 @@
     <section id="s13">
       <h2>13. Indemnities</h2>
       <p>13.1 <strong>By SeKondBrain.</strong> SeKondBrain will defend Customer against third-party claims that the Services, used as permitted, infringe UK or EU intellectual property rights, and will pay resulting damages finally awarded or agreed in settlement &mdash; provided Customer gives prompt notice, sole control of the defence to SeKondBrain and reasonable assistance. If a claim arises, SeKondBrain may procure the right to continue, modify the Services to be non-infringing, or terminate the affected Services with a pro-rata refund. This clause does not apply to claims arising from Customer Data, combinations not provided by SeKondBrain, or use in breach of the Agreement, and states SeKondBrain&rsquo;s entire liability for infringement.</p>
-      <p>13.2 <strong>By Customer.</strong> Customer will defend SeKondBrain against third-party claims arising from Customer Data, Customer&rsquo;s ingestion of client communications without required rights or notices, or use of the Services in breach of the Agreement, on equivalent terms.</p>
+      <p>13.2 <strong>By Customer.</strong> Customer will defend and hold SeKondBrain harmless against third-party claims arising from Customer Data, Customer&rsquo;s ingestion of client communications without required rights or notices, use of the Services in breach of the Agreement, or measures taken by third-party AI platforms against Customer or its Authorised Users (including account restriction, suspension or termination) in connection with session-based capture, import or hand-off features used at Customer&rsquo;s or an Authorised User&rsquo;s direction, on equivalent terms. Customer acknowledges these features operate within Authorised Users&rsquo; own signed-in platform sessions and accepts the associated platform-measure risk.</p>
     </section>
 
     <section id="s14">
@@ -177,6 +184,14 @@
       <p>14.1 Nothing limits liability for death or personal injury caused by negligence, fraud, or anything else that cannot be limited under English law.</p>
       <p>14.2 Subject to 14.1, neither party is liable for loss of profits, revenue, goodwill, anticipated savings, or indirect or consequential loss.</p>
       <p>14.3 Subject to 14.1 and 14.2, each party&rsquo;s total aggregate liability arising out of or in connection with the Agreement is capped at the sums actually paid by Customer under the Agreement in the 12 months preceding the first event giving rise to liability (pro-rated where the Agreement has run for less than 12 months). Customer&rsquo;s payment obligations are not limited by this clause.</p>
+    </section>
+
+    <section id="s14a">
+      <h2>14A. Assumption of responsibility, claims bar and waiver</h2>
+      <p>14A.1 Customer acknowledges the Services are decision-support and knowledge infrastructure: Outputs inform, and do not replace, the judgment of Customer&rsquo;s qualified personnel. To the maximum extent permitted by law, Customer waives, and shall bring no claim to the extent it arises from: (a) reliance on an Output that was not reviewed by a suitably qualified person as required by clause 5.1; (b) decisions taken, or professional services provided to Customer&rsquo;s own clients, informed by the Services; (c) data or content Customer chose to ingest, share, or expose to a third-party platform or agent; or (d) acts, omissions, interface changes, access restrictions or account measures of third-party platforms with which the Services interoperate.</p>
+      <p>14A.2 <strong>Claims bar.</strong> Except for payment obligations, indemnity claims under clause 13, and breaches of clause 10 (Confidentiality) or Schedule 1, neither party may bring a claim arising out of or in connection with the Agreement more than 12 months after the date the claiming party became aware, or ought reasonably to have become aware, of the facts giving rise to it.</p>
+      <p>14A.3 <strong>No class or representative actions.</strong> All claims must be brought in the claiming party&rsquo;s individual corporate capacity, and not as a claimant or member of a class, collective, or representative proceeding.</p>
+      <p>14A.4 Nothing in this clause 14A limits liability that cannot lawfully be limited (clause 14.1).</p>
     </section>
 
     <section id="s15">

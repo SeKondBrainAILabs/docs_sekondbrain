@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <!--
-  Privacy Policy — Kora for Chrome & Kemory — SeKondBrain AI Labs Limited.
-  Companion to the master Privacy Policy v2.2.
-  Source of truth: Google Doc "SeKondBrain_Kora_for_Chrome_Kemory_Privacy_Policy_v1.0"
-  (128Dk-9Sx2GQldlWJRml4Tnu_59vYI4y17iJ5Ine6RpM). Edit there first, then mirror here.
+  Privacy Policy — Kora for Chrome & Kemory v1.1 — SeKondBrain AI Labs Limited.
+  Companion to the master Privacy Policy v2.5.
+  Source of truth: "SeKondBrain_Kora_for_Chrome_Kemory_Privacy_Policy_v1.1".
+  Edit there first, then mirror here.
+  v1.1 changes from v1.0: the extension now captures attachment FILES, not just their
+  metadata (§3.2); history import resumes automatically in the background (§3.2, §14);
+  ICO registration stated as applied for (§2).
   Editorial matter addressed to us in the source is deliberately not published.
   Unfilled brackets in the source are rendered with class="gap" — never guessed.
 
@@ -51,10 +54,12 @@
   <p class="lede">What the extension reads, what never leaves your browser, every permission it asks for and why, and how the Kemory memory service handles what you choose to sync.</p>
   <p>This policy supplements the <a href="../privacy/">master Privacy Policy</a>, which applies to all SeKondBrain services; if they conflict in respect of the extension or Kemory, this policy prevails.</p>
   <div class="addr">
+    <span class="k">Version</span>
+    <code>1.1</code>
     <span class="k">Companion to</span>
-    <code>Privacy Policy v2.2</code>
+    <code>Privacy Policy v2.5</code>
     <span class="k">Effective</span>
-    <code>3 August 2026</code>
+    <code>5 August 2026</code>
   </div>
 </div>
 
@@ -94,7 +99,7 @@
 
     <section id="s2">
       <h2>2. Data controller</h2>
-      <p>The data controller is <strong>SeKondBrain AI Labs Limited</strong>, Company No. 16806279, registered office 2 Peel Court, 24 St. Cuthberts Way, Darlington, England DL1 1GB. Email: <strong><a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a></strong>. Website: <a href="https://www.sekondbrain.ai">https://www.sekondbrain.ai</a>. ICO registration: our application is pending; we will publish the registration number here once it is issued. We have not appointed a statutory Data Protection Officer.</p>
+      <p>The data controller is <strong>SeKondBrain AI Labs Limited</strong>, Company No. 16806279, registered office 2 Peel Court, 24 St. Cuthberts Way, Darlington, England DL1 1GB. Email: <strong><a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a></strong>. Website: <a href="https://www.sekondbrain.ai">https://www.sekondbrain.ai</a>. ICO registration: applied for; registration number will be added here once issued. We have not appointed a statutory Data Protection Officer.</p>
       <p><strong>Self-hosted Kemory:</strong> if you configure Kora to synchronise to a Kemory instance you host yourself, you (or your organisation) are the data controller for the data held on that instance; we act only as the provider of the software.</p>
     </section>
 
@@ -106,8 +111,8 @@
       <p>Signing in to Kora is signing in to Kemory &mdash; there is no separate Kora account. On sign-in the extension automatically creates a device-scoped Kemory API key for this browser install (section 3.3), which synchronises your conversations to your Kemory. Signing in is optional for local capture: without an account, conversations are captured to your browser only and nothing is sent to our servers.</p>
 
       <h3>3.2 AI conversation content</h3>
-      <p>The extension reads your own conversations on the AI platforms you have enabled, as they are visible in your browser: conversation text (your prompts and the AI&rsquo;s replies as shown on screen); conversation metadata (title, URL/identifier, source platform); timestamps; and attachment metadata (references to files or artefacts shown in the conversation, not the files themselves unless displayed as text).</p>
-      <p><strong>Scope of collection:</strong> Kora only reads conversations on the supported AI platforms &mdash; ChatGPT, Claude, Gemini, Perplexity and Manus &mdash; and only on the platforms you have switched on. Each platform can be disabled individually. Kora does not access private messages on other sites, content on any other website, or data from platforms you have disabled. History import runs only when you start it.</p>
+      <p>The extension reads your own conversations on the AI platforms you have enabled, as they are visible in your browser: conversation text (your prompts and the AI&rsquo;s replies as shown on screen); conversation metadata (title, URL/identifier, source platform); timestamps; and attachments and artefacts exchanged in the conversation &mdash; including files you upload to the platform and images generated or shared in the chat &mdash; captured as the files themselves, subject to a per-file size cap (currently 5&nbsp;MB), together with their names, types and sizes.</p>
+      <p><strong>Scope of collection:</strong> Kora only reads conversations on the supported AI platforms &mdash; ChatGPT, Claude, Gemini, Perplexity and Manus &mdash; and only on the platforms you have switched on. Each platform can be disabled individually. Kora does not access private messages on other sites, content on any other website, or data from platforms you have disabled. History import starts only when you initiate it; once started, it continues and resumes automatically in the background &mdash; including after interruptions or platform rate limits &mdash; until your history is complete, shows a visible progress banner while running, and can be stopped in Settings.</p>
       <p><strong>Prompt enrichment (&ldquo;Enhance with Kora&rdquo;):</strong> while you compose a prompt on an enabled platform, the extension may send your in-progress draft text to your connected Kemory as a search query, to find your own relevant memories and offer them as context. Draft text is used only to search; it is not stored as a conversation or memory by this feature, and it is sent nowhere other than your connected Kemory. This stops entirely when you turn cross-AI recall off in Settings, and never runs on platforms you have disabled.</p>
       <p><strong>Derived memory data:</strong> after your conversations synchronise, Kemory automatically derives further records so that recall works: extracted memories (short facts and preferences found in your chats), compressed summaries of related memories and of each namespace, and numeric search representations (embeddings). Derived records are part of your Kemory data and are covered by the same access controls, retention and deletion rules as the content they came from (sections 6 and 10).</p>
 
@@ -212,7 +217,8 @@
 
     <section id="s14">
       <h2>14. History import</h2>
-      <p>When you start a history import, the extension opens temporary tabs to load your past conversations on the platforms you selected. These tabs are placed in a separate labelled tab group and closed automatically when the import completes. Only your conversation content on those platforms is read; no other browsing data is accessed. History import never starts on its own.</p>
+      <p>When you start a history import, the extension opens temporary tabs within your signed-in session to load your past conversations on the platforms you selected, paging through them at a deliberately limited rate and pausing and retrying when a platform applies rate limits. These tabs are placed in a separate labelled tab group and closed when the import completes.</p>
+      <p>Once you have started an import, it continues and resumes automatically in the background until your history is complete; a progress banner is shown while it runs and you can stop it at any time in Settings. If a platform signs you out mid-import, the import pauses and resumes after you sign back in. Only your conversation content on those platforms is read; no other browsing data is accessed. An import never begins without you initiating it.</p>
     </section>
 
     <section id="s15">

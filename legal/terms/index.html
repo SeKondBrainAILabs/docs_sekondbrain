@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <!--
-  Terms of Service — Individuals, v2.2 — SeKondBrain AI Labs Limited.
-  Source of truth: "SeKondBrain_End_User_Terms_v2.2". Edit there first, then mirror here.
-  v2.2 changes from v2.1: adds 4.3A (30-day money-back guarantee) and 4.3B (Paddle as
-  merchant of record).
+  Terms of Service — Individuals, v2.4 — SeKondBrain AI Labs Limited.
+  Source of truth: "SeKondBrain_End_User_Terms_v2.4". Edit there first, then mirror here.
+  v2.4 changes from v2.2: adds 4.0 (UAE billing entity), section 6A (assumption of
+  responsibility, waiver, and knowing acceptance of platform account risk), and 7.0 /
+  7.0A / 7.0B describing exactly how third-party systems and the extension work.
   Editorial matter addressed to us in the source is deliberately not published.
   The source's [address] and [support@sekondbrain.ai] brackets are resolved from the
   registered office and support address stated elsewhere in the same document set.
@@ -51,9 +52,9 @@
   <p>Organisation-managed workspaces, KIT Team and KompanyBrain are governed by the <a href="../business-terms/">Business Terms</a> instead.</p>
   <div class="addr">
     <span class="k">Version</span>
-    <code>2.2</code>
+    <code>2.4</code>
     <span class="k">Effective</span>
-    <code>3 August 2026</code>
+    <code>5 August 2026</code>
   </div>
 </div>
 
@@ -68,6 +69,7 @@
     <div class="grp">Content</div>
     <a href="#s5">5. Your content</a>
     <a href="#s6">6. Outputs</a>
+    <a href="#s6a">6A. Your responsibility</a>
     <a href="#s7">7. Third parties</a>
     <a href="#s8">8. Acceptable use</a>
     <a href="#s9">9. Our IP</a>
@@ -104,6 +106,7 @@
     <section id="s4">
       <h2>4. Plans, fees and cancellation</h2>
       <p class="muted">Summarised, with worked detail, on our <a href="../refunds/">Refund Policy</a> page.</p>
+      <p>4.0 <strong>Billing entity.</strong> Your contract for the Services is with SeKondBrain AI Labs Limited under the laws of England and Wales. Billing is administered globally by our affiliate <strong>SeKondBrain AI Labs FZCO, United Arab Emirates</strong> (the &ldquo;Billing Entity&rdquo;), which may invoice and collect fees on our behalf, and/or by our merchant of record, Paddle (clause 4.3B), as indicated at purchase. Payment to the Billing Entity or to Paddle discharges your payment obligation to us. The identity of the billing party does not change your contracting party, your rights under these Terms, or the governing law.</p>
       <p>4.1 Paid plans, prices, seat definitions and usage limits are described at the point of purchase. Prices include VAT where stated. Subscriptions renew automatically for successive periods equal to the initial period unless cancelled before renewal; we will remind Consumers of upcoming renewals where required by law.</p>
       <p>4.2 We may change prices with at least 30 days&rsquo; notice, effective from your next renewal. If you do not accept a price change, cancel before it takes effect.</p>
       <p>4.3 <strong>Consumer cooling-off.</strong> If you are a Consumer, you have 14 days from purchase to cancel and receive a refund under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013. If you ask us to begin supplying the digital service immediately, you acknowledge that: (a) for services, if you cancel within the 14 days you will pay for the portion supplied; and (b) where you expressly consent to immediate supply of digital content and acknowledge losing the right to cancel, the cooling-off right is lost for that content. We will obtain these confirmations at checkout.</p>
@@ -127,8 +130,25 @@
       <p>6.2 Outputs are generated with retrieval, provenance and audit mechanisms designed to reduce error, but <strong>they may still be inaccurate, incomplete or unsuitable. You must review Outputs before relying on or acting upon them.</strong> Outputs are not legal, financial, medical, tax or other professional advice, and no professional-client relationship is created.</p>
     </section>
 
+    <section id="s6a">
+      <h2>6A. Assumption of responsibility and waiver</h2>
+      <p>6A.1 You acknowledge that the Services are cognitive tools that assist your own thinking and work: Outputs, memory recall, syntheses and suggestions are inputs to your judgment, not substitutes for it. <strong>To the maximum extent permitted by law, you waive any claim against us to the extent it arises from</strong>: (a) reliance on an Output you did not verify as required by clause 6.2; (b) decisions or actions you take, or professional services you provide to others, informed by the Services; (c) content you chose to capture, import, share, or expose to a third-party platform or agent; or (d) acts, omissions, terms-enforcement, interface changes or account measures of third-party platforms described in clause 7.</p>
+      <p>6A.1A <strong>Platform account risk &mdash; knowing acceptance.</strong> Capture, history import and hand-off features work by operating within your own signed-in session on the supported AI platforms &mdash; the extension acts as you, on your instruction, using your existing login, without any separate credentials and without concealing what it does. You acknowledge and knowingly accept that a platform operator may treat this activity as contrary to its terms and may rate-limit, restrict, suspend, disconnect, lock out or terminate your account on that platform, or take other measures, and that whether and how a platform responds is outside our control. <strong>You accept this risk as an informed choice each time you enable capture or start an import, and, to the maximum extent permitted by law, you agree that we are not liable for, you waive all claims against us in respect of, and (if you are not a Consumer) you will hold us harmless from and indemnify us against any claims arising from, any such platform measure or its consequences.</strong> If you are a Consumer, nothing in this clause requires you to indemnify us and your statutory rights are unaffected.</p>
+      <p>6A.2 <strong>This clause does not exclude or limit anything that cannot lawfully be excluded or limited</strong> &mdash; including liability for death or personal injury caused by negligence, fraud, or your statutory rights as a Consumer (including the right to services performed with reasonable care and skill). Nothing in these Terms prevents you from bringing a claim to enforce those rights.</p>
+    </section>
+
     <section id="s7">
       <h2>7. Third-party services and connected agents</h2>
+      <p>7.0 <strong>How the Services use third-party systems.</strong> So that you know exactly what happens with third parties when you use the Services:</p>
+      <ul>
+        <li><strong>Supported AI platforms</strong> (currently ChatGPT, Claude, Gemini, Perplexity and Manus): at your direction the extension (i) reads your own conversations as displayed in your browser on platforms you have enabled; (ii) imports your existing conversation history, either from the platform&rsquo;s native export files you provide or by making authenticated, rate-limited requests to the platform using your own signed-in session; and (iii) where you use Continue/hand-off features, carries conversation context you select into a Kora session operated on our AI backend, or places it into a target platform&rsquo;s input or your clipboard. These platforms are operated by third parties under their own terms; you are responsible for your accounts with them and for ensuring your use of these features complies with their terms, and you acknowledge that a platform may change its interface, restrict automated access, or take measures affecting your account, and that these features may consequently stop working, in whole or part, at any time;</li>
+        <li><strong>AI inference providers</strong>: content you submit to AI features is processed by our inference providers solely to generate your requested outputs (sub-processor list: <a href="../../subprocessors/">docs.sekondbrain.ai/subprocessors</a>);</li>
+        <li><strong>Cloud infrastructure</strong>: your hosted data is stored on Google Cloud in Switzerland or India as described in the <a href="../privacy/">Privacy Policy</a>;</li>
+        <li><strong>Billing</strong>: payments are handled by Paddle as merchant of record and/or administered by our Billing Entity (clauses 4.0 and 4.3B);</li>
+        <li><strong>Sign-in providers</strong>: if you authenticate via a third-party identity provider, it processes your sign-in under its own terms.</li>
+      </ul>
+      <p>7.0B <strong>How the Kora for Chrome extension works, in plain terms.</strong> The extension runs inside your browser. On platforms you switch on, it reads your conversations as they appear on screen and stores them, first locally in your browser and then, if you are signed in, in your own Kemory. When you start a history import, it opens the platform in a background tab within your signed-in session and pages through your past conversations at a deliberately limited rate; once you have started an import, it continues and resumes automatically in the background &mdash; including after interruptions or rate limits &mdash; until your history is complete, showing a visible progress banner throughout. Files and images you exchanged in those conversations are captured too (size-capped per file). &ldquo;Continue&rdquo; carries a conversation forward in a Kora session using our AI backend rather than posting into the other platform. Everything above is controlled by switches in Settings: a master capture switch, per-platform switches, per-namespace sharing controls, and the ability to stop an import. A capture indicator is shown while capture is active.</p>
+      <p>7.0A We are not affiliated with, endorsed by, or sponsored by the operators of the supported AI platforms; their names and marks belong to their owners and are used only to identify compatibility.</p>
       <p>7.1 The Services interoperate with third-party services &mdash; AI models and assistants, coding agents connected over MCP, storage, communication and other connectors. Third-party services are governed by their own terms and privacy policies; we do not control them and are not responsible for them.</p>
       <p>7.2 When you connect or authorise a third-party service or agent, you instruct us to exchange the relevant data with it under the permissions you configure. Choose and scope authorisations carefully; anything an authorised agent can read, it receives.</p>
     </section>

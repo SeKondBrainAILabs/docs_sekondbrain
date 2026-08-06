@@ -31,9 +31,9 @@ claiming a credential.
 │   └── docs.md             copy source of truth (prose)
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
-│   ├── privacy/            master Privacy Policy v2.3
-│   ├── terms/              Terms of Service — Individuals v2.2
-│   ├── business-terms/     Business Terms v1.0 + DPA (Schedules 1 and 2)
+│   ├── privacy/            master Privacy Policy v2.5
+│   ├── terms/              Terms of Service — Individuals v2.4
+│   ├── business-terms/     Business Terms v1.2 + DPA (Schedules 1 and 2)
 │   └── extension-privacy/  Kora for Chrome & Kemory privacy companion
 ├── subprocessors/          sub-processor disclosure — cited by the DPA, keep it live
 │   └── index.html
@@ -82,10 +82,10 @@ two diverge silently.
 
 | Page | Document | Version |
 |---|---|---|
-| `/legal/privacy/` | Privacy Policy | 2.3 |
-| `/legal/terms/` | Terms of Service — Individuals | 2.2 |
-| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.0 |
-| `/legal/extension-privacy/` | Kora for Chrome & Kemory | companion to 2.3 |
+| `/legal/privacy/` | Privacy Policy | 2.5 |
+| `/legal/terms/` | Terms of Service — Individuals | 2.4 |
+| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.2 |
+| `/legal/extension-privacy/` | Kora for Chrome & Kemory | 1.1 (companion to 2.5) |
 
 Two rules, both enforced by `tools/preflight.py`:
 

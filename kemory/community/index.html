@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory Community Edition | SeKondBrain docs</title>
+<meta name="description" content="Install and operate the local-first, open-source Kemory Community Edition with Docker.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/community/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>:root{ --veil-a:rgba(65,211,160,.18); --veil-b:rgba(95,196,240,.16); }</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· Community Edition</span></a>
+    <div class="top-links">
+      <a href="#install">Install</a>
+      <a href="#runtime">Runtime</a>
+      <a href="#boundaries">Boundaries</a>
+      <a href="#support">Support</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Apache-2.0 · Docker-first · local data</span>
+  <h1>Kemory<br><em>Community Edition.</em></h1>
+  <p class="lede">Run persistent memory for AI agents on infrastructure you control. Community Edition keeps the hosted Kemory REST and MCP wire contracts while replacing managed identity, storage and telemetry with a local single-user runtime.</p>
+  <div class="addr"><span class="k">Repository</span><code>github.com/SeKondBrainAILabs/kemory-community</code></div>
+</div>
+
+<div class="wrap cols">
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Start</div>
+    <a href="#install">Install</a>
+    <a href="#runtime">Docker runtime</a>
+    <a href="#connect">Connect an agent</a>
+    <div class="grp">Reference</div>
+    <a href="#boundaries">Edition boundaries</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#source">Source documents</a>
+    <div class="grp">Community</div>
+    <a href="#support">Discussions and issues</a>
+  </nav>
+
+  <main>
+    <section id="install">
+      <h2>Install</h2>
+      <p>Node.js installs the launcher; Docker runs every application service. No host Python, Postgres or Redis installation is required.</p>
+<pre><code>npx kemory-community@latest init --runtime docker
+npx kemory-community@latest up</code></pre>
+      <p>The launcher creates local configuration and starts the pinned Compose stack. API access is protected by <code>X-API-Key</code>.</p>
+    </section>
+
+    <section id="runtime">
+      <h2>Docker runtime</h2>
+      <table>
+        <thead><tr><th>Service</th><th>Host port</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td><code>8111</code></td><td>REST and MCP backend</td></tr>
+          <tr><td>Dashboard</td><td><code>5175</code></td><td>Local management interface</td></tr>
+          <tr><td>Postgres + pgvector</td><td><code>5434</code></td><td>Memory and vector storage</td></tr>
+          <tr><td>Redis</td><td>Internal only</td><td>Local coordination</td></tr>
+        </tbody>
+      </table>
+      <p>Artifacts use local filesystem storage and telemetry uses the no-op adapter. Runtime data stays in Docker volumes and the local Kemory configuration directory.</p>
+    </section>
+
+    <section id="connect">
+      <h2>Connect an agent</h2>
+      <p>Point any MCP client at <code>http://127.0.0.1:8111/mcp/v1</code> and send the configured key in the <code>X-API-Key</code> header. Tool discovery advertises canonical <code>kemory_*</code> names; legacy <code>s9nmem_*</code> and <code>kora_*</code> names remain dispatch aliases.</p>
+    </section>
+
+    <section id="boundaries">
+      <h2>Edition boundaries</h2>
+      <p>Community Edition is an independent downstream repository, not a GitHub fork. Compatible hosted behaviour is selectively ported by feature cohort and tested against the local adapters.</p>
+      <p>Hosted Keycloak/OIDC, billing, teams and organisations, Gatekeeper evaluation, managed KMS, PostHog, MinIO, Weaviate, FalkorDB, executive analytics and CogOS/L5 runtime paths are not part of Community Edition.</p>
+    </section>
+
+    <section id="privacy">
+      <h2>Privacy</h2>
+      <p>Kemory Community does not send local memories to hosted Kemory and includes no hosted telemetry. External calls occur only for model or embedding providers you explicitly configure, plus the first download of a selected local embedding model.</p>
+      <p>Keep API keys out of source control and review logs before sharing them publicly.</p>
+    </section>
+
+    <section id="source">
+      <h2>Source documents</h2>
+      <p>The complete versioned documentation lives in this repository:</p>
+      <ul>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/setup.md">Setup and runtime</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/project-plan.md">Community project plan</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/maintainer-todo.md">Maintainer release checklist</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/port-registry.md">Port registry</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/privacy.md">Community privacy</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/hosted-delta-ledger.md">Hosted-to-community delta ledger</a></li>
+      </ul>
+    </section>
+
+    <section id="support">
+      <h2>Discussions and issues</h2>
+      <p>Use <a href="https://github.com/SeKondBrainAILabs/kemory-community/discussions">GitHub Discussions</a> for questions, ideas and community help. Use the <a href="https://github.com/SeKondBrainAILabs/kemory-community/issues">issue tracker</a> for reproducible bugs and scoped feature requests.</p>
+      <p>Report security vulnerabilities privately to <code>security@kemory.s9n.ai</code>.</p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

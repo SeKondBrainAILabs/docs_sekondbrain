@@ -98,8 +98,12 @@ for page, label in [
 
 # internal drafting apparatus must never reach a published page. The source documents
 # carry drafting notes and risk flags addressed to us, not to the reader.
+# Compliance posture is internal. HTML comments are served to the public byte for byte,
+# so a note saying our contracts are unconfirmed, or that a live policy contradicts a
+# page, is a public admission. Keep that in the tracker, never in the repo.
 INTERNAL = ["Internal drafting note", "RISK FLAG", "remove before signature", "ship gate",
-            "Draft for review", "DIVERGENCE FROM SOURCE"]
+            "Draft for review", "DIVERGENCE FROM SOURCE", "reconcile the source",
+            "ahead of the source", "per instruction", "unverified", "needs softening"]
 for page in sorted(pages):
     body = open(page, encoding="utf-8").read()
     for needle in INTERNAL:

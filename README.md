@@ -28,7 +28,8 @@ claiming a credential.
 │   └── mark.svg            logomark
 ├── kemory/
 │   ├── index.html          THE published page
-│   └── docs.md             copy source of truth (prose)
+│   ├── docs.md             copy source of truth (prose)
+│   └── community/          Community Edition guide and versioned sources
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
 │   ├── privacy/            master Privacy Policy v2.5

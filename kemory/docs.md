@@ -259,7 +259,7 @@ connected by different people do not.
 
 ## Benchmarks
 
-Kemory scores **88.2%** — 441 of 500 — on the LongMemEval-S oracle benchmark, run against the live production deployment. That is
+Kemory scores **89.6%** — 448 of 500 — on the LongMemEval-S oracle benchmark, run against the live production deployment. That is
 *end-to-end answer accuracy*: retrieve, generate, then judge the answer against the reference.
 It is not a retrieval-recall figure, which is the number most memory systems publish and is
 not the same thing.

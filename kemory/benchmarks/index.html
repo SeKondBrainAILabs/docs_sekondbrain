@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kemory benchmarks — LongMemEval | SeKondBrain</title>
-<meta name="description" content="Kemory scores 87.8% end-to-end on the 500-question LongMemEval-S oracle benchmark. The method, the dataset, the per-category results, the caveats, and how to reproduce it.">
+<meta name="description" content="Kemory scores 88.2% end-to-end on the 500-question LongMemEval-S oracle benchmark, run against the production deployment. The method, the dataset, the per-category results, the caveats, and how to reproduce it.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <meta property="og:title" content="Kemory benchmarks — LongMemEval">
-<meta property="og:description" content="87.8% end-to-end on LongMemEval-S. Method, results and caveats.">
+<meta property="og:description" content="88.2% end-to-end on LongMemEval-S, on the production deployment. Method, results and caveats.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,8 +57,8 @@
 
 <div class="wrap hero">
   <span class="pill"><i></i>Benchmark · LongMemEval-S oracle</span>
-  <h1>87.8%, end to end,<br><em>and here's the method.</em></h1>
-  <p class="lede">Kemory answers 439 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer. Not a retrieval metric.</p>
+  <h1>88.2%, end to end,<br><em>and here's the method.</em></h1>
+  <p class="lede">Kemory answers 441 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer, against the live production deployment. Not a retrieval metric.</p>
   <p>Everything below is what we actually ran: the dataset and its configuration, the three phases in detail, the per-category breakdown, the run-to-run variance, and the four caveats that matter when you compare this to anyone else's number — including where the harness is tuned to the benchmark. The harness, the dataset and the raw run output are preserved so the number can be re-derived rather than taken on trust.</p>
 </div>
 
@@ -84,8 +84,8 @@
     <section id="headline">
       <h2>The headline</h2>
       <div class="score">
-        <span class="big">87.8%</span>
-        <span class="of">439 / 500</span>
+        <span class="big">88.2%</span>
+        <span class="of">441 / 500</span>
         <span class="what">End-to-end answer accuracy on the LongMemEval-S oracle set, LLM-judged.</span>
       </div>
       <table class="tight">
@@ -96,9 +96,9 @@
           <tr><td>Haystack</td><td>10,960 memories ingested</td></tr>
           <tr><td>Metric</td><td><strong>End-to-end answer accuracy</strong> — retrieve, generate, then judge against the reference</td></tr>
           <tr><td>Reader &amp; judge</td><td>Llama-3.3-70B (see <a href="#caveats">caveats</a> — the paper uses GPT-4o as judge)</td></tr>
-          <tr><td>Retrieval depth</td><td>Per question type, top-<em>k</em> 10–30; 16.4 memories reaching the reader on average</td></tr>
-          <tr><td>Run</td><td>Canonical full run, 28 April 2026</td></tr>
-          <tr><td>Hardware</td><td>A single Kemory instance on commodity hardware</td></tr>
+          <tr><td>Retrieval depth</td><td>Per question type, top-<em>k</em> 10–30; 16.1 memories reaching the reader on average</td></tr>
+          <tr><td>Run</td><td>11 August 2026, against the live production deployment (see <a href="#runs">run history</a>)</td></tr>
+          <tr><td>Hardware</td><td>The production Kemory deployment — a single instance on commodity hardware</td></tr>
         </tbody>
       </table>
     </section>
@@ -108,43 +108,45 @@
       <p>Six question types, weighted as the benchmark defines them. Where Kemory is strong and where it isn't:</p>
 
       <div class="bar"><span class="lbl">single-session-assistant</span><span class="track"><span class="fill hi" style="width:100%"></span></span><span class="num">100.0%</span></div>
-      <div class="bar"><span class="lbl">single-session-user</span><span class="track"><span class="fill hi" style="width:97.1%"></span></span><span class="num">97.1%</span></div>
-      <div class="bar"><span class="lbl">knowledge-update</span><span class="track"><span class="fill hi" style="width:94.9%"></span></span><span class="num">94.9%</span></div>
-      <div class="bar"><span class="lbl">temporal-reasoning</span><span class="track"><span class="fill" style="width:82.7%"></span></span><span class="num">82.7%</span></div>
-      <div class="bar"><span class="lbl">multi-session</span><span class="track"><span class="fill" style="width:82.0%"></span></span><span class="num">82.0%</span></div>
-      <div class="bar"><span class="lbl">single-session-preference</span><span class="track"><span class="fill lo" style="width:73.3%"></span></span><span class="num">73.3%</span></div>
+      <div class="bar"><span class="lbl">knowledge-update</span><span class="track"><span class="fill hi" style="width:93.6%"></span></span><span class="num">93.6%</span></div>
+      <div class="bar"><span class="lbl">single-session-user</span><span class="track"><span class="fill hi" style="width:92.9%"></span></span><span class="num">92.9%</span></div>
+      <div class="bar"><span class="lbl">temporal-reasoning</span><span class="track"><span class="fill" style="width:85%"></span></span><span class="num">85.0%</span></div>
+      <div class="bar"><span class="lbl">single-session-preference</span><span class="track"><span class="fill" style="width:83.3%"></span></span><span class="num">83.3%</span></div>
+      <div class="bar"><span class="lbl">multi-session</span><span class="track"><span class="fill lo" style="width:82%"></span></span><span class="num">82.0%</span></div>
 
       <table class="tight">
         <thead><tr><th>Type</th><th>Correct</th><th>Accuracy</th><th>What it tests</th></tr></thead>
         <tbody>
           <tr><td>single-session-assistant</td><td>56 / 56</td><td>100.0%</td><td>Recalling what the assistant said within one session.</td></tr>
-          <tr><td>single-session-user</td><td>68 / 70</td><td>97.1%</td><td>Recalling what the user stated within one session.</td></tr>
-          <tr><td>knowledge-update</td><td>74 / 78</td><td>94.9%</td><td>A fact changed later — does the <em>current</em> value win?</td></tr>
-          <tr><td>temporal-reasoning</td><td>110 / 133</td><td>82.7%</td><td>Ordering, elapsed time, and counting across dates.</td></tr>
+          <tr><td>knowledge-update</td><td>73 / 78</td><td>93.6%</td><td>A fact changed later — does the <em>current</em> value win?</td></tr>
+          <tr><td>single-session-user</td><td>65 / 70</td><td>92.9%</td><td>Recalling what the user stated within one session.</td></tr>
+          <tr><td>temporal-reasoning</td><td>113 / 133</td><td>85.0%</td><td>Ordering, elapsed time, and counting across dates.</td></tr>
+          <tr><td>single-session-preference</td><td>25 / 30</td><td>83.3%</td><td>Applying a stated preference, scored against a rubric.</td></tr>
           <tr><td>multi-session</td><td>109 / 133</td><td>82.0%</td><td>Evidence spread across several conversations.</td></tr>
-          <tr><td>single-session-preference</td><td>22 / 30</td><td>73.3%</td><td>Applying a stated preference, scored against a rubric.</td></tr>
-          <tr><td><strong>Overall</strong></td><td><strong>439 / 500</strong></td><td><strong>87.8%</strong></td><td></td></tr>
+          <tr><td><strong>Overall</strong></td><td><strong>441 / 500</strong></td><td><strong>88.2%</strong></td><td></td></tr>
         </tbody>
       </table>
 
       <div class="note">
         <span class="lbl">Reading the weak spots honestly</span>
-        <p><strong>Preference</strong> is the lowest, and it is the fuzziest to score — the rubric rewards applying a taste, not retrieving a fact, so partial credit is a judgement call. <strong>Temporal reasoning</strong> and <strong>multi-session</strong> sit together in the low 80s and are the genuinely hard cases: both need several memories assembled in the right order, which is a retrieval problem and an arithmetic problem at once. Counting and elapsed-day questions are where most of the remaining errors live.</p>
+        <p><strong>Temporal reasoning</strong> and <strong>multi-session</strong> are the genuinely hard cases and now hold 44 of the 59 remaining misses: both need several memories assembled in the right order, which is a retrieval problem and an arithmetic problem at once. Counting and elapsed-day questions are where most of those errors live. <strong>Preference</strong> — the weakest category in earlier runs — has climbed to 83.3%, but it remains the fuzziest to score: the rubric rewards applying a taste, not retrieving a fact, so partial credit is a judgement call.</p>
       </div>
     </section>
 
     <section id="runs">
       <h2>Run history</h2>
-      <p>The same harness, run three times. We publish all three because a single number without its variance is not a result.</p>
+      <p>The same harness, run four times. We publish all four because a single number without its variance is not a result.</p>
       <table class="tight">
         <thead><tr><th>Run</th><th>Result</th><th>What was different</th></tr></thead>
         <tbody>
-          <tr><td><strong>28 Apr 2026</strong> — canonical</td><td><strong>87.8%</strong> (439/500)</td><td>Full three-phase run including ingest. <strong>This is the published figure.</strong></td></tr>
+          <tr><td><strong>11 Aug 2026</strong> — current</td><td><strong>88.2%</strong> (441/500)</td><td>Run against the <strong>live production deployment</strong> over the public API. Self-consistency voting on counting and duration questions — experimental in May — is now part of the standard harness. Ingest skipped: the vault was still seeded with the April ingest's 10,960 memories. <strong>This is the published figure.</strong></td></tr>
+          <tr><td>28 Apr 2026 — canonical full run</td><td>87.8% (439/500)</td><td>Full three-phase run including ingest, on the pre-voting harness. The previous published figure.</td></tr>
           <tr><td>9 May 2026 — reproduce</td><td>86.2% (431/500)</td><td>Ingest phase skipped; the vault was already populated. Same harness, same dataset.</td></tr>
-          <tr><td>9 May 2026 — experimental</td><td>88.0% (440/500)</td><td>Adds self-consistency voting on counting and duration questions. Not the published figure — it is a change to the method, not a re-run of it.</td></tr>
+          <tr><td>9 May 2026 — experimental</td><td>88.0% (440/500)</td><td>First run with self-consistency voting on counting and duration questions — the method change that has since become standard.</td></tr>
         </tbody>
       </table>
-      <p><strong>Run-to-run variance is roughly ±2 points</strong> on most categories. Multi-session is the most prompt-sensitive and has swung about 7 points between runs. Treat 87.8% as the centre of a range, not a precision measurement — anyone quoting a memory benchmark to a tenth of a point is overstating what these harnesses can resolve.</p>
+      <p><strong>Run-to-run variance is roughly ±2 points</strong> on most categories. Multi-session is the most prompt-sensitive and has swung about 7 points between runs. Treat 88.2% as the centre of a range, not a precision measurement — anyone quoting a memory benchmark to a tenth of a point is overstating what these harnesses can resolve.</p>
+      <p>Two things changed between the previous published figure and this one, and neither is a like-for-like re-run: the harness gained self-consistency voting (a method change, worth roughly the gap between the reproduce run and this one), and the target moved from a local instance to the production deployment. What did <em>not</em> change: the dataset, the judge, the prompts, and the memories being retrieved against.</p>
     </section>
 
     <section id="dataset">
@@ -185,6 +187,7 @@
         <p>Every haystack session is written into Kemory through the <strong>normal public write path</strong> — <code>POST /api/v1/memories</code>, the same call any user makes, with no benchmark-only ingestion route.</p>
         <p>Each conversation <strong>turn is stored as its own memory</strong> rather than the session as a block, so retrieval has to find the right turn instead of being handed a whole session that happens to contain it. Turns are written as <code>conversation</code> content type, sixteen concurrently, and each question's history lands in its own namespace — <code>lme_oracle_&lt;question_id&gt;</code> — so retrieval for one question <em>structurally cannot</em> see another's evidence.</p>
         <p>A state file maps every question to the memory IDs it produced, which is what makes the phase resumable and cleanly reversible. <strong>10,960 memories, zero terminal failures.</strong> Wall clock: 97.7 minutes.</p>
+        <p class="muted">The published 11 Aug 2026 run reuses the vault seeded by this April ingest — the same 10,960 memories, untouched in between — rather than re-ingesting. A harness script reconstructs the state file from the live namespace listing so Phases 2–3 can run standalone.</p>
       </div></div>
       <div class="phase"><span class="n">PHASE 2</span><div>
         <h4>Retrieve &amp; generate</h4>
@@ -193,14 +196,14 @@
         <table class="tight">
           <thead><tr><th>Question type</th><th>top-<em>k</em></th><th>Also</th></tr></thead>
           <tbody>
-            <tr><td>multi-session</td><td>30</td><td>Two-pass verification on counting questions</td></tr>
+            <tr><td>multi-session</td><td>30</td><td>Two-pass verification and self-consistency voting on counting and duration questions</td></tr>
             <tr><td>single-session-preference</td><td>25</td><td>Needs broad context for the rubric</td></tr>
             <tr><td>temporal-reasoning</td><td>15</td><td></td></tr>
             <tr><td>knowledge-update</td><td>15</td><td>Results sorted chronologically, so the latest value is last</td></tr>
             <tr><td>single-session-user / -assistant</td><td>10</td><td></td></tr>
           </tbody>
         </table>
-        <p>Some questions also get an <strong>entity-extraction pass</strong> first: a model pulls the named entities out of the question, each is searched separately, and the results are merged — a two-pass retrieval for questions where one embedding of the whole question retrieves poorly. Answer prompts are written per question type. Wall clock: ~16 minutes.</p>
+        <p>Some questions also get an <strong>entity-extraction pass</strong> first: a model pulls the named entities out of the question, each is searched separately, and the results are merged — a two-pass retrieval for questions where one embedding of the whole question retrieves poorly. Answer prompts are written per question type. Wall clock: ~24 minutes for the published run (2.9&nbsp;s per question, network round-trips to the production API included).</p>
       </div></div>
       <div class="phase"><span class="n">PHASE 3</span><div>
         <h4>Judge</h4>
@@ -216,7 +219,7 @@
         </table>
         <p>Wall clock: ~1 minute.</p>
       </div></div>
-      <p>Total: about 115 minutes for a full canonical run from an empty vault, on one instance running on commodity hardware. All three phases take <code>--resume</code>; the run output records the hypothesis and the judge's verdict for every one of the 500 questions.</p>
+      <p>Total: about 115 minutes for a full run from an empty vault; about 25 minutes for the published run, which reused the seeded vault. All three phases take <code>--resume</code>; the run output records the hypothesis and the judge's verdict for every one of the 500 questions.</p>
     </section>
 
     <section id="retrieval">
@@ -225,7 +228,7 @@
       <table class="tight">
         <tbody>
           <tr><td>Retrieval depth</td><td>10 for single-session types, 15 for temporal and knowledge-update, 25 for preference, 30 for multi-session</td></tr>
-          <tr><td>Memories reaching the reader</td><td>16.4 on average across the run</td></tr>
+          <tr><td>Memories reaching the reader</td><td>16.1 on average across the run</td></tr>
           <tr><td>Granularity</td><td>One memory per conversation turn — retrieval finds turns, not whole sessions</td></tr>
           <tr><td>Method</td><td>Kemory's standard hybrid retrieval — vector similarity and full-text, fused and re-ranked</td></tr>
           <tr><td>Scope</td><td>Namespace-scoped per question, so cross-question leakage is structurally impossible</td></tr>
@@ -241,7 +244,7 @@
       <p>Four things a careful reader should know before comparing this number to anything else. We would rather state them than have someone find them.</p>
 
       <h3>1. The harness is tuned to this benchmark</h3>
-      <p>This is the most important one. The answer prompts are written <strong>per question type</strong>, and they were refined using <strong>failure analysis from earlier runs on this same dataset</strong>. Retrieval depth is likewise set per question type. Neither was arrived at blind.</p>
+      <p>This is the most important one. The answer prompts are written <strong>per question type</strong>, and they were refined using <strong>failure analysis from earlier runs on this same dataset</strong>. Retrieval depth is likewise set per question type, and the self-consistency voting on counting and duration questions was added after failure analysis showed those questions dominated the misses. None of it was arrived at blind.</p>
       <p>That makes the figure a measure of <em>Kemory retrieving well when the harness around it has been tuned for the task</em> — not a zero-shot result on unseen data. It is the normal way these numbers are produced across the field, and the per-type judge protocol in the benchmark itself invites per-type handling. But anyone comparing our number to a system evaluated with a single flat prompt is not comparing like with like, and we would rather say so than let the number imply otherwise.</p>
       <p>What is <em>not</em> tuned: the storage and retrieval path. Ingestion goes through the public write API, retrieval through ordinary hybrid search, and every question is isolated in its own namespace.</p>
 
@@ -270,7 +273,7 @@
           <tr><td><strong>End-to-end accuracy</strong></td><td>Was the final answer right? Retrieval, assembly and generation all have to work.</td></tr>
         </tbody>
       </table>
-      <p><strong>87.8% is the second kind.</strong> Recall figures are usually higher than end-to-end figures on the same system, because finding the evidence is easier than using it. A published R@5 in the mid-90s and an end-to-end score in the high-80s can describe systems of similar quality — they are not on the same axis, and setting them side by side is a category error rather than a result.</p>
+      <p><strong>88.2% is the second kind.</strong> Recall figures are usually higher than end-to-end figures on the same system, because finding the evidence is easier than using it. A published R@5 in the mid-90s and an end-to-end score in the high-80s can describe systems of similar quality — they are not on the same axis, and setting them side by side is a category error rather than a result.</p>
     </section>
 
     <section id="reproduce">

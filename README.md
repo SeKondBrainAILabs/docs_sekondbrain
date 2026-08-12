@@ -104,19 +104,17 @@ privacy policy.
 
 ### Outstanding
 
-- **ICO registration number.** The application is pending. Both privacy pages say so in
-  plain terms and promise to publish the number once issued — replace that sentence in
-  `privacy/` §14.2 and `extension-privacy/` §2 when it arrives.
-- **`/subprocessors` is live but incomplete.** Google Cloud and Paddle are named; inference,
-  speech, email delivery and analytics are published as categories with `gap` markers. This is
+- **`/subprocessors` names every provider but is not complete.** Processing regions for Groq,
+  Concentrate.ai, OpenRunner, PostHog, Paddle, Stripe and Notion are marked pending, Notion's
+  purpose is unconfirmed, and the speech and email-delivery providers are unnamed. This is
   contractual, not cosmetic: Schedule 1 §3 grounds the general sub-processor authorisation in
-  that list, and §4 says transfers to inference providers occur only as disclosed there — so an
-  undisclosed provider is one the DPA does not permit us to transfer to. Tracked as **S9N-6672**
-  (Karol), which carries the fill-in table and the prompt to regenerate the page.
-- **Cookie Policy** has no URL, and both Terms documents incorporate it by reference.
-- Backup retention `[90]` days, and three unfilled Schedule 2 entries.
-- **Business Terms**: published as v1.0 effective 3 August 2026. Bring the source Doc in line
-  so the next mirror does not reintroduce an older state.
+  that list, and §4 says transfers occur only as disclosed there — so an undisclosed provider
+  is one the DPA does not permit us to transfer to. Tracked as **S9N-6672** (Karol).
+- **Cookie inventory.** The Cookie Policy publishes accurate categories, but the per-cookie
+  table in §4 is still placeholder pending a runtime audit. Tracked as **S9N-6677** (Karol).
+- Backup retention `[90]` days in Privacy §9.2.
+- **Source documents are behind the site** for Privacy §7.1 and §8, and Business Terms
+  Schedules 1–2. Bring them level or the next mirror will revert what is published.
 
 ---
 

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<!--
+  Kemory Fair Usage Policy v1.0 — SeKondBrain AI Labs Limited.
+
+  Sits alongside the Terms of Service, the Privacy Policy and the Acceptable Use Policy.
+  Where this policy and the Terms conflict, the Terms govern.
+
+  The Acceptable Use Policy referenced in section 1 is not published yet. Rather than
+  guess a URL, that reference renders as a visible gap marker until the page exists —
+  the same convention the other legal pages use for values still to be supplied.
+
+  Allowance figures in section 4 come from the source document. Confirm them against
+  the live metering counters before treating them as settled.
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory Fair Usage Policy | SeKondBrain</title>
+<meta name="description" content="What generous individual use of Kemory looks like, what happens if you go past it, and what we will never do to your memories in response. Allowances for Free, Pro, Team and Enterprise.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/legal/fair-usage/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<meta property="og:title" content="Kemory Fair Usage Policy — SeKondBrain">
+<meta property="og:description" content="Honest limits rather than advertised &quot;unlimited&quot;. What counts, what the allowances are, and what happens when you pass them.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/legal/fair-usage/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  /* Page mood: mint and blue — the legal surface. */
+  :root{ --veil-a:rgba(64,203,104,.14); --veil-b:rgba(95,196,240,.14); }
+  .scroll-x{overflow-x:auto;max-width:100%;margin:0 0 18px}
+  .scroll-x table{margin-bottom:0}
+  .scroll-x td,.scroll-x th{white-space:nowrap}
+  .scroll-x td:first-child{white-space:normal;min-width:210px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Legal <span>· SeKondBrain</span></a>
+    <div class="top-links">
+      <a href="../terms/">Terms</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="#allowances">Allowances</a>
+      <a href="../../kemory/">Kemory docs</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i style="background:var(--c-mint)"></i>Kemory · Fair Usage Policy · v1.0</span>
+  <h1>Honest limits,<br><em>not "unlimited".</em></h1>
+  <p class="lede">Most of what Kemory does costs us almost nothing per user. Two features are different, because we pay for the inference. This page states what generous individual use looks like, what happens if you go past it, and what we will never do to your data in response.</p>
+  <p>This policy sits alongside the <a href="../terms/">Terms of Service</a>, the <a href="../privacy/">Privacy Policy</a> and the Acceptable Use Policy <span class="gap">AUP not yet published</span>. Where this policy and the Terms conflict, the Terms govern.</p>
+  <div class="addr">
+    <span class="k">Version 1.0 · effective</span>
+    <code>12 August 2026</code>
+  </div>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Scope</div>
+    <a href="#why">Why this exists</a>
+    <a href="#covers">What it covers</a>
+    <a href="#units">What counts</a>
+    <div class="grp">Limits</div>
+    <a href="#allowances">Allowances</a>
+    <a href="#overage">Going past one</a>
+    <a href="#prohibited">Prohibited use</a>
+    <div class="grp">Operating</div>
+    <a href="#routing">Model routing</a>
+    <a href="#changes">Changes</a>
+    <a href="#appeals">Questions</a>
+    <a href="#changelog">Changelog</a>
+  </nav>
+
+  <main>
+
+    <section id="why">
+      <h2>Why this policy exists</h2>
+      <p>Most of what Kemory does costs us almost nothing per user. Capturing your conversations, storing them as memory, searching them, and injecting context back into ChatGPT or Claude all run against <strong>your</strong> AI subscriptions and your storage allowance. Those are governed by your plan limits, not by this policy.</p>
+      <p>Two features are different. <strong>Ask Kora</strong> and <strong>Continue with Kora</strong> run inference that we pay for. Every time you ask Kora a question, or carry a conversation into Kora from another AI, we send tokens to a model on your behalf and pick up the bill.</p>
+      <p>We would rather publish honest limits than advertise "unlimited" and quietly throttle you. This policy states what generous individual use looks like, what happens if you go past it, and what we will never do to your data in response.</p>
+    </section>
+
+    <section id="covers">
+      <h2>What this policy covers</h2>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Feature</th><th>What it is</th><th>Metered here?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Ask Kora</strong></td><td>You ask a question; Kora routes it to an appropriate model, grounded in your memory</td><td><strong>Yes</strong></td></tr>
+            <tr><td><strong>Continue with Kora</strong></td><td>You take a conversation started in another AI and continue it inside Kora, with your context carried across</td><td><strong>Yes</strong></td></tr>
+            <tr><td><strong>Counsel</strong></td><td>You put one question to several models at once and receive a synthesised answer</td><td><strong>Yes</strong> — see <a href="#allowances">below</a></td></tr>
+            <tr><td>Capture and sync of conversations</td><td>Reading your chats from connected AIs into your memory</td><td>No — plan limits apply</td></tr>
+            <tr><td>Memory storage and search</td><td>Your namespace, retrieval, dialectic synthesis</td><td>No — plan limits apply</td></tr>
+            <tr><td>Continue in another AI</td><td>Moving a conversation from Kemory into ChatGPT, Claude, Gemini and others</td><td>No — runs on your subscription</td></tr>
+            <tr><td>MCP tool calls from your own agents</td><td>Reads and writes against your namespace over MCP</td><td>No — API rate limits apply</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="units">
+      <h2>Units, and what counts</h2>
+      <p><strong>One Ask Kora request</strong> is one question and its answer, including any memory retrieval and any follow-up tool calls Kora makes to answer it. A clarifying question you ask in reply is a new request.</p>
+      <p><strong>One Continue with Kora handoff</strong> is one conversation carried into Kora. The handoff includes compaction of the source conversation and the first Kora turn. Every turn after that is an Ask Kora request.</p>
+      <p><strong>One Counsel query</strong> is one question fanned out to multiple models plus the synthesis step. Counsel is counted separately because it costs roughly as much as the number of models convened.</p>
+      <h3>What does not count against your allowance</h3>
+      <ul>
+        <li>Requests that fail because of an error on our side (5xx), or that we retry ourselves</li>
+        <li>Requests rejected for authentication or permission reasons before any model is called</li>
+        <li>An identical request repeated within 60 seconds where we serve a cached answer</li>
+        <li>Anything you cancel before the first token is returned</li>
+      </ul>
+    </section>
+
+    <section id="allowances">
+      <h2>Allowances by plan</h2>
+      <p>These are the thresholds at which we consider usage to have moved past normal individual use. They are not hard credit balances — they are the point at which the ladder in <a href="#overage">the next section</a> begins.</p>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th></th><th>Free</th><th>Pro</th><th>Team <span class="muted">(per seat)</span></th><th>Enterprise</th></tr></thead>
+          <tbody>
+            <tr><td>Ask Kora — rolling 5-hour window</td><td>20</td><td>150</td><td>300</td><td>Contracted</td></tr>
+            <tr><td>Ask Kora — per day</td><td>60</td><td>600</td><td>1,200</td><td>Contracted</td></tr>
+            <tr><td>Continue with Kora — per day</td><td>5</td><td>50</td><td>100</td><td>Contracted</td></tr>
+            <tr><td>Compacted context ceiling per handoff</td><td>8,000 tokens</td><td>32,000 tokens</td><td>64,000 tokens</td><td>Contracted</td></tr>
+            <tr><td>Counsel — per day</td><td>3 <span class="muted">(max 3 models)</span></td><td>30 <span class="muted">(max 5 models)</span></td><td>75 <span class="muted">(max 5 models)</span></td><td>Contracted</td></tr>
+            <tr><td>Concurrent Kora requests</td><td>1</td><td>3</td><td>5</td><td>Contracted</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Team pooling.</strong> Team allowances pool across the subscription. A three-seat Team account gets 3,600 Ask Kora requests a day, and any seat may draw on the pool. We do not police per-person distribution inside a team.</p>
+      <p><strong>Windows reset on a rolling basis.</strong> The 5-hour window is rolling, not fixed — you are never waiting for a clock at the top of the hour. Daily allowances reset at 00:00 UTC.</p>
+      <div class="note">
+        <span class="lbl">A cost backstop</span>
+        <p>Separately from the counts above, if a single account's inference cost in a calendar month is materially out of line with other accounts on the same plan, we may contact you under the next section. This exists to catch usage patterns the counters do not anticipate, not to claw back normal heavy use.</p>
+      </div>
+    </section>
+
+    <section id="overage">
+      <h2>What happens when you go past an allowance</h2>
+      <p>We escalate in order, and we tell you at every step.</p>
+      <table>
+        <tbody>
+          <tr><td><strong>At 80%</strong></td><td>Of a window or daily allowance, the extension shows a quiet indicator. Nothing changes.</td></tr>
+          <tr><td><strong>At 100%</strong></td><td>Ask Kora continues on a lighter open-weight model rather than stopping. You will see which model answered. Continue with Kora and Counsel pause until the window resets.</td></tr>
+          <tr><td><strong>Sustained overage</strong></td><td>Three or more consecutive days at 100% — we reduce concurrency and may queue requests behind other users during peak hours.</td></tr>
+          <tr><td><strong>Persistent overage</strong></td><td>We email you. The conversation is about finding the right plan, not about cutting you off. For a heavy Pro user that usually means Team; for a heavy Team account, Enterprise.</td></tr>
+          <tr><td><strong>Abuse</strong></td><td>Under <a href="#prohibited">prohibited use</a>, we may throttle, suspend Kora features, or terminate access without notice.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">What we will not do</span>
+        <p>We will not delete, hide, downgrade, or refuse to export your memories because of a usage dispute. <strong>Your memory is yours.</strong> Capture, search, export and continuing into another AI keep working even if Kora features are paused. This is not negotiable and it survives any future version of this policy.</p>
+      </div>
+    </section>
+
+    <section id="prohibited">
+      <h2>Prohibited use</h2>
+      <p>The following are outside fair use on every plan, including Enterprise unless your contract says otherwise:</p>
+      <table>
+        <tbody>
+          <tr><td><strong>Automation</strong></td><td>Driving Ask Kora, Continue with Kora or Counsel with scripts, bots, headless browsers, or scheduled jobs. These features are for a person at a keyboard. Programmatic access belongs on the API, under its own rate limits.</td></tr>
+          <tr><td><strong>Account sharing</strong></td><td>More than one person on a single Free or Pro seat. Team exists for teams.</td></tr>
+          <tr><td><strong>Reselling or proxying</strong></td><td>Exposing Kora as an inference endpoint inside your own product, or reselling access.</td></tr>
+          <tr><td><strong>Training and distillation</strong></td><td>Using Kora outputs to train, fine-tune, evaluate or distil a competing model or memory service, or systematically harvesting responses for a dataset.</td></tr>
+          <tr><td><strong>Circumvention</strong></td><td>Multiple free accounts to extend allowances, rotating identities, or interfering with metering.</td></tr>
+          <tr><td><strong>Load that degrades service</strong></td><td>Any pattern that materially affects availability or latency for other users.</td></tr>
+        </tbody>
+      </table>
+      <p>Enforcement under this section may be immediate and does not require prior notice.</p>
+    </section>
+
+    <section id="routing">
+      <h2>Model routing</h2>
+      <p>Ask Kora chooses a model per question. Light questions do not go to frontier models, which is how we keep Kora viable at its price. Under sustained load, or once you are past an allowance, routing biases further toward open-weight models we run ourselves.</p>
+      <p>You will always be able to see which model answered. If you need a specific model for a specific question, use <strong>Continue in another AI</strong> and run it on your own subscription — your memory travels with you either way.</p>
+    </section>
+
+    <section id="changes">
+      <h2>Changes to this policy</h2>
+      <p><strong>This policy is subject to change.</strong> Kemory is in its first release, the underlying model prices move, and these numbers are our best current estimate of generous individual use rather than a settled position. We expect to revise them as we see real usage.</p>
+      <ul>
+        <li>Every version is numbered and dated, with a <a href="#changelog">changelog</a> at the foot of this page.</li>
+        <li><strong>Material reductions</strong> to allowances on paid plans take effect no earlier than <strong>30 days</strong> after we notify account owners by email.</li>
+        <li>Increases, clarifications, and changes to Free plan allowances may take effect immediately.</li>
+        <li>Changes made in response to abuse, security incidents, or provider-side changes outside our control may take effect immediately on any plan.</li>
+        <li>If a material reduction lands mid-term on an annual plan and you would rather not continue, contact us and we will refund the unused portion.</li>
+      </ul>
+      <p>Continued use after a change takes effect is acceptance of the revised policy.</p>
+    </section>
+
+    <section id="appeals">
+      <h2>Questions and appeals</h2>
+      <p>If you have been throttled or contacted and you think we have it wrong, reply to the email or write to <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>. We would rather move you to the right plan than lose you.</p>
+      <p>If you are consistently at the ceiling and the next tier does not fit, tell us — an unusual usage pattern is usually a product signal, not a violation.</p>
+    </section>
+
+    <section id="changelog">
+      <h2>Changelog</h2>
+      <table>
+        <thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>1.0</td><td>12 August 2026</td><td>Initial publication.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Legal</a>
+      <a href="../terms/">Terms</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="../../kemory/">Kemory documentation</a>
+      <a href="mailto:support@sekondbrain.ai">Support</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

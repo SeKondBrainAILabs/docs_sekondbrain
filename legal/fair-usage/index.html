@@ -3,21 +3,20 @@
 <!--
   Kemory Fair Usage Policy v1.0 — SeKondBrain AI Labs Limited.
 
-  Sits alongside the Terms of Service, the Privacy Policy and the Acceptable Use Policy.
-  Where this policy and the Terms conflict, the Terms govern.
+  Stands on its own, in conjunction with the Terms of Service (individuals), the
+  Business Terms (organisations) and the Privacy Policy. Where this policy and those
+  contracts conflict, the contracts govern. There is no separate Acceptable Use Policy.
 
-  The Acceptable Use Policy referenced in section 1 is not published yet. Rather than
-  guess a URL, that reference renders as a visible gap marker until the page exists —
-  the same convention the other legal pages use for values still to be supplied.
-
-  Allowance figures in section 4 come from the source document. Confirm them against
-  the live metering counters before treating them as settled.
+  Numeric allowances are deliberately not published in v1.0 — thresholds are still being
+  calibrated against real usage. Section 4 states the dimensions we meter, not values.
+  When thresholds are set, publish them here with a new version and date, and email
+  account owners on paid plans before they start to bite.
 -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kemory Fair Usage Policy | SeKondBrain</title>
-<meta name="description" content="What generous individual use of Kemory looks like, what happens if you go past it, and what we will never do to your memories in response. Allowances for Free, Pro, Team and Enterprise.">
+<meta name="description" content="What generous individual use of Kemory looks like, what we meter, what happens if you go past a limit, and what we will never do to your memories in response.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/legal/fair-usage/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <meta property="og:title" content="Kemory Fair Usage Policy — SeKondBrain">
@@ -56,7 +55,7 @@
   <span class="pill"><i style="background:var(--c-mint)"></i>Kemory · Fair Usage Policy · v1.0</span>
   <h1>Honest limits,<br><em>not "unlimited".</em></h1>
   <p class="lede">Most of what Kemory does costs us almost nothing per user. Two features are different, because we pay for the inference. This page states what generous individual use looks like, what happens if you go past it, and what we will never do to your data in response.</p>
-  <p>This policy sits alongside the <a href="../terms/">Terms of Service</a>, the <a href="../privacy/">Privacy Policy</a> and the Acceptable Use Policy <span class="gap">AUP not yet published</span>. Where this policy and the Terms conflict, the Terms govern.</p>
+  <p>This policy stands on its own, in conjunction with the <a href="../terms/">Terms of Service</a> for individual accounts, the <a href="../business-terms/">Business Terms</a> for organisations, and the <a href="../privacy/">Privacy Policy</a>. Where this policy and those contracts conflict, the contracts govern.</p>
   <div class="addr">
     <span class="k">Version 1.0 · effective</span>
     <code>12 August 2026</code>
@@ -123,26 +122,22 @@
     </section>
 
     <section id="allowances">
-      <h2>Allowances by plan</h2>
-      <p>These are the thresholds at which we consider usage to have moved past normal individual use. They are not hard credit balances — they are the point at which the ladder in <a href="#overage">the next section</a> begins.</p>
-      <div class="scroll-x">
-        <table>
-          <thead><tr><th></th><th>Free</th><th>Pro</th><th>Team <span class="muted">(per seat)</span></th><th>Enterprise</th></tr></thead>
-          <tbody>
-            <tr><td>Ask Kora — rolling 5-hour window</td><td>20</td><td>150</td><td>300</td><td>Contracted</td></tr>
-            <tr><td>Ask Kora — per day</td><td>60</td><td>600</td><td>1,200</td><td>Contracted</td></tr>
-            <tr><td>Continue with Kora — per day</td><td>5</td><td>50</td><td>100</td><td>Contracted</td></tr>
-            <tr><td>Compacted context ceiling per handoff</td><td>8,000 tokens</td><td>32,000 tokens</td><td>64,000 tokens</td><td>Contracted</td></tr>
-            <tr><td>Counsel — per day</td><td>3 <span class="muted">(max 3 models)</span></td><td>30 <span class="muted">(max 5 models)</span></td><td>75 <span class="muted">(max 5 models)</span></td><td>Contracted</td></tr>
-            <tr><td>Concurrent Kora requests</td><td>1</td><td>3</td><td>5</td><td>Contracted</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p><strong>Team pooling.</strong> Team allowances pool across the subscription. A three-seat Team account gets 3,600 Ask Kora requests a day, and any seat may draw on the pool. We do not police per-person distribution inside a team.</p>
-      <p><strong>Windows reset on a rolling basis.</strong> The 5-hour window is rolling, not fixed — you are never waiting for a clock at the top of the hour. Daily allowances reset at 00:00 UTC.</p>
+      <h2>Allowances</h2>
+      <p><strong>We are not publishing numeric allowances yet.</strong> Kemory is in its first release and we are still calibrating what generous individual use actually looks like against real usage. Publishing thresholds now would mean picking numbers we would very likely have to change, and we would rather set them from evidence than from a guess.</p>
+      <p>What we can tell you is exactly what we measure. Usage on the metered features is counted per account along these dimensions:</p>
+      <table>
+        <tbody>
+          <tr><td><strong>Ask Kora</strong></td><td>Requests in a rolling window, and requests per day.</td></tr>
+          <tr><td><strong>Continue with Kora</strong></td><td>Handoffs per day, and the size of the compacted context carried across in each one.</td></tr>
+          <tr><td><strong>Counsel</strong></td><td>Queries per day, and how many models each one convenes.</td></tr>
+          <tr><td><strong>Concurrency</strong></td><td>How many Kora requests you have running at once.</td></tr>
+          <tr><td><strong>Cost</strong></td><td>Total inference cost per account per calendar month, as a backstop for patterns the counters above do not anticipate.</td></tr>
+        </tbody>
+      </table>
+      <p>Rolling windows are rolling, not fixed — you are never waiting for a clock at the top of the hour. Daily counters reset at 00:00 UTC. Team allowances pool across the subscription rather than being enforced per seat; we do not police per-person distribution inside a team. Enterprise limits are whatever your contract says.</p>
       <div class="note">
-        <span class="lbl">A cost backstop</span>
-        <p>Separately from the counts above, if a single account's inference cost in a calendar month is materially out of line with other accounts on the same plan, we may contact you under the next section. This exists to catch usage patterns the counters do not anticipate, not to claw back normal heavy use.</p>
+        <span class="lbl">How you will find out</span>
+        <p>When we set thresholds, they will be published here with a version and a date, and account owners on paid plans will be emailed before any of them start to bite. Until then, the escalation ladder in the next section is what governs — and its first step is always telling you, not restricting you.</p>
       </div>
     </section>
 
@@ -151,10 +146,10 @@
       <p>We escalate in order, and we tell you at every step.</p>
       <table>
         <tbody>
-          <tr><td><strong>At 80%</strong></td><td>Of a window or daily allowance, the extension shows a quiet indicator. Nothing changes.</td></tr>
-          <tr><td><strong>At 100%</strong></td><td>Ask Kora continues on a lighter open-weight model rather than stopping. You will see which model answered. Continue with Kora and Counsel pause until the window resets.</td></tr>
-          <tr><td><strong>Sustained overage</strong></td><td>Three or more consecutive days at 100% — we reduce concurrency and may queue requests behind other users during peak hours.</td></tr>
-          <tr><td><strong>Persistent overage</strong></td><td>We email you. The conversation is about finding the right plan, not about cutting you off. For a heavy Pro user that usually means Team; for a heavy Team account, Enterprise.</td></tr>
+          <tr><td><strong>Approaching a limit</strong></td><td>The extension shows a quiet indicator. Nothing changes.</td></tr>
+          <tr><td><strong>At the limit</strong></td><td>We may <strong>restrict or degrade</strong> the metered features rather than stopping you outright — typically by routing Ask Kora to a lighter model, and by pausing Continue with Kora and Counsel until the window resets. Where a request is answered by a different model, you will be able to see which one.</td></tr>
+          <tr><td><strong>Sustained overage</strong></td><td>Several consecutive days at the limit — we may reduce concurrency and queue requests behind other users during peak hours.</td></tr>
+          <tr><td><strong>Persistent overage</strong></td><td>We email you. The conversation is about finding the right plan, not about cutting you off. For a heavy individual user that usually means a team plan; for a heavy team account, Enterprise.</td></tr>
           <tr><td><strong>Abuse</strong></td><td>Under <a href="#prohibited">prohibited use</a>, we may throttle, suspend Kora features, or terminate access without notice.</td></tr>
         </tbody>
       </table>
@@ -188,7 +183,7 @@
 
     <section id="changes">
       <h2>Changes to this policy</h2>
-      <p><strong>This policy is subject to change.</strong> Kemory is in its first release, the underlying model prices move, and these numbers are our best current estimate of generous individual use rather than a settled position. We expect to revise them as we see real usage.</p>
+      <p><strong>This policy is subject to change.</strong> Kemory is in its first release and the underlying model prices move. This version sets out what we meter and how we escalate; the thresholds themselves are still being calibrated and will be published here when they are settled.</p>
       <ul>
         <li>Every version is numbered and dated, with a <a href="#changelog">changelog</a> at the foot of this page.</li>
         <li><strong>Material reductions</strong> to allowances on paid plans take effect no earlier than <strong>30 days</strong> after we notify account owners by email.</li>

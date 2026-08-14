@@ -135,10 +135,11 @@
 
     <section id="runs">
       <h2>Run history</h2>
-      <p>The same harness, run five times. We publish all five because a single number without its variance is not a result.</p>
+      <p>The same harness, run six times. We publish all six — including the runs that scored lower than the headline — because a single number without its variance is not a result.</p>
       <table class="tight">
         <thead><tr><th>Run</th><th>Result</th><th>What was different</th></tr></thead>
         <tbody>
+          <tr><td>14 Aug 2026 — re-run</td><td>89.0% (445/500)</td><td>Release <strong>v3.74.0</strong>, four releases after the published run; same vault, harness and judge. The question-level diff against the 89.6% run shows 13 fixed / 16 broken, scattered across all six question types with no category pattern — run-to-run noise, and no regression from the intervening releases.</td></tr>
           <tr><td><strong>11 Aug 2026 (evening)</strong> — current</td><td><strong>89.6%</strong> (448/500)</td><td>Same day, same vault, same harness and judge as the morning run — the only variable was the deployed release, <strong>v3.70.2</strong> (see the note below). <strong>This is the published figure.</strong></td></tr>
           <tr><td>11 Aug 2026 (morning)</td><td>88.2% (441/500)</td><td>First run against the <strong>live production deployment</strong> over the public API. Self-consistency voting on counting and duration questions — experimental in May — became part of the standard harness. Ingest skipped: the vault was still seeded with the April ingest's 10,960 memories.</td></tr>
           <tr><td>28 Apr 2026 — canonical full run</td><td>87.8% (439/500)</td><td>Full three-phase run including ingest, on the pre-voting harness.</td></tr>
@@ -153,7 +154,7 @@
       </div>
 
       <p><strong>Run-to-run variance is roughly ±2 points</strong> on most categories. Multi-session is the most prompt-sensitive and has swung about 7 points between runs. Treat 89.6% as the centre of a range, not a precision measurement — anyone quoting a memory benchmark to a tenth of a point is overstating what these harnesses can resolve.</p>
-      <p>Relative to the April canonical run, two further things are different, and neither makes it a like-for-like re-run: the harness gained self-consistency voting (a method change), and the target moved from a local instance to the production deployment. What did <em>not</em> change across all five runs: the dataset, the judge, the prompts, and the memories being retrieved against.</p>
+      <p>Relative to the April canonical run, two further things are different, and neither makes it a like-for-like re-run: the harness gained self-consistency voting (a method change), and the target moved from a local instance to the production deployment. What did <em>not</em> change across all six runs: the dataset, the judge, the prompts, and the memories being retrieved against.</p>
     </section>
 
     <section id="dataset">

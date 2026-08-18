@@ -29,6 +29,7 @@ claiming a credential.
 ├── kemory/
 │   ├── index.html          THE published page
 │   ├── docs.md             copy source of truth (prose)
+│   ├── retrieval/          how search works, which read tool to use
 │   └── community/          Community Edition guide and versioned sources
 ├── legal/                  the four legal documents — see below
 │   ├── index.html

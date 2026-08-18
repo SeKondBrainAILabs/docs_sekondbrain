@@ -47,6 +47,7 @@ table.api code{font-size:.86em}
     <div class="top-links">
       <a href="#base">Auth</a>
       <a href="#compaction">Compaction</a>
+      <a href="#digest">Session digest</a>
       <a href="#enhance">Enhance</a>
       <a href="#Memories">Endpoints</a>
     </div>
@@ -56,7 +57,7 @@ table.api code{font-size:.86em}
 <div class="wrap hero">
   <span class="pill"><i></i>167 operations · 32 areas · generated from the service</span>
   <h1>The Kemory<br><em>API reference.</em></h1>
-  <p class="lede">Every REST endpoint the service exposes, generated from the API itself so it cannot drift out of step with the code. Alongside it, the parts you cannot infer from a path: how a memory is compacted over time, and what actually happens behind the extension's <em>enhance</em>.</p>
+  <p class="lede">Every REST endpoint the service exposes, generated from the API's own schema rather than written by hand. Alongside it, the parts you cannot infer from a path: how a memory is compacted over time, and what actually happens behind the extension's <em>enhance</em>.</p>
 </div>
 
 <div class="wrap cols">
@@ -65,6 +66,7 @@ table.api code{font-size:.86em}
     <a href="#base">Base URL, auth, conventions</a>
     <div class="grp">How it works</div>
     <a href="#compaction">Compaction tiers</a>
+    <a href="#digest">L2.1 session digest</a>
     <a href="#enhance">Search summary (enhance)</a>
     <a href="#context">User context</a>
     <div class="grp">Endpoints</div>
@@ -100,6 +102,8 @@ table.api code{font-size:.86em}
     <a href="#referral">referral <span class="ct">2</span></a>
     <a href="#residency">residency <span class="ct">2</span></a>
     <a href="#join">join <span class="ct">2</span></a>
+    <div class="grp">Maintenance</div>
+    <a href="#regen">Keeping this page honest</a>
   </nav>
 
   <main>
@@ -111,61 +115,114 @@ table.api code{font-size:.86em}
     <thead><tr><th>Concern</th><th>Detail</th></tr></thead>
     <tbody>
       <tr><td>Content type</td><td><code>application/json</code> on request and response, except artifact upload (multipart) and artifact download (binary stream).</td></tr>
-      <tr><td>Versioning</td><td>REST endpoints live under <code>/api/v1</code>. The MCP transport lives at <code>/mcp/v1</code>. Discovery documents sit at the root, where the specifications require them.</td></tr>
-      <tr><td>Auth</td><td>A bearer token on <code>Authorization</code>, or <code>X-API-Key</code> for registered agents. See below.</td></tr>
-      <tr><td>Errors</td><td>Conventional status codes with a JSON body. <code>401</code> unauthenticated, <code>403</code> authenticated but not permitted, <code>404</code> absent <em>or</em> outside your tenant — the two are deliberately indistinguishable.</td></tr>
+      <tr><td>Versioning</td><td>REST lives under <code>/api/v1</code>, apart from the health probes under <code>/health</code> and the LocalFS artifact stream at <code>/artifacts/{token}</code>. The MCP transport is at <code>/mcp/v1</code>. Discovery documents — and the OAuth dynamic-client-registration endpoint they advertise — sit at the root, where the specifications require them.</td></tr>
+      <tr><td>Auth</td><td>A bearer token on <code>Authorization</code>, or an API key. See below.</td></tr>
+      <tr><td>Errors</td><td><code>401</code> unauthenticated. A credential that resolves to no organisation is also rejected on some routes, but this is not enforced uniformly across the API today — do not rely on it either way. <code>403</code> authenticated but not permitted. <code>404</code> absent <em>or</em> outside your tenant, deliberately indistinguishable. <strong>Not uniformly, though</strong> — a number of by-id operations across memories, agents and permissions currently return <code>400</code> instead of <code>404</code> for a row that exists but is not yours, and the choice differs between verbs on the same resource. So do not read <code>400</code> as necessarily "your payload is malformed"; on a by-id call it may mean "gone, or not yours".</td></tr>
     </tbody>
   </table>
 
   <h3>Three ways to authenticate</h3>
+  <p class="note">This table describes the <strong>hosted</strong> deployment. A deployment running the single-user identity provider instead — the default in the community compose file — accepts a single static API key — sent either way, since a non-JWT credential arriving in the <code>Authorization</code> header is still treated as a key — and rejects real JWTs.</p>
   <table>
-    <thead><tr><th>Method</th><th>Header</th><th>Used by</th></tr></thead>
+    <thead><tr><th>Credential</th><th>Header</th><th>Used by</th></tr></thead>
     <tbody>
       <tr><td>Keycloak RS256 bearer</td><td><code>Authorization: Bearer &lt;jwt&gt;</code></td><td>Human users in the dashboard; the OAuth connector path.</td></tr>
       <tr><td>HS256 bearer</td><td><code>Authorization: Bearer &lt;jwt&gt;</code></td><td>Agents holding a signed service token.</td></tr>
-      <tr><td>API key</td><td><code>X-API-Key: &lt;key&gt;</code></td><td>Registered agents — the usual choice for MCP clients.</td></tr>
+      <tr><td>API key</td><td><code>X-API-Key: &lt;key&gt;</code> — or <code>Authorization: Bearer &lt;key&gt;</code>, which is what remote MCP clients configured for API-key auth actually send</td><td>Registered agents; the usual choice for MCP.</td></tr>
     </tbody>
   </table>
-  <p>Of the operations listed on this page, most require a credential. The unauthenticated ones are health, OAuth discovery, and the signed-URL artifact stream — that last one carries its own signature in the URL precisely so a binary can be fetched without a bearer.</p>
+  <p><strong>Seventeen</strong> of the operations below need no credential, each marked <code>no auth</code> in the tables. They are not only probes and public documents, so the full list is worth reading rather than assuming:</p>
+  <ul>
+    <li><strong>Health</strong> — five probes.</li>
+    <li><strong>OAuth discovery</strong> — three <code>.well-known</code> documents, plus the dynamic client registration shim, which echoes a fixed pre-registered public PKCE client rather than creating one.</li>
+    <li><strong>Artifact streams</strong> — three, carrying their own signature in the URL precisely so a binary can be fetched without a bearer.</li>
+    <li><strong>Code-claiming endpoints</strong> — the pair claim, and the join claim and validate. The code <em>is</em> the credential, so these are unauthenticated by design and are the security-interesting members of this list: a pair claim self-registers an agent.</li>
+    <li><strong>Telemetry ingest</strong> and the <strong>public plan catalogue</strong>.</li>
+  </ul>
+  <p class="note"><strong>A credential is not the whole access boundary.</strong> Some Analytics and Consolidation operations additionally require an internal-staff identity and are not reachable with an API key or an agent token, however valid.</p>
 
-  <h3>Scoping is not a filter you can opt out of</h3>
-  <p>Every tenant-scoped read has <code>WHERE org_id = &lt;caller's org&gt;</code> applied at the ORM layer, not in individual handlers. A memory belonging to another tenant does not return 403; it does not appear at all. The same holds for <code>user_id</code>: memories are scoped to their owner, and the <code>shared</code> namespace means "every agent of this user", never "every user".</p>
+  <h3>Scoping</h3>
+  <p>Most tenant-scoped ORM reads have <code>WHERE org_id = &lt;caller's org&gt;</code> injected by a SQLAlchemy <code>do_orm_execute</code> listener, acting as a safety net over the filters handlers also apply. It is a net, not a universal guarantee: it covers registered models, <code>SELECT</code>s, and statements that expose a mapped entity — raw SQL and unmapped statements are the handler's own responsibility.</p>
+  <p>Memories default to owner-private, but for two of the four visibilities <strong>visibility is access control, not a label</strong>: a memory written <code>org-public</code> is readable by every user in the organisation, and one written <code>team</code> by every member of that team. So "scoped to their owner" is the default, not an invariant.</p>
+  <p class="note"><code>agent-private</code> is the opposite trap — it <em>is</em> only a label. The tenancy filter treats it exactly like <code>user-private</code>, and no read path narrows it to the writing agent, so it does not hide a memory from the same user's other agents. Do not use it as an isolation boundary.</p>
+  <p><code>shared</code> is the <em>default namespace name</em>, not an access tier — it gets no special handling in the gatekeeper or the tenancy filter. Agents authenticate as their user, so any namespace the user can reach is reachable by that user's agents; whether a given agent actually reads it is then decided by its own gatekeeper rules.</p>
 </section>
 
 <section id="compaction">
-  <h2>Compaction — how a memory is compressed over time</h2>
-  <p>A memory is not stored once and left alone. It moves through tiers, each one a cheaper representation of the same content, and the tier it currently occupies is recorded on the memory itself as <code>metadata._compression_tier</code>.</p>
+  <h2>Compaction — the tier ladder</h2>
+  <p>A memory is not stored once and left alone. It is served back at several levels, each a cheaper reading of the same content.</p>
+  <p>Only three of the rows below are states an individual memory occupies: <strong>L1, L2 and L3.1</strong>. Those are reported on the memory's own <code>compression_tier</code> response field — the supported surface, in preference to the internal <code>metadata._compression_tier</code> key — and the same three values work as a search filter. L1 is the <em>default</em>: nothing writes it, the key is simply absent until the pipeline promotes the memory. The remaining rows are not per-memory states at all, and live elsewhere entirely.</p>
   <table>
-    <thead><tr><th>Tier</th><th>What it is</th><th>When it happens</th></tr></thead>
+    <thead><tr><th>Tier</th><th>What it is</th><th>Trigger</th><th>Stored where</th></tr></thead>
     <tbody>
-      <tr><td><code>L1</code></td><td>The verbatim memory as written.</td><td>On write. Every memory starts here.</td></tr>
-      <tr><td><code>L2</code></td><td>An AAAK encoding of the single memory — a compact structured form of that one item.</td><td>Scheduled shortly after write, per memory.</td></tr>
-      <tr><td><code>L3</code></td><td>A narrative summary spanning several memories in a namespace.</td><td>Once a namespace has enough new material to be worth summarising, and the new material is novel enough to change the picture.</td></tr>
-      <tr><td><code>L3.1</code></td><td>LLM-synthesised <em>concepts</em> over the summaries.</td><td>Above the synthesis threshold, over the L3 layer.</td></tr>
-      <tr><td><code>L4</code></td><td>Concepts plus Cognition OS graph entities. Not a stored tier on the memory — it is assembled on read.</td><td>On request.</td></tr>
+      <tr><td><code>L1</code></td><td>The raw observation as written — source of truth. Searchable (FTS + vector).</td><td>Default state; no tier key present.</td><td>The memory row</td></tr>
+      <tr><td><code>L2</code></td><td>AAAK field-aliased byte encoding — computed and measured at write time, then <em>discarded</em>. Only the tier, the achieved ratio and a timestamp persist; <code>mode=aaak</code> re-encodes on demand.</td><td>Asynchronously after write.</td><td>The memory row</td></tr>
+      <tr><td><code>L2.1</code></td><td><strong>Rolling session digest</strong> — readable digest of older context plus the latest raw exchanges. See below.</td><td>Once a session exceeds the raw tail.</td><td>Its own session-digest table</td></tr>
+      <tr><td><code>L3</code></td><td>Narrative prose, in three flavours: per namespace, per session, and cumulative as of a session boundary. <strong>Below 5 source memories it is not prose at all</strong> — see the note under the table.</td><td>Namespace: ≥2 memories · session: ≥1 · cumulative: ≥2 up to the boundary.</td><td>Namespace flavour: a column on the namespace policy. Session and cumulative: their own session-summary table.</td></tr>
+      <tr><td><code>L3.1</code></td><td>LLM concept synthesis — clusters and directional merges, written back as <code>content_type='concept'</code> rows. <strong>Searchable</strong>, and hit by ordinary recall.</td><td>≥3 memories, ≥1 cluster.</td><td>New memory rows, and the namespace policy's summary column — which is where the degraded <code>L3.1-raw</code> marker appears</td></tr>
+      <tr><td><code>L4</code></td><td>L3.1 plus Cognition OS graph entities, merged per request. Never stored.</td><td>On request. CogOS availability only decides whether the graph entities are populated — the response is returned either way, with a flag saying which.</td><td>Not stored</td></tr>
+      <tr><td><code>L5</code></td><td>Namespace <strong>merge detection</strong>. Advisory only.</td><td>Last stage of every compression run, where the enterprise plugin stage is loaded. It is controlled by an opt-<em>out</em> flag (on unless disabled), and the shipped community compose file disables it — so a stock community deployment produces no merge suggestions, while a self-hosted one not using that file will.</td><td>An advisory list on the namespace policy</td></tr>
     </tbody>
   </table>
-  <p>You can read a namespace at any of these levels through <code>GET /api/v1/namespaces/{namespace}/compressed</code>, choosing with <code>mode</code>: <code>raw</code> (L1), <code>aaak</code> (L2), <code>concept</code> (L3.1) or <code>cognition</code> (L4). <code>merge_mode</code> selects the latest state or the full history.</p>
-  <p class="note"><strong>AAAK is a storage and export format, not a prompt-token saving one.</strong> It is measured in bytes. Reaching for <code>aaak</code> to shrink a prompt is a misreading of what the tier is for — <code>concept</code> is the one that reduces what a model has to read.</p>
-  <p>Two thresholds decide whether an L3 summary is produced at all, and they are the usual reason a namespace sits at L2 for longer than expected: there is a minimum number of <em>new</em> memories since the last summary, and a novelty floor — if fresh memories closely resemble what an existing summary already covers, the run is skipped rather than spending a model call to say the same thing again. A quiet namespace therefore stays at L2 indefinitely, which is correct, not a stall.</p>
-  <p>Summarisation is bounded: a single run draws on a capped number of source memories rather than the whole namespace. Consolidation policy per namespace, and the stats showing what actually ran, are exposed under <a href="#Consolidation">Consolidation</a>.</p>
+  <p>Read a namespace at a chosen level with <code>GET /api/v1/namespaces/{namespace}/compressed</code>: <code>mode</code> takes <code>raw</code> (L1), <code>aaak</code> (L2), <code>concept</code> (L3.1) or <code>cognition</code> (L4), and <code>merge_mode</code> selects the latest state or the full history. L3 narrative is <em>not</em> a <code>/compressed</code> mode — it is read through the namespace and session summary endpoints.</p>
+
+  <h3>Below five memories, L3 is not prose</h3>
+  <p>All three L3 flavours require at least <strong>5</strong> source memories to call a model. Below that they emit a deterministic, LLM-free bullet list of the source memories instead — so <em>no</em> summary tier guarantees prose.</p>
+  <p class="note"><strong>Only the namespace flavour says so in its tier.</strong> The namespace summary tags the fallback <code>L3-extractive</code>. The <strong>session and cumulative rollups do not</strong>: they report the literal <code>L3</code> whether the text is prose or a bullet list. A client that switches on the tier to decide how to render will get this wrong on session summaries — do not treat <code>L3</code> on a session rollup as a promise of prose.</p>
+  <p>Tier strings a caller may encounter include <code>L3</code>, <code>L3-extractive</code>, <code>L3.1</code>, <code>L3.1-raw</code>, <code>L3.1-chat</code>, and on session digests <code>L2.1</code> and <code>L2.1-extractive</code>. Some read paths also synthesise a value when the stored column is empty. <strong>Treat the set as open.</strong> Match on the exact base before the first hyphen, and on the <code>-extractive</code> / <code>-raw</code> suffix to detect a degraded variant — rather than switching on an exhaustive list. Do <em>not</em> match a bare <code>L3</code> prefix: it also catches <code>L3.1</code>, which is concept synthesis, not narrative prose.</p>
+  <p><code>L3.1-raw</code> is the degraded marker: a cluster formed but synthesis did not produce usable output — whether the backend was unreachable or simply returned nothing useful — so the stored text is unsynthesised source material rather than prose.</p>
+
+  <h3 id="l5">L5 deliberately excludes siblings</h3>
+  <p>L5 compares this namespace's summary against <strong>the same user's other namespace summaries</strong>, and <strong>deliberately skips same-prefix siblings</strong>: <code>project:alpha</code> and <code>project:beta</code> are structurally distinct by design, not accidental duplicates, so they are never proposed for merge however similar their prose. A pair is flagged only above a cosine threshold and within a content-date window, and the result is advisory — nothing merges on its own.</p>
+  <p class="note"><strong>L5 is not the top of the ladder.</strong> Despite the number it is a background duplicate-namespace detector, not a richer read. The cross-namespace "who is this user" paragraph is <code>GET /api/v1/user/context?depth=l4</code>.</p>
+  <p class="note"><strong>"L4" labels two different reads.</strong> In this table it means concepts plus graph entities for one namespace. On user context, <code>depth=l4</code> means a synthesis pass across namespace summaries. They share a name and a number and fail in different ways — read the one you are actually calling.</p>
+  <p class="note"><strong>AAAK is a storage, transport and diagnostic dialect — not context compression.</strong> It saves bytes against compact JSON while often <em>costing</em> prompt tokens against readable text, and off-the-shelf gzip beats it losslessly by a wide margin. Reaching for <code>aaak</code> to shrink a prompt is a misreading of the tier. Semantic compaction is what reduces what a model must read: L3/L3.1, and L2.1 for a live session.</p>
+
+  <h3>Why a namespace may not have summarised</h3>
+  <p>Several gates guard L3, and they are the usual answer to "why has this namespace not summarised yet". Two are similarity checks, and they are genuinely different tests, often conflated:</p>
+  <ul>
+    <li><strong>Novelty</strong> — is the new memory a near-duplicate of a memory <em>already in the namespace</em>? Above a high cosine bar the run is skipped.</li>
+    <li><strong>Coverage</strong> — is the new memory already represented in the <em>existing summary</em>, compared against the summary's own embedding at a lower bar?</li>
+  </ul>
+  <p>Either can skip a run on its own, and neither means anything is broken: a namespace whose new material restates what is already summarised is correctly left alone rather than paying for a model call to say it again.</p>
+  <p>Note also that the sub-five-memory bullet-list fallback runs <em>before</em> any model call, and on a session rollup it is still tiered <code>L3</code>. <strong>On a session rollup, an <code>L3</code> tier is therefore not evidence that a model produced the text.</strong> (The namespace flavour does distinguish the two — it tags the fallback <code>L3-extractive</code>.)</p>
+  <p class="note">Not every empty summary is a gate doing its job. L3 also depends on the deployment's model configuration, and the write path is not the only route that produces summaries — some are generated by background and warm-up paths with different preconditions. If a namespace has no summary and the similarity gates above do not explain it, treat it as a threshold or configuration question — a namespace below the minimum memory count simply has nothing to summarise — and check <code>docs/memory-management.md</code> in the repository rather than inferring the cause from the tier alone.</p>
+</section>
+
+<section id="digest">
+  <h2>L2.1 — the rolling session digest</h2>
+  <p>This is the service most often described as "the last few messages plus a summary", and the one to reach for when the problem is prompt-window pressure during a live session rather than recall across the vault.</p>
+  <p>Kemory keeps the <strong>latest few exchanges verbatim</strong> — three by default — and compacts everything older into a single readable, token-budgeted digest covering the current objective, decisions, constraints and open loops. The raw tail is a per-call parameter clamped to 1–10 exchanges; 3 is the default, so the digest first appears once a session runs past its raw tail. It is deliberately prose rather than AAAK, because it is prompt-facing — the tier that exists to be read by a model is the one that must not be encoded for bytes. If no model backend is reachable, or the call fails or returns nothing, a deterministic extractive fallback runs instead.</p>
+  <h3>Nothing is lost, only deferred</h3>
+  <p>The digest carries retrieval hooks and the source ids behind its sections and facts, so an agent needing the exact wording of an older exchange can drill back to it on demand rather than being told a compressed approximation is all that survives. That is the difference between this and truncating a transcript.</p>
+  <table>
+    <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>kemory_get_session_context</code></td><td>The rolling digest plus the latest raw exchanges for one session.</td></tr>
+      <tr><td><code>kemory_rehydrate_session_sources</code></td><td>Drill from a digest hook back to the exact raw sources behind it.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><strong>MCP-only.</strong> There is no REST endpoint for the session digest — it is reached through the two tools above over <code>POST /mcp/v1</code>. A REST client wanting session context has to go through MCP. It is also not searchable: the digest is retrieved by session, not found by query.</p>
 </section>
 
 <section id="enhance">
   <h2>Search summary — the service behind <em>enhance</em></h2>
-  <p>This is the one most often asked about, because it is not obvious from the path. It is not a separate service: it is <code>POST /api/v1/search/unified</code> with the summary opted in.</p>
-  <p>The call returns the top ranked hits across memories, chats and text-native files, and — when asked — a short narrative summary written over those hits. The Kora browser extension's <strong>enhance</strong> action uses exactly this: it searches on the user's draft plus recent conversation turns, takes the top handful of results, and appends them to the prompt as a delimited, provenance-tagged context block alongside the summary. Nothing rewrites the user's draft; the model is given context and left to decide.</p>
+  <p>Not a separate service, which is why it is hard to find: it is <code>POST /api/v1/search/unified</code> with the summary opted in.</p>
+  <p>The call returns top ranked hits across memories, chats and text-native files and, when asked, a short narrative summary written over those hits.</p>
+  <p>As of writing, the Kora browser extension's <strong>enhance</strong> is built on it (extension behaviour described here lives in a separate repository, so treat it as how the client uses the endpoint today rather than part of the API contract): it searches on the user's draft plus recent conversation turns, takes the top handful, and appends them to the prompt as a delimited, provenance-tagged context block alongside the summary. Nothing rewrites the draft — the model is given context and left to decide.</p>
   <h3>The invariant that matters</h3>
-  <p><strong>The summary may only describe hits that were actually returned.</strong> Its <code>sources</code> array lists the ids it drew on, and those are a subset of the results in the same response. This is not a stylistic preference — it is what stops the summary from asserting something the user cannot click through to and verify. Clients that filter results after the fact must drop the summary too, or it will outlive the hit it was describing.</p>
-  <p>The summary is opt-in for a plain reason: it costs a model call, and a caller that only needs a count or a list should not pay for prose. Summaries are cached briefly per user and query.</p>
+  <p><strong>The summary is written only over hits that were returned</strong>, and its <code>sources</code> array lists the ids it drew on. Treat that as a property of how the summary is produced rather than a guarantee about the response in your hand — see the caching caveat below, which is the case where it does not hold. This is what stops the summary asserting something the user cannot click through and verify — so a client that filters results after the fact <strong>must drop the summary too</strong>, or it outlives the hit it was describing. Note this is a contract the caller must honour, not something enforced for you: the constraint is applied when the summary is written, not re-checked afterwards.</p>
+  <p>The summary is opt-in because it costs a model call, and a caller that only needs a count or a list should not pay for prose.</p>
+  <p class="note">Summaries are briefly cached per user and query — and the cache key is <em>only</em> the user and the query text. It does not include the result filters. So the same query issued with a narrower type filter or a smaller limit can be served a cached summary whose <code>sources</code> reference hits that are not in the response you are holding. If you rely on the sources-are-a-subset property, request without narrowing, or ignore the summary when you do narrow.</p>
   <h3>Degrading honestly</h3>
-  <p>If the summary cannot be produced, the response carries results with no summary rather than failing. A caller should treat the summary as decoration over the results, never as the result itself.</p>
+  <p>If the summary cannot be produced, the response carries results with no summary rather than failing. Treat it as decoration over the results, never as the result itself. A client may also fall back to a plain memory search when the unified endpoint is unavailable — in which case there is no summary at all, and the context block is hits only.</p>
 </section>
 
 <section id="context">
   <h2>User context — what the vault knows about someone</h2>
   <p><code>GET /api/v1/user/context</code> returns a cross-namespace summary for the authenticated user, assembled from the compressed tiers rather than by reading every memory. It is the fast "catch me up" read that agents call at the start of a session, and it takes a depth so a caller can ask for a cheaper or richer answer.</p>
-  <p>At its richer depths this is an L4-style read: one synthesis pass across the per-namespace summaries. That pass degrades gracefully — if the model call fails, the response comes back without the synthesised layer rather than erroring, so a caller must treat the summary as an optional enrichment over the namespace data, not a guaranteed field.</p>
+  <p>At <code>depth=l4</code> it runs one synthesis pass across the per-namespace summaries. That pass is <strong>not stored</strong> — it is computed per request — and it degrades gracefully: if the model call fails, the response comes back without the synthesised layer rather than erroring. Treat the summary as an optional enrichment over the namespace data, not a guaranteed field.</p>
+  <p class="note">There is also an entitlement gate ahead of the model call. It keys on the caller's <em>resolved entitlement feature</em>, not on a plan name: where that feature resolves to the basic tier, the request is downgraded to <code>depth=l3</code> and answered with a degraded block, so the synthesis never runs. If entitlements fail to resolve at all the gate does not fire and the full pass runs. Both directions surprise people debugging a missing — or unexpectedly present — synthesis layer.</p>
   <p><code>GET /api/v1/user/profile</code> is the narrower, persisted view: static preferences plus a dynamic part maintained as memories accumulate.</p>
 </section>
 

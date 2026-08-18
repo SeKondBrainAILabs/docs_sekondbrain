@@ -47,6 +47,7 @@ table.api code{font-size:.86em}
     <div class="top-links">
       <a href="#base">Auth</a>
       <a href="#compaction">Compaction</a>
+      <a href="#digest">Session digest</a>
       <a href="#enhance">Enhance</a>
       <a href="#Memories">Endpoints</a>
     </div>
@@ -65,6 +66,7 @@ table.api code{font-size:.86em}
     <a href="#base">Base URL, auth, conventions</a>
     <div class="grp">How it works</div>
     <a href="#compaction">Compaction tiers</a>
+    <a href="#digest">L2.1 session digest</a>
     <a href="#enhance">Search summary (enhance)</a>
     <a href="#context">User context</a>
     <div class="grp">Endpoints</div>
@@ -133,33 +135,42 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="compaction">
-  <h2>Compaction — how a memory is compressed over time</h2>
-  <p>A memory is not stored once and left alone. It moves through tiers, each one a cheaper representation of the same content, and the tier it currently occupies is recorded on the memory itself as <code>metadata._compression_tier</code>.</p>
+  <h2>Compaction — the tier ladder</h2>
+  <p>A memory is not stored once and left alone. It is served back at several levels, each a cheaper reading of the same content. The tier a memory currently occupies is recorded on it as <code>metadata._compression_tier</code>.</p>
   <table>
-    <thead><tr><th>Tier</th><th>What it is</th><th>When it happens</th></tr></thead>
+    <thead><tr><th>Tier</th><th>What it is</th><th>Trigger</th><th>Searchable</th></tr></thead>
     <tbody>
-      <tr><td><code>L1</code></td><td>The verbatim memory as written.</td><td>On write. Every memory starts here.</td></tr>
-      <tr><td><code>L2</code></td><td>An AAAK encoding of the single memory — a compact structured form of that one item.</td><td>Scheduled shortly after write, per memory.</td></tr>
-      <tr><td><code>L3</code></td><td>A narrative summary spanning several memories in a namespace.</td><td>Once a namespace has enough new material to be worth summarising, and the new material is novel enough to change the picture.</td></tr>
-      <tr><td><code>L3.1</code></td><td>LLM-synthesised <em>concepts</em> over the summaries.</td><td>Above the synthesis threshold, over the L3 layer.</td></tr>
-      <tr><td><code>L4</code></td><td>Concepts plus Cognition OS graph entities. Not a stored tier on the memory — it is assembled on read.</td><td>On request.</td></tr>
+      <tr><td><code>L1</code></td><td>The raw observation as written — source of truth.</td><td>On write.</td><td>Yes (FTS + vector)</td></tr>
+      <tr><td><code>L2</code></td><td>AAAK field-aliased byte encoding.</td><td>Shortly after write.</td><td>Yes</td></tr>
+      <tr><td><code>L2.1</code></td><td><strong>Rolling session digest</strong> — a readable digest of older context plus the latest raw exchanges. See below.</td><td>From the 4th exchange in a session.</td><td>Via MCP</td></tr>
+      <tr><td><code>L3</code></td><td>Faithful narrative prose. Three flavours: per namespace, per session, and cumulative as of a session boundary.</td><td>≥2 memories in the namespace.</td><td>No</td></tr>
+      <tr><td><code>L3.1</code></td><td>LLM concept synthesis — clusters and directional merges, written back as <code>content_type='concept'</code> rows.</td><td>≥3 memories, ≥1 cluster.</td><td><strong>Yes</strong> — concepts are hit by ordinary recall</td></tr>
+      <tr><td><code>L4</code></td><td>L3.1 plus Cognition OS graph entities, merged on the fly. Not stored.</td><td>On request, CogOS online.</td><td>Via endpoint</td></tr>
+      <tr><td><code>L5</code></td><td>Namespace <em>merge detection</em> — cosine comparison against sibling namespace summaries. Background advisory only.</td><td>After every L3/L3.1 run.</td><td>No</td></tr>
     </tbody>
   </table>
-  <p>You can read a namespace at any of these levels through <code>GET /api/v1/namespaces/{namespace}/compressed</code>, choosing with <code>mode</code>: <code>raw</code> (L1), <code>aaak</code> (L2), <code>concept</code> (L3.1) or <code>cognition</code> (L4). <code>merge_mode</code> selects the latest state or the full history.</p>
-  <p class="note"><strong>AAAK is a storage and export format, not a prompt-token saving one.</strong> It is measured in bytes. Reaching for <code>aaak</code> to shrink a prompt is a misreading of what the tier is for — <code>concept</code> is the one that reduces what a model has to read.</p>
-  <p>Two thresholds decide whether an L3 summary is produced at all, and they are the usual reason a namespace sits at L2 for longer than expected: there is a minimum number of <em>new</em> memories since the last summary, and a novelty floor — if fresh memories closely resemble what an existing summary already covers, the run is skipped rather than spending a model call to say the same thing again. A quiet namespace therefore stays at L2 indefinitely, which is correct, not a stall.</p>
-  <p>Summarisation is bounded: a single run draws on a capped number of source memories rather than the whole namespace. Consolidation policy per namespace, and the stats showing what actually ran, are exposed under <a href="#Consolidation">Consolidation</a>.</p>
+  <p>Read a namespace at a chosen level with <code>GET /api/v1/namespaces/{namespace}/compressed</code>: <code>mode</code> takes <code>raw</code> (L1), <code>aaak</code> (L2), <code>concept</code> (L3.1) or <code>cognition</code> (L4), and <code>merge_mode</code> selects the latest state or the full history.</p>
+  <p class="note"><strong>L5 is not "the top of the ladder".</strong> Despite the number it is a background duplicate-namespace detector, not a richer read. The cross-namespace "who is this user" paragraph is <code>GET /api/v1/user/context?depth=l4</code> — L4, not L5.</p>
+  <p class="note"><strong>AAAK is a storage, transport and diagnostic dialect — not context compression.</strong> It saves bytes against compact JSON while often <em>costing</em> prompt tokens against readable text, and off-the-shelf gzip beats it losslessly by a wide margin. Reaching for <code>aaak</code> to shrink a prompt is a misreading of the tier. Semantic compaction is what reduces what a model must read: L3/L3.1, and L2.1 for an active session.</p>
+  <h3>Why a namespace can sit at L2 indefinitely</h3>
+  <p>Two gates decide whether an L3 summary is produced, and together they are the usual answer to "why has this namespace not summarised yet". There is a minimum number of <em>new</em> memories since the last summary, and a novelty floor: if fresh memories closely resemble what an existing summary already covers, the run is skipped rather than paying for a model call that would restate it. A quiet namespace therefore stays at L2 for as long as it stays quiet. That is the design working, not a stalled job.</p>
+  <p>Summarisation is also bounded — a run draws on a capped number of source memories rather than the entire namespace. Policy and the stats showing what actually ran are exposed under <a href="#Consolidation">Consolidation</a>.</p>
 </section>
 
-<section id="enhance">
-  <h2>Search summary — the service behind <em>enhance</em></h2>
-  <p>This is the one most often asked about, because it is not obvious from the path. It is not a separate service: it is <code>POST /api/v1/search/unified</code> with the summary opted in.</p>
-  <p>The call returns the top ranked hits across memories, chats and text-native files, and — when asked — a short narrative summary written over those hits. The Kora browser extension's <strong>enhance</strong> action uses exactly this: it searches on the user's draft plus recent conversation turns, takes the top handful of results, and appends them to the prompt as a delimited, provenance-tagged context block alongside the summary. Nothing rewrites the user's draft; the model is given context and left to decide.</p>
-  <h3>The invariant that matters</h3>
-  <p><strong>The summary may only describe hits that were actually returned.</strong> Its <code>sources</code> array lists the ids it drew on, and those are a subset of the results in the same response. This is not a stylistic preference — it is what stops the summary from asserting something the user cannot click through to and verify. Clients that filter results after the fact must drop the summary too, or it will outlive the hit it was describing.</p>
-  <p>The summary is opt-in for a plain reason: it costs a model call, and a caller that only needs a count or a list should not pay for prose. Summaries are cached briefly per user and query.</p>
-  <h3>Degrading honestly</h3>
-  <p>If the summary cannot be produced, the response carries results with no summary rather than failing. A caller should treat the summary as decoration over the results, never as the result itself.</p>
+<section id="digest">
+  <h2>L2.1 — the rolling session digest</h2>
+  <p>This is the service most often described as "the last few messages plus a summary", and it is the one to reach for when the problem is prompt-window pressure during a live session rather than recall across the vault.</p>
+  <p>From the fourth exchange in a session, Kemory keeps the <strong>latest 3 exchanges verbatim</strong> and compacts everything older into a single readable, token-budgeted digest covering the current objective, decisions, constraints and open loops. The raw tail is configurable per call (1–10 exchanges); 3 is the default. The digest is deliberately prose rather than AAAK, because it is prompt-facing — the tier that exists to be read by a model is the one that must not be encoded for bytes.</p>
+  <h3>Nothing is lost, only deferred</h3>
+  <p>The digest carries retrieval hooks and the source ids behind each claim, so an agent that needs the exact wording of an older exchange can drill back to it on demand rather than being told a compressed approximation is all that survives. That is the difference between this and truncating a transcript.</p>
+  <table>
+    <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>kemory_get_session_context</code></td><td>The rolling digest plus the latest raw exchanges for one session.</td></tr>
+      <tr><td><code>kemory_rehydrate_session_sources</code></td><td>Drill from a digest hook back to the exact raw sources behind it.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><strong>This tier is MCP-only.</strong> There is no REST endpoint for the session digest — it is reached through the two tools above over <code>POST /mcp/v1</code>. A REST client wanting session context has to go through MCP.</p>
 </section>
 
 <section id="context">

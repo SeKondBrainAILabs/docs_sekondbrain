@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Kemory retrieval works | SeKondBrain docs</title>
+<meta name="description" content="What happens when you search Kemory, which read tool to use, and how to read a result honestly.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/retrieval/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>:root{ --veil-a:rgba(65,211,160,.18); --veil-b:rgba(95,196,240,.16); }</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· Retrieval</span></a>
+    <div class="top-links">
+      <a href="#engine">How search works</a>
+      <a href="#phrasing">Phrasing</a>
+      <a href="#reading">Reading results</a>
+      <a href="#tools">Which tool</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Semantic + lexical · rank fusion</span>
+  <h1>How retrieval<br><em>actually works.</em></h1>
+  <p class="lede">Kemory exposes several ways to read memory, and they are not interchangeable. This page explains what happens when you search, which tool to reach for, and how to read a result honestly — including the places where a tool's name suggests more than it does.</p>
+</div>
+
+<div class="wrap cols">
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Search</div>
+    <a href="#engine">One engine underneath</a>
+    <a href="#phrasing">How you phrase a query</a>
+    <a href="#reading">Reading a result honestly</a>
+    <div class="grp">Tools</div>
+    <a href="#tools">Which tool to use</a>
+    <a href="#unified">Cross-surface search</a>
+    <a href="#capture">Capture vs consolidate</a>
+    <div class="grp">Reference</div>
+    <a href="#scoping">Scoping and isolation</a>
+  </nav>
+
+  <main>
+    <section id="engine">
+      <h2>One engine underneath</h2>
+      <p>Every read path funnels into the same search. It runs up to three legs in parallel and fuses them by rank.</p>
+      <table>
+        <thead><tr><th>Leg</th><th>What it matches</th><th>What it is good at</th></tr></thead>
+        <tbody>
+          <tr><td>Semantic</td><td>Your query embedded and compared by cosine similarity against every memory's vector</td><td>Finding a memory you can only describe loosely</td></tr>
+          <tr><td>Lexical</td><td>Your query's terms as full-text search, ordered by term frequency and rarity</td><td>Finding a memory by an exact identifier — ticket number, error code, config key</td></tr>
+          <tr><td>Blind index</td><td>Identifier-shaped tokens indexed as keyed hashes, matched by equality</td><td>Exact identifiers on <strong>encrypted</strong> accounts, where text matching cannot read the content</td></tr>
+        </tbody>
+      </table>
+      <p>The legs are combined with reciprocal rank fusion, then re-ranked on five signals: semantic similarity (the largest weight), recency, how often the memory has been accessed, its proximity in the memory graph, and its measured usefulness.</p>
+      <p>The blind index deliberately covers identifiers only — prose is never indexed that way.</p>
+    </section>
+
+    <section id="phrasing">
+      <h2>How you phrase a query changes what you get</h2>
+      <p>Retrieval compares your query against each memory's own wording. A query phrased the way the note was <em>written</em> beats one phrased the way you would describe it to a colleague.</p>
+      <p>Prefer domain vocabulary, service and tool names, config keys, identifiers and error strings:</p>
+<pre><code>CORS_ALLOWED_ORIGINS admin frontend 403</code></pre>
+      <p>rather than:</p>
+<pre><code>why did the admin site stop working</code></pre>
+      <p>Both will return something. The first is far more likely to return the right thing.</p>
+    </section>
+
+    <section id="reading">
+      <h2>Reading a result honestly</h2>
+      <p>Kemory tells you how a search actually ran, and those fields are worth reading.</p>
+      <table>
+        <thead><tr><th>Field</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><code>search_mode_effective</code></td><td>What really executed. <code>hybrid_dense_only</code> means the lexical half was skipped because your content is encrypted — recall is genuinely weaker for rare tokens in that mode, so <strong>an empty result is not evidence the memory does not exist</strong>.</td></tr>
+          <tr><td><code>total</code> + <code>total_mode</code></td><td>For a hybrid search <code>total_mode</code> is <code>page</code> and <code>total</code> counts the results on this page — not the memories in your account. Only <code>exact</code> mode totals are corpus counts.</td></tr>
+          <tr><td><code>flat_page</code></td><td><code>true</code> means the results are a saturated band of near-identical scores: the signature of nearest-neighbour background noise for a topic your memory does not actually cover.</td></tr>
+          <tr><td><code>top_relevance</code>, <code>relevance_spread</code></td><td>The shape of the result set. A page with a genuine match spreads much wider than a background one.</td></tr>
+        </tbody>
+      </table>
+      <p>Read shape rather than an absolute similarity number. Similarity scores drift upward as a store grows, so no fixed threshold stays meaningful over time.</p>
+    </section>
+
+    <section id="tools">
+      <h2>Which tool to use</h2>
+      <table>
+        <thead><tr><th>Tool</th><th>Use it for</th></tr></thead>
+        <tbody>
+          <tr><td><code>kemory_recall_memory</code></td><td>The main search — text query, optional namespace and content-type filters, pagination. <code>kemory_recall</code> is a friendlier alias with identical ranking that can also return your profile in the same call.</td></tr>
+          <tr><td><code>kemory_find_similar</code></td><td>Searching by relevance to a reference string. It currently shares <code>recall_memory</code>'s ranking exactly and applies <strong>no</strong> separate similarity threshold, so for the same query string it returns the same results in the same order. Choose it for readability, not for a different algorithm.</td></tr>
+          <tr><td><code>kemory_get_context</code></td><td>Relevant background for a conversation rather than a list of hits, optionally synthesised. When the results are flat background noise it deliberately returns nothing rather than filling your prompt with near-misses.</td></tr>
+          <tr><td><code>kemory_get_user_context</code></td><td>A cross-namespace overview of everything you have stored. The right call at the start of a session.</td></tr>
+          <tr><td><code>kemory_get_session_context</code></td><td>A prompt-ready block for one namespace session: recent exchanges verbatim, older ones folded into a rolling digest.</td></tr>
+          <tr><td><code>kemory_list_namespaces</code><br><code>kemory_list_projects</code></td><td>Discovery. Worth calling before a scoped search so you filter on a namespace that exists.</td></tr>
+          <tr><td><code>kemory_get_raw</code><br><code>kemory_get_compressed</code></td><td>Reading a whole namespace, uncompressed or at a chosen compression tier.</td></tr>
+          <tr><td><code>kemory_get_history</code></td><td>The full provenance of one memory: every state change, who made it, and why.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="unified">
+      <h2>Cross-surface search</h2>
+      <p><code>POST /api/v1/search/unified</code> searches memories, chat turns and files together. Each surface is searched by its own leg and the results are merged <strong>by rank</strong>, because the surfaces' raw scores are on different scales.</p>
+      <p>Each result reports its own leg-native score, so compare scores within a type and never across types.</p>
+    </section>
+
+    <section id="capture">
+      <h2>Capture versus consolidate</h2>
+      <p>Two write tools are easy to confuse:</p>
+      <ul>
+        <li><code>kemory_capture_session</code> extracts <em>many</em> discrete durable facts from a conversation and stores each one.</li>
+        <li><code>kemory_consolidate_session</code> produces <em>one</em> semantic summary of a session.</li>
+      </ul>
+      <p>Use capture when the conversation contained several things worth remembering separately; use consolidate when you want a single durable record of what a session was about.</p>
+    </section>
+
+    <section id="scoping">
+      <h2>Scoping and isolation</h2>
+      <p>Every read is filtered by user and organisation in the database, not in a prompt. That applies identically across REST, MCP and every tool listed above. Agents additionally pass a permission check before any read or write.</p>
+      <p>See the <a href="../">Kemory overview</a> for connection and scoping detail, and the <a href="../../legal/privacy/">Privacy Policy</a> for data handling.</p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

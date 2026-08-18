@@ -94,6 +94,63 @@ a chosen compression tier.
 **`kemory_get_history`** — the full provenance of one memory: every state change, who made
 it, and why.
 
+## Tuning retrieval (self-hosted)
+
+These are **server-side** settings. On hosted Kemory they are managed for you and cannot be
+set per account; they matter if you run Community Edition or your own deployment.
+
+| Variable | Default | What it changes |
+|---|---|---|
+| `KMV_RRF_K` | `60` | The rank-fusion constant. Lower values let a leg's top hits dominate the merge; higher values flatten the contribution across ranks. |
+| `KMV_DENSE_CANDIDATES` | `50` | How many candidates the semantic leg retrieves before fusion. |
+| `KMV_SPARSE_CANDIDATES` | `50` | How many candidates the lexical leg retrieves before fusion. |
+| `KMV_RANK_W_VECTOR_SIM` | `0.35` | Weight of semantic similarity in the final ranking. |
+| `KMV_RANK_W_RECENCY` | `0.20` | Weight of recency. |
+| `KMV_RANK_W_ACCESS_FREQ` | `0.15` | Weight of how often a memory has been read. |
+| `KMV_RANK_W_GRAPH_PROXIMITY` | `0.15` | Weight of proximity in the memory graph. |
+| `KMV_RANK_W_UTILITY_SALIENCE` | `0.15` | Weight of measured usefulness. |
+| `MCP_MIN_RELEVANCE` | `0.0` (off) | An absolute similarity floor applied to results. See the note below on why this is off. |
+| `GET_CONTEXT_FLAT_GATE` | `true` | Whether `kemory_get_context` suppresses a flat, background-noise page instead of returning it. |
+
+Raising a weight does not raise quality on its own — the five are normalised against each
+other, so increasing one necessarily reduces the influence of the rest. Change one at a
+time and measure against a labelled set you control.
+
+## What we tried that did not work
+
+Retrieval quality attracts plausible fixes. These were each implemented, measured against a
+labelled evaluation set, and rejected. They are documented here so the same ground is not
+covered twice — including by us.
+
+**Splitting memories into chunks before embedding — actively harmful.** The intuition is
+sound: one vector averaging a long, multi-topic note matches none of its topics sharply.
+Measured, the median rank improved while recall@1, recall@5 and MRR all degraded. Chunking
+helps some mid-ranked results and hurts the ones that matter most. Splitting notes on their
+own structure rather than arbitrary boundaries scored *worse*, not better.
+
+**Cross-encoder re-rankers — no measurable effect.** Two were tried. Neither moved the
+numbers enough to justify roughly doubling search latency on CPU inference.
+
+**An asymmetric query prefix for the embedding model — measured negative.** The model
+family documents a prefix for query-side encoding. Applying it made results slightly worse
+on our corpus, so it ships off.
+
+**Truncation as the explanation — ruled out.** Long notes exceeding the embedding model's
+input window were an obvious suspect for poor paraphrase recall. Removing truncation from
+the equation did not close the gap; the cause is vocabulary mismatch, not lost text.
+
+**A fixed similarity floor — inert at scale.** The most-requested fix for "irrelevant
+results" is a minimum similarity score. It does not work: across a store of ~18,500
+memories, a topic provably absent from the store still returned raw similarities of
+0.55–0.8, because the nearest-of-N score rises as N grows. Genuine matches score in the
+same band. Any threshold high enough to exclude the noise also excludes real answers. This
+is why the floor ships off, and why the page-shape signals above exist instead — shape is
+scale-invariant, absolute scores are not.
+
+**What did work:** phrasing a query in the vocabulary the memory was written in. That is
+the single intervention that has consistently moved retrieval quality, and it is why the
+phrasing guidance near the top of this page is the most useful thing on it.
+
 ## Cross-surface search
 
 `POST /api/v1/search/unified` searches memories, chat turns and files together. Each

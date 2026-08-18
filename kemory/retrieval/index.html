@@ -39,12 +39,16 @@
     <a href="#engine">One engine underneath</a>
     <a href="#phrasing">How you phrase a query</a>
     <a href="#reading">Reading a result honestly</a>
+    <div class="grp">Tuning</div>
+    <a href="#tuning">Tuning retrieval</a>
+    <a href="#rejected">What did not work</a>
     <div class="grp">Tools</div>
     <a href="#tools">Which tool to use</a>
     <a href="#unified">Cross-surface search</a>
     <a href="#capture">Capture vs consolidate</a>
     <div class="grp">Reference</div>
     <a href="#scoping">Scoping and isolation</a>
+    <a href="../api/">REST API reference</a>
   </nav>
 
   <main>
@@ -103,6 +107,38 @@
           <tr><td><code>kemory_get_history</code></td><td>The full provenance of one memory: every state change, who made it, and why.</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="tuning">
+      <h2>Tuning retrieval (self-hosted)</h2>
+      <p>These are <strong>server-side</strong> settings. On hosted Kemory they are managed for you and cannot be set per account; they matter if you run Community Edition or your own deployment.</p>
+      <table>
+        <thead><tr><th>Variable</th><th>Default</th><th>What it changes</th></tr></thead>
+        <tbody>
+          <tr><td><code>KMV_RRF_K</code></td><td><code>60</code></td><td>The rank-fusion constant. Lower values let a leg's top hits dominate the merge; higher values flatten the contribution across ranks.</td></tr>
+          <tr><td><code>KMV_DENSE_CANDIDATES</code></td><td><code>50</code></td><td>How many candidates the semantic leg retrieves before fusion.</td></tr>
+          <tr><td><code>KMV_SPARSE_CANDIDATES</code></td><td><code>50</code></td><td>How many candidates the lexical leg retrieves before fusion.</td></tr>
+          <tr><td><code>KMV_RANK_W_VECTOR_SIM</code></td><td><code>0.35</code></td><td>Weight of semantic similarity in the final ranking.</td></tr>
+          <tr><td><code>KMV_RANK_W_RECENCY</code></td><td><code>0.20</code></td><td>Weight of recency.</td></tr>
+          <tr><td><code>KMV_RANK_W_ACCESS_FREQ</code></td><td><code>0.15</code></td><td>Weight of how often a memory has been read.</td></tr>
+          <tr><td><code>KMV_RANK_W_GRAPH_PROXIMITY</code></td><td><code>0.15</code></td><td>Weight of proximity in the memory graph.</td></tr>
+          <tr><td><code>KMV_RANK_W_UTILITY_SALIENCE</code></td><td><code>0.15</code></td><td>Weight of measured usefulness.</td></tr>
+          <tr><td><code>MCP_MIN_RELEVANCE</code></td><td><code>0.0</code> (off)</td><td>An absolute similarity floor applied to results. See below for why this is off.</td></tr>
+          <tr><td><code>GET_CONTEXT_FLAT_GATE</code></td><td><code>true</code></td><td>Whether <code>kemory_get_context</code> suppresses a flat, background-noise page instead of returning it.</td></tr>
+        </tbody>
+      </table>
+      <p>Raising a weight does not raise quality on its own — the five are normalised against each other, so increasing one necessarily reduces the influence of the rest. Change one at a time and measure against a labelled set you control.</p>
+    </section>
+
+    <section id="rejected">
+      <h2>What we tried that did not work</h2>
+      <p>Retrieval quality attracts plausible fixes. These were each implemented, measured against a labelled evaluation set, and rejected. They are documented here so the same ground is not covered twice — including by us.</p>
+      <p><strong>Splitting memories into chunks before embedding — actively harmful.</strong> The intuition is sound: one vector averaging a long, multi-topic note matches none of its topics sharply. Measured, the median rank improved while recall@1, recall@5 and MRR all degraded. Chunking helps some mid-ranked results and hurts the ones that matter most. Splitting notes on their own structure rather than arbitrary boundaries scored <em>worse</em>, not better.</p>
+      <p><strong>Cross-encoder re-rankers — no measurable effect.</strong> Two were tried. Neither moved the numbers enough to justify roughly doubling search latency on CPU inference.</p>
+      <p><strong>An asymmetric query prefix for the embedding model — measured negative.</strong> The model family documents a prefix for query-side encoding. Applying it made results slightly worse on our corpus, so it ships off.</p>
+      <p><strong>Truncation as the explanation — ruled out.</strong> Long notes exceeding the embedding model's input window were an obvious suspect for poor paraphrase recall. Removing truncation from the equation did not close the gap; the cause is vocabulary mismatch, not lost text.</p>
+      <p><strong>A fixed similarity floor — inert at scale.</strong> The most-requested fix for "irrelevant results" is a minimum similarity score. It does not work: across a store of ~18,500 memories, a topic provably absent from the store still returned raw similarities of 0.55–0.8, because the nearest-of-N score rises as N grows. Genuine matches score in the same band. Any threshold high enough to exclude the noise also excludes real answers. This is why the floor ships off, and why the page-shape signals above exist instead — shape is scale-invariant, absolute scores are not.</p>
+      <p><strong>What did work:</strong> phrasing a query in the vocabulary the memory was written in. That is the single intervention that has consistently moved retrieval quality, and it is why the <a href="#phrasing">phrasing guidance</a> above is the most useful thing on this page.</p>
     </section>
 
     <section id="unified">

@@ -15,9 +15,10 @@
   ties the transfer mechanism to what is disclosed here, so a guessed region is a false
   statement about a safeguard.
 
-  Paddle appears in both roles by design: a processor for the billing data we pass it,
-  and an independent controller as merchant of record. Keep both, and keep them
-  consistent with Privacy §7.1 and Terms 4.3B.
+  Payments: there is no merchant of record. SEKONDBRAIN AI LABS FZCO is the seller of
+  record and is listed below as a sub-processor; Stripe is a processor only. Keep these
+  statements consistent with Privacy §7.1 and Terms 4.3B — if one drifts, the DPA's
+  transfer disclosure and the Terms disagree about who you contracted with.
 -->
 <head>
 <meta charset="utf-8">
@@ -60,7 +61,7 @@
   <p class="lede">The third parties we use to provide the Services, what each one is used for, and where your data is processed. This page is referenced by our <a href="../legal/privacy/">Privacy Policy</a> and forms part of the Data Processing Agreement in our <a href="../legal/business-terms/">Business Terms</a>.</p>
   <div class="addr">
     <span class="k">Last updated</span>
-    <code>6 August 2026</code>
+    <code>19 August 2026</code>
   </div>
 </div>
 
@@ -108,13 +109,8 @@
             <td><span class="gap">region pending</span></td>
           </tr>
           <tr>
-            <td>Paddle</td>
-            <td>Payments. Also acts as our merchant of record &mdash; see <a href="#payments">Payments</a> below</td>
-            <td><span class="gap">region pending</span></td>
-          </tr>
-          <tr>
             <td>Stripe</td>
-            <td>Payment processing</td>
+            <td>Payment processing on our instructions &mdash; charging your payment method and issuing invoices for the seller of record. See <a href="#payments">Payments</a> below</td>
             <td><span class="gap">region pending</span></td>
           </tr>
           <tr>
@@ -124,7 +120,7 @@
           </tr>
           <tr>
             <td>SeKondBrain AI Labs FZCO</td>
-            <td>Our group billing affiliate &mdash; invoicing, collection and account administration, acting as billing and collection agent (Terms clause 4.0, Business Terms clause 8.0)</td>
+            <td>Our group billing affiliate &mdash; <strong>seller of record</strong> for your purchase, invoicing, collection and account administration (Terms clauses 4.0 and 4.3B, Business Terms clause 8.0)</td>
             <td>United Arab Emirates</td>
           </tr>
           <tr>
@@ -139,15 +135,15 @@
           </tr>
         </tbody>
       </table>
-      <p class="muted">No content you put into the Services &mdash; User Content, Memory Data or Captured AI Conversations &mdash; is sent to our billing affiliate, to Paddle or to Stripe. Those parties receive account, billing and subscription data only.</p>
+      <p class="muted">No content you put into the Services &mdash; User Content, Memory Data or Captured AI Conversations &mdash; is sent to our billing affiliate or to Stripe. Those parties receive account, billing and subscription data only.</p>
     </section>
 
     <section id="payments">
-      <h2>Payments and merchant of record</h2>
-      <p>Paddle has two roles, and it is worth separating them.</p>
-      <p>For the subscription and account data we pass to it in order to bill you, Paddle acts <strong>on our instructions</strong> and is listed above as a sub-processor.</p>
-      <p>For the transaction itself, Paddle is our <strong>merchant of record</strong>: it is the seller of record, charges your payment method, handles applicable taxes, issues invoices and processes refunds. In that capacity it determines its own purposes &mdash; tax compliance, fraud prevention, its own record-keeping &mdash; and acts as an <strong>independent controller</strong> under its own privacy policy. See clause 4.3B of the <a href="../legal/terms/">Terms of Service</a>.</p>
-      <p>We receive transaction confirmations and subscription status. We do not store full card numbers.</p>
+      <h2>Payments and seller of record</h2>
+      <p><strong>There is no merchant of record.</strong> No third party is interposed as the seller of your subscription, and none acts as an independent controller of your transaction.</p>
+      <p><strong>SEKONDBRAIN AI LABS FZCO</strong>, our group billing affiliate, is the <strong>seller of record</strong> for your purchase: it charges your payment method, issues your invoice, and is responsible for applicable taxes on the sale. It is listed above as a sub-processor and acts on our instructions.</p>
+      <p><strong>Stripe</strong> is our payment service provider and acts as a <strong>processor only</strong>, on our instructions. It is not a party to your contract with us and is not the seller of record. See clause 4.3B of the <a href="../legal/terms/">Terms of Service</a>.</p>
+      <p>Your card details are handled by Stripe. We receive transaction confirmations and subscription status, and we do not store full card numbers.</p>
     </section>
 
     <section id="transfers">

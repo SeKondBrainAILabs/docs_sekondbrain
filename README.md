@@ -84,10 +84,10 @@ two diverge silently.
 
 | Page | Document | Version |
 |---|---|---|
-| `/legal/privacy/` | Privacy Policy | 2.5 |
-| `/legal/terms/` | Terms of Service — Individuals | 2.4 |
-| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.2 |
-| `/legal/extension-privacy/` | Kora for Chrome & Kemory | 1.1 (companion to 2.5) |
+| `/legal/privacy/` | Privacy Policy | 2.6 |
+| `/legal/terms/` | Terms of Service — Individuals | 2.5 |
+| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.3 |
+| `/legal/extension-privacy/` | Kora for Chrome & Kemory | 1.1 (companion to 2.6) |
 
 Two rules, both enforced by `tools/preflight.py`:
 
@@ -106,7 +106,7 @@ privacy policy.
 ### Outstanding
 
 - **`/subprocessors` names every provider but is not complete.** Processing regions for Groq,
-  Concentrate.ai, OpenRunner, PostHog, Paddle, Stripe and Notion are marked pending, Notion's
+  Concentrate.ai, OpenRunner, PostHog, Stripe and Notion are marked pending, Notion's
   purpose is unconfirmed, and the speech and email-delivery providers are unnamed. This is
   contractual, not cosmetic: Schedule 1 §3 grounds the general sub-processor authorisation in
   that list, and §4 says transfers occur only as disclosed there — so an undisclosed provider
@@ -116,6 +116,12 @@ privacy policy.
 - Backup retention `[90]` days in Privacy §9.2.
 - **Source documents are behind the site** for Privacy §7.1 and §8, and Business Terms
   Schedules 1–2. Bring them level or the next mirror will revert what is published.
+- **The FZCO trade licence number is the only open bracket in the new billing wording**
+  (Terms 4.0). It renders as a `gap` until someone supplies it, and the same number blocks
+  the pricing-page footer changes in Core_Kora #188 and Kemory #561. Tracked as **S9N-7313**.
+- **Nobody owns refund processing.** Paddle used to issue refunds and absorb chargebacks;
+  both now land on us, via a manual Stripe action, and chargebacks carry fees. The published
+  wording commits us to acknowledging a request within two working days.
 
 ---
 

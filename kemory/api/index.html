@@ -55,7 +55,7 @@ table.api code{font-size:.86em}
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>167 operations · 32 areas · generated from the service</span>
+  <span class="pill"><i></i>171 operations · 34 areas · generated from the service</span>
   <h1>The Kemory<br><em>API reference.</em></h1>
   <p class="lede">Every REST endpoint the service exposes, generated from the API's own schema rather than written by hand. Alongside it, the parts you cannot infer from a path: how a memory is compacted over time, and what actually happens behind the extension's <em>enhance</em>.</p>
 </div>
@@ -77,7 +77,7 @@ table.api code{font-size:.86em}
     <a href="#Enrichment">Enrichment <span class="ct">3</span></a>
     <a href="#Relations">Relations <span class="ct">4</span></a>
     <a href="#Projects">Projects <span class="ct">2</span></a>
-    <a href="#AI-Chats">AI Chats <span class="ct">10</span></a>
+    <a href="#AI-Chats">AI Chats <span class="ct">11</span></a>
     <a href="#AI-Chats---Merge">AI Chats — Merge <span class="ct">6</span></a>
     <a href="#AI-Chats---Mappings">AI Chats — Mappings <span class="ct">4</span></a>
     <a href="#artifacts">artifacts <span class="ct">8</span></a>
@@ -97,16 +97,19 @@ table.api code{font-size:.86em}
     <a href="#Analytics">Analytics <span class="ct">17</span></a>
     <a href="#Usage">Usage <span class="ct">1</span></a>
     <a href="#Telemetry">Telemetry <span class="ct">1</span></a>
-    <a href="#Health">Health <span class="ct">5</span></a>
+    <a href="#Health">Health <span class="ct">6</span></a>
     <a href="#billing">billing <span class="ct">7</span></a>
     <a href="#referral">referral <span class="ct">2</span></a>
     <a href="#residency">residency <span class="ct">2</span></a>
     <a href="#join">join <span class="ct">2</span></a>
+    <a href="#Ask">Ask <span class="ct">1</span></a>
+    <a href="#OpenAI-plugin-verification">OpenAI plugin verification <span class="ct">1</span></a>
     <div class="grp">Maintenance</div>
     <a href="#regen">Keeping this page honest</a>
   </nav>
 
   <main>
+
 
 <section id="base">
   <h2>Base URL, auth and conventions</h2>
@@ -131,7 +134,7 @@ table.api code{font-size:.86em}
       <tr><td>API key</td><td><code>X-API-Key: &lt;key&gt;</code> — or <code>Authorization: Bearer &lt;key&gt;</code>, which is what remote MCP clients configured for API-key auth actually send</td><td>Registered agents; the usual choice for MCP.</td></tr>
     </tbody>
   </table>
-  <p><strong>Seventeen</strong> of the operations below need no credential, each marked <code>no auth</code> in the tables. They are not only probes and public documents, so the full list is worth reading rather than assuming:</p>
+  <p>A handful of the operations below need no credential, each marked <code>no auth</code> in the tables. They are not only probes and public documents, so the categories are worth reading rather than assuming:</p>
   <ul>
     <li><strong>Health</strong> — five probes.</li>
     <li><strong>OAuth discovery</strong> — three <code>.well-known</code> documents, plus the dynamic client registration shim, which echoes a fixed pre-registered public PKCE client rather than creating one.</li>
@@ -139,6 +142,31 @@ table.api code{font-size:.86em}
     <li><strong>Code-claiming endpoints</strong> — the pair claim, and the join claim and validate. The code <em>is</em> the credential, so these are unauthenticated by design and are the security-interesting members of this list: a pair claim self-registers an agent.</li>
     <li><strong>Telemetry ingest</strong> and the <strong>public plan catalogue</strong>.</li>
   </ul>
+  <p>The full list is generated from the same document as the endpoint tables, so it cannot fall behind the code:</p>
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>Why it is open</th></tr></thead>
+    <tbody>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-authorization-server</code></td><td>Oauth Authorization Server</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource</code></td><td>Oauth Protected Resource</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource/mcp/v1</code></td><td>Oauth Protected Resource Mcp</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/openai-apps-challenge</code></td><td>Openai Apps Challenge</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/artifacts/{artifact_id}/blob</code></td><td>Stream artifact binary (signed-URL auth — no bearer needed)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code></td><td>Kemory&#x27;s plan catalogue, unauthenticated</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/{artifact_id}/blob</code></td><td>Stream a binary artifact body (signed-URL auth, no bearer needed)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code></td><td>Claim a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code></td><td>Validate a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/pair/{code}/claim</code></td><td>Self‑register an agent using a pair code (called by the AI)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/telemetry</code></td><td>Ingest an opt-in anonymous CLI telemetry event</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/artifacts/{token}</code></td><td>Stream a LocalFS artifact by signed token</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/deep</code></td><td>Deep Health</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/history</code></td><td>Health History</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/live</code></td><td>Liveness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/pipeline</code></td><td>Pipeline Health</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/ready</code></td><td>Readiness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/retrieval</code></td><td>Retrieval Health</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/oauth/register</code></td><td>Oauth Register</td></tr>
+    </tbody>
+  </table>
   <p class="note"><strong>A credential is not the whole access boundary.</strong> Some Analytics and Consolidation operations additionally require an internal-staff identity and are not reachable with an API key or an agent token, however valid.</p>
 
   <h3>Scoping</h3>
@@ -225,6 +253,8 @@ table.api code{font-size:.86em}
   <p class="note">There is also an entitlement gate ahead of the model call. It keys on the caller's <em>resolved entitlement feature</em>, not on a plan name: where that feature resolves to the basic tier, the request is downgraded to <code>depth=l3</code> and answered with a degraded block, so the synthesis never runs. If entitlements fail to resolve at all the gate does not fire and the full pass runs. Both directions surprise people debugging a missing — or unexpectedly present — synthesis layer.</p>
   <p><code>GET /api/v1/user/profile</code> is the narrower, persisted view: static preferences plus a dynamic part maintained as memories accumulate.</p>
 </section>
+
+
 
 
 <section id="Memories">
@@ -353,7 +383,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="AI-Chats">
-  <h2>AI Chats <span class="ct">10</span></h2>
+  <h2>AI Chats <span class="ct">11</span></h2>
   <p>Captured conversations from ChatGPT, Claude, Gemini, Perplexity and Manus — upsert, list, classify and move.</p>
   
   <table class="api">
@@ -368,6 +398,7 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/{artifact_id}/blob</code><span class="flag pub">no auth</span></td><td>Stream a binary artifact body (signed-URL auth, no bearer needed)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/classify</code></td><td>Suggest destination namespaces for a chat based on its content</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/move</code></td><td>Move a chat to a different namespace</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/timeline</code></td><td>Unified cross-surface timeline for one chat (KMV-WA-E3-S2)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/turns:batch</code></td><td>Append (or upsert by source_turn_id) a batch of turns</td></tr>
     </tbody>
   </table>
@@ -674,7 +705,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="Health">
-  <h2>Health <span class="ct">5</span></h2>
+  <h2>Health <span class="ct">6</span></h2>
   <p>Liveness, readiness and deep dependency health.</p>
   
   <table class="api">
@@ -685,6 +716,7 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/live</code><span class="flag pub">no auth</span></td><td>Liveness</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/pipeline</code><span class="flag pub">no auth</span></td><td>Pipeline Health</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/ready</code><span class="flag pub">no auth</span></td><td>Readiness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/retrieval</code><span class="flag pub">no auth</span></td><td>Retrieval Health</td></tr>
     </tbody>
   </table>
 </section>
@@ -742,6 +774,30 @@ table.api code{font-size:.86em}
     <tbody>
             <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code><span class="flag pub">no auth</span></td><td>Claim a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code><span class="flag pub">no auth</span></td><td>Validate a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="Ask">
+  <h2>Ask <span class="ct">1</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/ask</code></td><td>Synthesized answer over retrieved memory, with its sources</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="OpenAI-plugin-verification">
+  <h2>OpenAI plugin verification <span class="ct">1</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/openai-apps-challenge</code><span class="flag pub">no auth</span></td><td>Openai Apps Challenge</td></tr>
     </tbody>
   </table>
 </section>

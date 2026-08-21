@@ -158,17 +158,19 @@ Never write credentials, keys or passwords into memory.</code></pre>
     <section id="tools">
       <h2>The tools</h2>
 <!-- TOOLS:BEGIN -->
-      <p>Kemory exposes <strong>17 tools</strong>, all prefixed <code>kemory_</code>. Every one carries a <code>title</code> and MCP behaviour annotations, so your client can tell reading from writing from deleting before it runs anything.</p>
+      <p>Kemory exposes <strong>27 tools</strong>, all prefixed <code>kemory_</code> — 21 distinct operations and 6 friendly-verb aliases for them. Every one carries a <code>title</code> and MCP behaviour annotations, so your client can tell reading from writing from deleting before it runs anything.</p>
 
       <div class="grade"><span class="dot read"></span><h3>Read-only</h3><span class="ann">readOnlyHint: true</span></div>
-      <p class="count">12 tools</p>
+      <p class="count">14 tools</p>
       <table>
         <tbody>
+          <tr><td><code>kemory_ask</code></td><td>Asks a question and gets an answer, not a result list — searched across memories, captured chats and files, then composed from what was found. The evidence comes back either way, so a question it cannot answer still returns the material it retrieved.</td></tr>
           <tr><td><code>kemory_check_access</code></td><td>Asks whether an action on a namespace would be permitted, without performing it.</td></tr>
           <tr><td><code>kemory_find_similar</code></td><td>Nearest-neighbour lookup by embedding. Finds memories that mean the same thing, not ones that share words.</td></tr>
           <tr><td><code>kemory_get_compressed</code></td><td>The same material at three levels of compression: raw, key-fact, and concept synthesis.</td></tr>
           <tr><td><code>kemory_get_context</code></td><td>Memories relevant to a topic, returned as a synthesis rather than a list.</td></tr>
           <tr><td><code>kemory_get_history</code></td><td>Version history and provenance for one memory — what changed, when, and which agent changed it.</td></tr>
+          <tr><td><code>kemory_get_namespace_summary</code></td><td>A standing summary of one namespace, maintained as its contents change, rather than composed per request.</td></tr>
           <tr><td><code>kemory_get_raw</code></td><td>Unsynthesised contents of one namespace. Use when you want the source text, not a summary.</td></tr>
           <tr><td><code>kemory_get_session_context</code></td><td>What was read and written inside one session.</td></tr>
           <tr><td><code>kemory_get_user_context</code></td><td>A cross-namespace picture of you. Used to prewarm a session before the first question.</td></tr>
@@ -180,9 +182,10 @@ Never write credentials, keys or passwords into memory.</code></pre>
       </table>
 
       <div class="grade"><span class="dot write"></span><h3>Write</h3><span class="ann">destructiveHint: false</span></div>
-      <p class="count">4 tools</p>
+      <p class="count">5 tools</p>
       <table>
         <tbody>
+          <tr><td><code>kemory_capture_session</code></td><td>Records a session's exchanges as they happened, before any consolidation decides what was worth keeping.</td></tr>
           <tr><td><code>kemory_consolidate_session</code></td><td>Turns a session into durable memories. Idempotent — running it twice changes nothing.</td></tr>
           <tr><td><code>kemory_promote_memory</code></td><td>Raises a memory from a narrow namespace into a wider one. The original stays where it was.</td></tr>
           <tr><td><code>kemory_store_memory</code></td><td>Writes one memory into a namespace, with metadata. Nothing existing is overwritten.</td></tr>
@@ -191,10 +194,25 @@ Never write credentials, keys or passwords into memory.</code></pre>
       </table>
 
       <div class="grade"><span class="dot del"></span><h3>Destructive</h3><span class="ann">destructiveHint: true</span></div>
-      <p class="count">1 tool</p>
+      <p class="count">2 tools</p>
       <table>
         <tbody>
           <tr><td><code>kemory_delete_memory</code></td><td>Deletes a memory by id. It stops being returned by recall. The audit trail retains that a deletion happened, and by whom.</td></tr>
+          <tr><td><code>kemory_resolve_conflict</code></td><td>Settles two memories that contradict each other by superseding one of them. Listed as destructive because the losing side stops being recalled.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grade"><h3>Aliases</h3><span class="ann">same handlers, same annotations</span></div>
+      <p class="count">6 tools</p>
+      <p>Vocabulary, not capability. Each dispatches to the tool it names, with the same permissions and the same annotations — they exist because an agent reaches for <code>remember</code> before <code>store_memory</code>. Your client will list them alongside the rest.</p>
+      <table>
+        <tbody>
+          <tr><td><code>kemory_forget</code></td><td>Same as <code>kemory_delete_memory</code> — destructive.</td></tr>
+          <tr><td><code>kemory_get_profile</code></td><td>Same as <code>kemory_get_user_context</code> — read-only.</td></tr>
+          <tr><td><code>kemory_list_projects</code></td><td>Same as <code>kemory_list_namespaces</code> — read-only.</td></tr>
+          <tr><td><code>kemory_memory</code></td><td>Same as <code>kemory_store_memory</code> — write.</td></tr>
+          <tr><td><code>kemory_recall</code></td><td>Same as <code>kemory_recall_memory</code> — read-only.</td></tr>
+          <tr><td><code>kemory_whoami</code></td><td>Same as <code>kemory_get_user_context</code> — read-only.</td></tr>
         </tbody>
       </table>
 

@@ -124,6 +124,7 @@
           <tr><td><code>KMV_RANK_W_GRAPH_PROXIMITY</code></td><td><code>0.15</code></td><td>Weight of proximity in the memory graph.</td></tr>
           <tr><td><code>KMV_RANK_W_UTILITY_SALIENCE</code></td><td><code>0.15</code></td><td>Weight of measured usefulness.</td></tr>
           <tr><td><code>MCP_MIN_RELEVANCE</code></td><td><code>0.0</code> (off)</td><td>An absolute similarity floor applied to results. See below for why this is off.</td></tr>
+          <tr><td><code>KMV_UNIFIED_COSINE_FLOOR</code></td><td><code>0.80</code></td><td>Calibrates the chat and file legs onto the memory leg's scale in cross-surface search. Not the same thing as the row above — see <a href="#unified">Cross-surface search</a>.</td></tr>
           <tr><td><code>GET_CONTEXT_FLAT_GATE</code></td><td><code>true</code></td><td>Whether <code>kemory_get_context</code> suppresses a flat, background-noise page instead of returning it.</td></tr>
         </tbody>
       </table>
@@ -145,6 +146,18 @@
       <h2>Cross-surface search</h2>
       <p><code>POST /api/v1/search/unified</code> searches memories, chat turns and files together. Each surface is searched by its own leg and the results are merged <strong>by rank</strong>, because the surfaces' raw scores are on different scales.</p>
       <p>Each result reports its own leg-native score, so compare scores within a type and never across types.</p>
+
+      <h3>The legs are not on the same scale</h3>
+      <p>This matters more than it sounds. The memory leg reports a <em>blended</em> rank score, in which textual relevance is only about a third of the total and which tops out around 0.6–0.7. The chat and file legs report raw cosine similarity, where anything genuinely on-topic sits at 0.8 or above. Two numbers, two meanings, and the higher one belongs to the weaker signal.</p>
+      <p>Left uncorrected, that let loosely-related chats outrank the memory that actually answered the question — the surface with no lexical signal at all winning on points. So a floor of <strong>0.80</strong> is applied to the chat and file legs only, calibrating them onto the memory leg's scale before the merge.</p>
+      <div class="note">
+        <span class="lbl">This is a scale correction, not a relevance threshold.</span>
+        <p>It reads as a contradiction of <a href="#rejected">the rejected fixed floor</a> and is not. That experiment applied an absolute threshold to the <em>memory</em> leg, where scores rise with corpus size and genuine matches share a band with noise. This one converts between two legs' native scales, and it can only ever tighten: a caller who asks for <code>min_score</code> above 0.80 keeps their own value, and one who passes <code>0</code> — exhaustive retrieval, debugging — has opted out and gets everything. Set <code>KMV_UNIFIED_COSINE_FLOOR</code> to change it.</p>
+      </div>
+      <p>It is deliberately an interim measure. The durable fix is to give chat and file the same hybrid treatment memories get, so they carry a lexical signal rather than being calibrated for the lack of one. Those tables hold only a dense index today, so that needs blind-index staging and a backfill.</p>
+
+      <h3>Asking instead of searching</h3>
+      <p><code>POST /api/v1/ask</code> runs exactly this search and then composes an answer from what comes back, returning the evidence alongside it. It searches identically — same legs, same merge, same floor — so the two surfaces cannot disagree about what is relevant. The evidence is returned whether or not an answer could be composed, so a question it cannot answer still degrades to ordinary search rather than to nothing. Also available as <code>kemory ask</code> and as the <code>kemory_ask</code> MCP tool.</p>
     </section>
 
     <section id="capture">

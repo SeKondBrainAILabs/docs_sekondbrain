@@ -22,14 +22,15 @@
   core-kanvas). If a service is ever pointed at `us.i.posthog.com`, this row becomes a
   false statement about a safeguard and must change with it.
 
-  That is a live risk, not a theoretical one: THREE code paths default to the US host when
-  POSTHOG_HOST is unset, so only the manifests make them EU —
-    Core_Kora/src/backend/services/analytics.py:34
-    Core_Ai_Backend/src/services/analytics.py:34
-    Core_Kora/src/frontend/src/app/admin/events/page.tsx:37 (and it prints
-      `POSTHOG_HOST=https://us.i.posthog.com` as setup instructions, lines 109-111)
-  A dropped env var on any of those silently moves analytics to the United States while
-  this page still says European Union. The code defaults are the thing to fix.
+  That was a live risk, not a theoretical one. Two code paths defaulted to the US host when
+  POSTHOG_HOST is unset, so only the manifests made them EU:
+    Core_Ai_Backend/src/services/analytics.py                        (PR #269)
+    Core_Kora/src/frontend/src/app/admin/events/page.tsx — and its Setup tab
+      PRINTED `POSTHOG_HOST=https://us.i.posthog.com` as the .env snippet to copy  (PR #193)
+  Both now default to EU. Core_Kora's backend and Core_Kora's lib/posthog.ts already did.
+  Verify against the REMOTE, not a superrepo checkout: an earlier draft of this comment
+  claimed Core_Kora's backend defaulted to US, read from a stale local gitlink that was
+  many commits behind. Same class of error the page's own no-guessing rule exists to stop.
 
   PostHog's data categories changed on 2026-08-23 (Core_Backend #178, Core_Kora #191,
   Kemory #702). Analytics now carries account identity and an end-user IP, so the purpose

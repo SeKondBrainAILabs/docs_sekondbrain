@@ -15,12 +15,17 @@
   ties the transfer mechanism to what is disclosed here, so a guessed region is a false
   statement about a safeguard.
 
-  PostHog's region (2026-08-23) is NOT from their headquarters. Every production service
-  is configured against the EU Cloud ingest endpoint `https://eu.i.posthog.com` — verified
-  across all seven values-prod.yaml files that set it in Core_Infrastructure
-  (core-kora, core-kora-frontend, core-backend, core-ai-backend, kemory, kemory-dashboard,
-  core-kanvas). If a service is ever pointed at `us.i.posthog.com`, this row becomes a
-  false statement about a safeguard and must change with it.
+  PostHog's region (2026-08-23, re-audited 2026-08-24) is NOT from their headquarters.
+  Every service that sends anything is pointed at the EU Cloud ingest endpoint
+  `https://eu.i.posthog.com` — all EIGHT values-prod.yaml files in Core_Infrastructure that
+  set a host: core-kora, core-kora-frontend, core-backend, core-ai-backend, kemory,
+  kemory-worker, kemory-dashboard, core-kanvas. Two deliberate non-senders, both documented
+  in their own manifests, so their absence is not an unaudited gap:
+    pulse-webapp     — PostHog intentionally not configured (decision 2026-07-30)
+    the India cell   — POSTHOG_* dropped from values-prod-in.yaml; the adapter is inert
+                       without a key, so kemory-in emits no product analytics at all
+  If a service is ever pointed at `us.i.posthog.com`, this row becomes a false statement
+  about a safeguard and must change with it.
 
   As of 2026-08-24 the manifests are no longer the only thing holding this true: every
   code-level default is EU as well, so a dropped POSTHOG_HOST now fails INTO the disclosed

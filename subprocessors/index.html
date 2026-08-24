@@ -22,15 +22,21 @@
   core-kanvas). If a service is ever pointed at `us.i.posthog.com`, this row becomes a
   false statement about a safeguard and must change with it.
 
-  That was a live risk, not a theoretical one. Two code paths defaulted to the US host when
-  POSTHOG_HOST is unset, so only the manifests made them EU:
-    Core_Ai_Backend/src/services/analytics.py                        (PR #269)
-    Core_Kora/src/frontend/src/app/admin/events/page.tsx — and its Setup tab
-      PRINTED `POSTHOG_HOST=https://us.i.posthog.com` as the .env snippet to copy  (PR #193)
-  Both now default to EU. Core_Kora's backend and Core_Kora's lib/posthog.ts already did.
-  Verify against the REMOTE, not a superrepo checkout: an earlier draft of this comment
-  claimed Core_Kora's backend defaulted to US, read from a stale local gitlink that was
-  many commits behind. Same class of error the page's own no-guessing rule exists to stop.
+  As of 2026-08-24 the manifests are no longer the only thing holding this true: every
+  code-level default is EU as well, so a dropped POSTHOG_HOST now fails INTO the disclosed
+  region instead of out of it. Two paths had defaulted to the US host and were fixed —
+    Core_Ai_Backend/src/services/analytics.py                    (merged, PR #269)
+    Core_Kora/src/frontend/src/app/admin/events/page.tsx, whose Setup tab also
+      PRINTED `POSTHOG_HOST=https://us.i.posthog.com` as the .env snippet to copy
+                                                                  (merged, PR #193)
+  Core_Kora's backend, Core_Kora's lib/posthog.ts, Core_Backend, kemory, kemory-dashboard
+  and Core_Kanvas already defaulted to EU.
+
+  Verify claims like these against the REMOTE, not a superrepo checkout. An earlier draft
+  of this comment said Core_Kora's backend defaulted to US; it did not, and had not for
+  some time — the claim came from a stale local gitlink many commits behind. That is the
+  same class of error as filling a region in from a vendor's headquarters, which is what
+  the rule above exists to prevent.
 
   PostHog's data categories changed on 2026-08-23 (Core_Backend #178, Core_Kora #191,
   Kemory #702). Analytics now carries account identity and an end-user IP, so the purpose

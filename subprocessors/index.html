@@ -11,9 +11,17 @@
   Keep it live. A dead link here weakens the Article 28 authorisation the DPA relies on.
 
   Processing locations are marked with class="gap" where the entity's processing region
-  has not been confirmed. Do not fill one in from the vendor's headquarters — Schedule 1 §4
+  has not been confirmed. Do not fill one in from the vendor's headquarters, from the
+  nationality of its parent company, or from a global API/SMTP endpoint — Schedule 1 §4
   ties the transfer mechanism to what is disclosed here, so a guessed region is a false
-  statement about a safeguard.
+  statement about a safeguard. A region goes in this table only when it is established by
+  something that IS the region (a region-specific ingest endpoint, a residency setting on
+  our account, or the vendor's written confirmation). The derivation for every filled-in
+  cell is recorded in this repository's commit history — evidence and audit narrative
+  belong there, not on a served page.
+
+  Purpose cells state what a provider RECEIVES, not only what is excluded. A row that
+  names only an exclusion reads as a claim of pseudonymity.
 
   Payments: there is no merchant of record. SEKONDBRAIN AI LABS FZCO is the seller of
   record and is listed below as a sub-processor; Stripe is a processor only. Keep these
@@ -61,7 +69,7 @@
   <p class="lede">The third parties we use to provide the Services, what each one is used for, and where your data is processed. This page is referenced by our <a href="../legal/privacy/">Privacy Policy</a> and forms part of the Data Processing Agreement in our <a href="../legal/business-terms/">Business Terms</a>.</p>
   <div class="addr">
     <span class="k">Last updated</span>
-    <code>19 August 2026</code>
+    <code>24 August 2026</code>
   </div>
 </div>
 
@@ -71,7 +79,7 @@
     <section id="status" style="padding-top:var(--sp-6)">
       <div class="note">
         <span class="lbl">Status of this list</span>
-        <p>Every party we use is named below. Two things are still being completed: the <strong>processing region</strong> for some entries, and the providers for <strong>speech</strong> and <strong>email delivery</strong>. Those are marked, not omitted. Where a region is marked pending, treat the transfer disclosure for that entry as incomplete.</p>
+        <p>Every party we use is named below. Two things are still being completed: the <strong>processing region</strong> for some entries, and the providers for <strong>speech</strong>. Those are marked, not omitted. Where a region is marked pending, treat the transfer disclosure for that entry as incomplete. Email delivery is now named; its region is still open, and is discussed in <a href="#transfers">International transfers</a>.</p>
       </div>
     </section>
 
@@ -105,8 +113,8 @@
           </tr>
           <tr>
             <td>PostHog</td>
-            <td>Product usage analytics. Telemetry events never include the content of your conversations or memories.</td>
-            <td><span class="gap">region pending</span></td>
+            <td>Product usage analytics. Receives your account identity (email address, name and, where you gave one, phone number), your IP address and the approximate location derived from it, your browser and device type, and product events. Telemetry events never include the content of your conversations or memories.</td>
+            <td>European Union</td>
           </tr>
           <tr>
             <td>Stripe</td>
@@ -129,9 +137,9 @@
             <td><span class="gap">pending</span></td>
           </tr>
           <tr>
-            <td><span class="gap">Email delivery</span></td>
-            <td>Transactional and service email</td>
-            <td><span class="gap">pending</span></td>
+            <td>Twilio SendGrid</td>
+            <td>Transactional and service email &mdash; account, waitlist, billing, support and security messages. Receives your email address, your name where the message uses it, and the content of the message itself.</td>
+            <td><span class="gap">region pending</span></td>
           </tr>
         </tbody>
       </table>
@@ -150,6 +158,7 @@
       <h2>International transfers</h2>
       <p>Data at rest is stored in the deployment region selected at organisation creation: Google Cloud Switzerland (rest of world) or Google Cloud India (customers in India). Transfers to Switzerland are covered by UK adequacy regulations.</p>
       <p>Billing and account administration data is processed by our group affiliate in the <strong>United Arab Emirates</strong>. The UAE is not covered by a UK adequacy decision, so that transfer is made under an intra-group data transfer agreement incorporating the UK International Data Transfer Agreement, supported by a transfer risk assessment.</p>
+      <p>Transactional and service email is processed by Twilio SendGrid, which receives the recipient address and the content of the message. <span class="gap">Its processing region is being confirmed with the provider</span> &mdash; SendGrid operates in more than one region and the SMTP endpoint we use does not identify which applies to our account, so no region is stated here. Until it is confirmed, treat the transfer disclosure for this entry as incomplete.</p>
       <p>Transfers to India, to the UAE, and any other restricted transfer &mdash; including processing by inference providers in other jurisdictions &mdash; are made under the UK International Data Transfer Agreement or the UK Addendum to the EU Standard Contractual Clauses, with supplementary measures where appropriate. You may request details of the safeguards applicable to a specific transfer at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
     </section>
 

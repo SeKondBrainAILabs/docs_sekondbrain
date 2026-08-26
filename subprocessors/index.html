@@ -11,55 +11,17 @@
   Keep it live. A dead link here weakens the Article 28 authorisation the DPA relies on.
 
   Processing locations are marked with class="gap" where the entity's processing region
-  has not been confirmed. Do not fill one in from the vendor's headquarters — Schedule 1 §4
+  has not been confirmed. Do not fill one in from the vendor's headquarters, from the
+  nationality of its parent company, or from a global API/SMTP endpoint — Schedule 1 §4
   ties the transfer mechanism to what is disclosed here, so a guessed region is a false
-  statement about a safeguard.
+  statement about a safeguard. A region goes in this table only when it is established by
+  something that IS the region (a region-specific ingest endpoint, a residency setting on
+  our account, or the vendor's written confirmation). The derivation for every filled-in
+  cell is recorded in this repository's commit history — evidence and audit narrative
+  belong there, not on a served page.
 
-  PostHog's region (2026-08-23, re-audited 2026-08-24) is NOT from their headquarters.
-  Every service that sends anything is pointed at the EU Cloud ingest endpoint
-  `https://eu.i.posthog.com` — all EIGHT values-prod.yaml files in Core_Infrastructure that
-  set a host: core-kora, core-kora-frontend, core-backend, core-ai-backend, kemory,
-  kemory-worker, kemory-dashboard, core-kanvas. Two deliberate non-senders, both documented
-  in their own manifests, so their absence is not an unaudited gap:
-    pulse-webapp     — PostHog intentionally not configured (decision 2026-07-30)
-    the India cell   — POSTHOG_* dropped from values-prod-in.yaml; the adapter is inert
-                       without a key, so kemory-in emits no product analytics at all
-  If a service is ever pointed at `us.i.posthog.com`, this row becomes a false statement
-  about a safeguard and must change with it.
-
-  As of 2026-08-24 the manifests are no longer the only thing holding this true: every
-  code-level default is EU as well, so a dropped POSTHOG_HOST now fails INTO the disclosed
-  region instead of out of it. Two paths had defaulted to the US host and were fixed —
-    Core_Ai_Backend/src/services/analytics.py                    (merged, PR #269)
-    Core_Kora/src/frontend/src/app/admin/events/page.tsx, whose Setup tab also
-      PRINTED `POSTHOG_HOST=https://us.i.posthog.com` as the .env snippet to copy
-                                                                  (merged, PR #193)
-  Core_Kora's backend, Core_Kora's lib/posthog.ts, Core_Backend, kemory, kemory-dashboard
-  and Core_Kanvas already defaulted to EU.
-
-  Verify claims like these against the REMOTE, not a superrepo checkout. An earlier draft
-  of this comment said Core_Kora's backend defaulted to US; it did not, and had not for
-  some time — the claim came from a stale local gitlink many commits behind. That is the
-  same class of error as filling a region in from a vendor's headquarters, which is what
-  the rule above exists to prevent.
-
-  PostHog's data categories changed on 2026-08-23 (Core_Backend #178, Core_Kora #191,
-  Kemory #702). Analytics now carries account identity and an end-user IP, so the purpose
-  cell states what it RECEIVES and not only what it excludes — the previous wording named
-  only the content exclusion, which read as a claim that analytics was pseudonymous.
-
-  Twilio SendGrid is the email relay in production, established from configuration rather
-  than from a vendor page: SMTP_HOST=smtp.sendgrid.net in core-backend values-prod.yaml,
-  the same in prod-glitchtip, and the shared s9n-prod-SMTP_PASSWORD secret used by
-  Keycloak. That establishes the PROVIDER only.
-
-  Its region stays pending, and a first draft of this row wrongly said "United States" —
-  reasoned from Twilio being a US company plus a global SMTP endpoint. That is the vendor's
-  nationality, not its processing region, which is exactly what the rule above forbids.
-  SendGrid sells regional data residency and `smtp.sendgrid.net` is the global endpoint, so
-  it does not identify which region our account is on: unlike PostHog, where `eu.` vs `us.`
-  IS the residency, the hostname carries no answer. Only the provider's own confirmation of
-  the account's residency setting can fill this cell.
+  Purpose cells state what a provider RECEIVES, not only what is excluded. A row that
+  names only an exclusion reads as a claim of pseudonymity.
 
   Payments: there is no merchant of record. SEKONDBRAIN AI LABS FZCO is the seller of
   record and is listed below as a sub-processor; Stripe is a processor only. Keep these
@@ -107,7 +69,7 @@
   <p class="lede">The third parties we use to provide the Services, what each one is used for, and where your data is processed. This page is referenced by our <a href="../legal/privacy/">Privacy Policy</a> and forms part of the Data Processing Agreement in our <a href="../legal/business-terms/">Business Terms</a>.</p>
   <div class="addr">
     <span class="k">Last updated</span>
-    <code>23 August 2026</code>
+    <code>24 August 2026</code>
   </div>
 </div>
 

@@ -52,6 +52,11 @@ For Claude, ChatGPT, Perplexity, Manus and any other AI that supports remote MCP
 There is no key to copy, paste or keep safe. The connector holds a short-lived token that
 refreshes itself and that you can revoke at any time from your Kemory dashboard.
 
+Connected is not the same as remembering: a model decides for itself when to call a tool,
+and an AI given one with no instruction about it will usually not reach for it.
+[Optimise your AIs for Kemory](optimise/) is the standing instruction that fixes that, and
+where to paste it.
+
 **What you are approving.** The sign-in screen asks you to let this AI act as you inside
 Kemory — read your memories, write new ones, and delete memories you point it at. It does
 not grant the AI access to anything else in your SeKondBrain account, and it does not grant
@@ -124,6 +129,9 @@ or domain. Tell me what you wrote and to which namespace.
 
 Never write credentials, keys or passwords into memory.
 ```
+
+[Optimise your AIs for Kemory](optimise/) has the same instruction sized for every field it
+has to fit in, and names where that field lives in each AI.
 
 ---
 

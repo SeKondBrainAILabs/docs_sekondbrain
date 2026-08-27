@@ -56,8 +56,11 @@
   .route b.dest{background:rgba(61,214,128,.15);border-color:rgba(61,214,128,.5);font-weight:600}
   .route i{font-style:normal;color:var(--grey);font-size:12px}
 
-  /* the screen you are looking for, drawn rather than screenshotted so it
-     stays legible at any width and does not rot the week a product reskins */
+  /* the screen you are looking for. Real screenshots where we have them
+     (redacted), drawings for the rest — a drawing stays legible at any width
+     and does not rot the week a product reskins */
+  .shot.real{max-width:680px;background:#161616}
+  .shot.real img{display:block;width:100%;height:auto}
   .shot{
     max-width:560px;margin:0 0 var(--sp-4);background:#fff;overflow:hidden;
     border:1px solid var(--hair);border-radius:var(--r-md);box-shadow:0 1px 2px rgba(0,0,0,.04);
@@ -255,22 +258,8 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="route">
             <b>Your name, bottom-left</b><i>&rsaquo;</i><b>Settings</b><i>&rsaquo;</i><b>Personalization</b><i>&rsaquo;</i><b class="dest">Custom instructions</b>
           </div>
-          <div class="shot" role="img" aria-label="ChatGPT settings, Personalization tab, showing the Custom instructions field with the standing instruction pasted into it.">
-            <div class="shot-bar"><em></em><em></em><em></em><span>Settings</span></div>
-            <div class="shot-body">
-              <div class="shot-nav">
-                <span>General</span>
-                <span class="on">Personalization</span>
-                <span>Connected apps</span>
-                <span>Data controls</span>
-                <span>Security</span>
-              </div>
-              <div class="shot-main">
-                <div class="shot-lbl">Custom instructions</div>
-                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
-                <div class="shot-hint">857 / 5000</div>
-              </div>
-            </div>
+          <div class="shot real">
+            <img src="chatgpt-instructions.png" width="1360" height="1058" loading="lazy" alt="ChatGPT settings on Personalization, scrolled to the Custom instructions field, which holds the standing instruction.">
           </div>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field holds 5,000 characters since July 2026 — up from 1,500 — so the full version fits too if you want the namespace rules in it.</span></li>
@@ -286,24 +275,13 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="route">
             <b>Your initials, lower-left</b><i>&rsaquo;</i><b>Settings</b><i>&rsaquo;</i><b>General</b><i>&rsaquo;</i><b class="dest">Instructions for Claude</b>
           </div>
-          <div class="shot" role="img" aria-label="Claude settings, General tab, showing the Instructions for Claude field with the standing instruction pasted into it.">
-            <div class="shot-bar"><em></em><em></em><em></em><span>Settings</span></div>
-            <div class="shot-body">
-              <div class="shot-nav">
-                <span class="on">General</span>
-                <span>Connectors</span>
-                <span>Memory</span>
-                <span>Capabilities</span>
-                <span>Privacy</span>
-              </div>
-              <div class="shot-main">
-                <div class="shot-lbl">Instructions for Claude</div>
-                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
-              </div>
-            </div>
+          <div class="shot real">
+            <img src="claude-instructions.png" width="1360" height="900" loading="lazy" alt="Claude's desktop app settings on General, with the Profile section's Instructions for Claude field holding the standing instruction.">
           </div>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. It applies everywhere Claude runs on your account.</span></li>
+            <li><span class="k">Finding it</span><span>The field sits under the <strong>Profile</strong> heading partway down the General page, below the name fields — scroll to it. The desktop app is the same screen: your initials, lower-left, then Settings.</span></li>
+            <li><span class="k">Saving</span><span>Paste it yourself — you do not need to ask Claude in chat to save it. Asking writes to Claude's separate memory instead, which is best-effort recall, not a guarantee. After pasting, reopen Settings once to confirm it stuck.</span></li>
             <li><span class="k">Per project</span><span>A Project has its own instructions field and it composes with the profile one — put the namespace there.</span></li>
             <li><span class="k">Not a Style</span><span>Styles shape how Claude writes, not what it does. A memory rule put in a Style only applies when that Style is selected, which is not what you want.</span></li>
             <li><span class="k">Not the same</span><span>Settings &rsaquo; Memory is Claude's own built-in memory — separate from Kemory, off by default, and confined to Claude. Kemory is the one your other AIs can also read.</span></li>
@@ -364,6 +342,23 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>, plus the namespace line — see the note below.</span></li>
             <li><span class="k">No account-wide field</span><span>Perplexity scopes instructions to a project rather than the whole account, so there is nowhere to set this once and forget it. Create a project per body of work and paste into each.</span></li>
             <li><span class="k">Naming</span><span>These were called Spaces until recently and some of the product still says so. Spaces and Projects are the same thing.</span></li>
+          </ul>
+        </div>
+
+        <input type="radio" name="whereai" id="ai-manus">
+        <label for="ai-manus">Manus</label>
+        <div class="panel">
+          <div class="route">
+            <b>Your avatar, top-left</b><i>&rsaquo;</i><b>Settings</b><i>&rsaquo;</i><b>Personalization</b><i>&rsaquo;</i><b class="dest">Custom Instructions</b>
+          </div>
+          <div class="shot real">
+            <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
+          </div>
+          <ul class="facts">
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field is roomy, so the full version fits if you want the namespace rules in it.</span></li>
+            <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
+            <li><span class="k">Not Knowledge</span><span>The Knowledge tab — and "Import memory from another AI" — is Manus's own store: separate from Kemory, and confined to Manus. Kemory is the one your other AIs can also read.</span></li>
+            <li><span class="k">Connecting</span><span>Settings &rsaquo; Connectors. If Kemory is not in the catalogue, add it as a custom connector with the <a href="#mcp-web">server address</a>.</span></li>
           </ul>
         </div>
 

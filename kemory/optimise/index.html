@@ -121,8 +121,10 @@
 
 <header class="top">
   <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
     <a class="brandline" href="../">Kemory <span>· Optimise</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
       <a href="#instruction">The instruction</a>
       <a href="#where">Where it goes</a>
@@ -289,6 +291,23 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           </ul>
         </div>
 
+        <input type="radio" name="whereai" id="ai-manus">
+        <label for="ai-manus">Manus</label>
+        <div class="panel">
+          <div class="route">
+            <b>Your avatar, top-left</b><i>&rsaquo;</i><b>Settings</b><i>&rsaquo;</i><b>Personalization</b><i>&rsaquo;</i><b class="dest">Custom Instructions</b>
+          </div>
+          <div class="shot real">
+            <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
+          </div>
+          <ul class="facts">
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field is roomy, so the full version fits if you want the namespace rules in it.</span></li>
+            <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
+            <li><span class="k">Not Knowledge</span><span>The Knowledge tab — and "Import memory from another AI" — is Manus's own store: separate from Kemory, and confined to Manus. Kemory is the one your other AIs can also read.</span></li>
+            <li><span class="k">Connecting</span><span>Settings &rsaquo; Connectors. If Kemory is not in the catalogue, add it as a custom connector with the <a href="#mcp-web">server address</a>.</span></li>
+          </ul>
+        </div>
+
         <input type="radio" name="whereai" id="ai-gemini">
         <label for="ai-gemini">Gemini</label>
         <div class="panel">
@@ -342,23 +361,6 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>, plus the namespace line — see the note below.</span></li>
             <li><span class="k">No account-wide field</span><span>Perplexity scopes instructions to a project rather than the whole account, so there is nowhere to set this once and forget it. Create a project per body of work and paste into each.</span></li>
             <li><span class="k">Naming</span><span>These were called Spaces until recently and some of the product still says so. Spaces and Projects are the same thing.</span></li>
-          </ul>
-        </div>
-
-        <input type="radio" name="whereai" id="ai-manus">
-        <label for="ai-manus">Manus</label>
-        <div class="panel">
-          <div class="route">
-            <b>Your avatar, top-left</b><i>&rsaquo;</i><b>Settings</b><i>&rsaquo;</i><b>Personalization</b><i>&rsaquo;</i><b class="dest">Custom Instructions</b>
-          </div>
-          <div class="shot real">
-            <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
-          </div>
-          <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field is roomy, so the full version fits if you want the namespace rules in it.</span></li>
-            <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
-            <li><span class="k">Not Knowledge</span><span>The Knowledge tab — and "Import memory from another AI" — is Manus's own store: separate from Kemory, and confined to Manus. Kemory is the one your other AIs can also read.</span></li>
-            <li><span class="k">Connecting</span><span>Settings &rsaquo; Connectors. If Kemory is not in the catalogue, add it as a custom connector with the <a href="#mcp-web">server address</a>.</span></li>
           </ul>
         </div>
 
@@ -704,5 +706,6 @@ reach a decision. Say what you saved.</div>
   </div>
 </footer>
 
+<script src="../../assets/nav.js" defer></script>
 </body>
 </html>

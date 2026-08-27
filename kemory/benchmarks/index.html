@@ -51,8 +51,10 @@
 
 <header class="top">
   <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
     <a class="brandline" href="../">Kemory <span>· benchmarks</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
       <a href="../">Documentation</a>
       <a href="#results">Results</a>
@@ -335,5 +337,6 @@ python3 score.py --hyp output/hypotheses.jsonl \
   </div>
 </footer>
 
+<script src="../../assets/nav.js" defer></script>
 </body>
 </html>

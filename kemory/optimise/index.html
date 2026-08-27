@@ -180,45 +180,59 @@
 
       <h3>Short — for a small preferences box</h3>
       <p>Where you have a sentence or two and no more. This is the version in the activation email.</p>
-<pre><code>Save durable facts, decisions and preferences to Kemory. Check Kemory
-before answering questions about my work.</code></pre>
+<pre><code>Kemory is my long-term memory. In every conversation, check Kemory
+before answering questions about my work, and save preferences and
+decisions to Kemory as they come up — without being asked.</code></pre>
 
       <h3>Standard — for a custom-instructions field</h3>
-      <p>The one to use by default. It names the three moments that matter — read at the start, write on a decision, never write a secret — without prescribing tool names.</p>
-<pre><code>You have Kemory memory tools. Use them without being asked.
+      <p>The one to use by default. It sets the habit — read before answering, write at the moment — and, just as usefully, the two recoveries: check late rather than never, and update rather than contradict.</p>
+<pre><code>You have Kemory memory tools — my long-term memory, shared across
+all my AIs. Use them in every conversation, without being asked.
 
 Check Kemory before answering anything about my work, my projects, my
 preferences or decisions we have made before. Do this first, not after
-you have already guessed.
+you have already guessed. Check again when the topic changes, and if
+you notice you answered without checking, check now and correct
+yourself.
 
-Save to Kemory whenever I state a preference or a way of working, we
+Save to Kemory the moment I state a preference or a way of working, we
 reach a decision, or we learn something non-obvious that would cost
-time to rediscover. Say briefly what you saved.
-
-Never write credentials, keys, tokens or passwords into memory.</code></pre>
+time to rediscover. Do not wait for the end of the conversation — it
+can stop at any point, and an unsaved fact is lost. Do not ask whether
+to save; save it and say briefly what you saved. If a new decision
+replaces an old one, update the existing memory rather than writing a
+contradiction beside it.</code></pre>
 
       <h3>Full — for a project or rules file</h3>
       <p>Where you have room, and where the AI is working on one body of work rather than everything. Naming the namespace is what makes recall sharp later, so this version asks for it.</p>
-<pre><code>You have Kemory memory tools available.
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
 
-At the start of each session: call kemory_list_namespaces, then
-kemory_recall_memory on the current topic. Do this before answering,
-not after.
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
 
-Write a memory immediately when: I state a preference or a way of
-working, we make a decision, or we learn something non-obvious about
-this codebase or domain. Tell me what you wrote and to which namespace.
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
 
 Namespaces to prefer:
   user:preferences      how I like to work
   project:&lt;name&gt;        facts and decisions about one project
   decisions:&lt;period&gt;    a dated decision log, with the reasoning
 
-Prefer one specific memory over one long one. Write in the vocabulary
-we actually used — identifiers, error strings, config keys — because
-that is what recall matches against later.
-
-Never write credentials, keys, tokens or passwords into memory.</code></pre>
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
 
       <div class="note">
         <span class="lbl">Why there are no tool names in the short versions</span>
@@ -253,8 +267,8 @@ Never write credentials, keys, tokens or passwords into memory.</code></pre>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">Custom instructions</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Check Kemory before answering anything about my work&hellip;</div>
-                <div class="shot-hint">312 / 5000</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
+                <div class="shot-hint">857 / 5000</div>
               </div>
             </div>
           </div>
@@ -284,7 +298,7 @@ Never write credentials, keys, tokens or passwords into memory.</code></pre>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">Instructions for Claude</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Check Kemory before answering anything about my work&hellip;</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
               </div>
             </div>
           </div>
@@ -314,7 +328,7 @@ Never write credentials, keys, tokens or passwords into memory.</code></pre>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">Instructions for Gemini</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Check Kemory before answering anything about my work&hellip;</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
               </div>
             </div>
           </div>
@@ -342,7 +356,7 @@ Never write credentials, keys, tokens or passwords into memory.</code></pre>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">Custom instructions</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Memories for this work go in <b>project:atlas</b>&hellip;</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory.</b> Use them in every conversation, without being asked. Memories for this work go in <b>project:atlas</b>&hellip;</div>
               </div>
             </div>
           </div>
@@ -365,18 +379,17 @@ Never write credentials, keys, tokens or passwords into memory.</code></pre>
             <div class="shot-bar"><span class="path">~/.claude/CLAUDE.md</span></div>
 <div class="shot-code"><b>## Memory</b>
 
-You have Kemory memory tools. Use them without
-being asked.
+You have Kemory memory tools — my long-term
+memory, shared across all my AIs. Use them in
+every session, without being asked.
 
 Check Kemory before answering anything about my
-work, my projects, my preferences or decisions
-we have made before.
+work or decisions we have made before. Check
+again when the topic shifts.
 
-Save to Kemory whenever I state a preference,
-we reach a decision, or we learn something
-non-obvious. Say briefly what you saved.
-
-Never write credentials or keys into memory.</div>
+Save the moment I state a preference, we reach
+a decision, or we learn something non-obvious.
+Say briefly what you saved, and where.</div>
           </div>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a>. A file has no character limit, so this is the one place to use the long one with the namespace table in it.</span></li>
@@ -431,7 +444,7 @@ work go in project:atlas.</div>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">User Rules</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Check Kemory before answering anything about my work&hellip;</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
               </div>
             </div>
           </div>
@@ -451,21 +464,20 @@ work go in project:atlas.</div>
           </div>
           <div class="shot file">
             <div class="shot-bar"><span class="path">~/.codeium/windsurf/memories/global_rules.md</span></div>
-<div class="shot-code">You have Kemory memory tools. Use them without
-being asked.
+<div class="shot-code">You have Kemory memory tools — my long-term
+memory, shared across all my AIs. Use them in
+every session, without being asked.
 
 Check Kemory before answering anything about my
-work, my projects or decisions we have made
-before. Do this first, not after guessing.
+work or decisions we have made before. Do this
+first, not after guessing.
 
-Save to Kemory whenever I state a preference,
-we reach a decision, or we learn something
-non-obvious. Say briefly what you saved.
-
-Never write credentials or keys into memory.</div>
+Save the moment I state a preference, we reach
+a decision, or we learn something non-obvious.
+Say briefly what you saved.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. Global rules are capped at 6,000 characters — comfortable for the standard one, tight for the full one.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. Global rules are capped at 6,000 characters — the standard and full versions both fit with room to spare.</span></li>
             <li><span class="k">Per project</span><span>A rules file in <code>.devin/rules/</code>. The older <code>.windsurf/rules/</code> and a root <code>.windsurfrules</code> are still read, so existing projects keep working.</span></li>
             <li><span class="k">Naming</span><span>Windsurf was renamed Devin Desktop in June 2026. Recent builds prefer the <code>.devin/</code> paths; everything above applies to both.</span></li>
             <li><span class="k">Not memories</span><span>Cascade's own auto-generated memories live only on your machine and are not the same as Kemory. A rule is what makes behaviour durable and shareable.</span></li>
@@ -480,17 +492,16 @@ Never write credentials or keys into memory.</div>
           </div>
           <div class="shot file">
             <div class="shot-bar"><span class="path">.clinerules</span></div>
-<div class="shot-code">You have Kemory memory tools. Use them without
-being asked.
+<div class="shot-code">You have Kemory memory tools — my long-term
+memory, shared across all my AIs. Use them in
+every session, without being asked.
 
 Check Kemory before answering anything about
 this project or decisions we have made before.
 
-Save to Kemory when we reach a decision or
-learn something non-obvious about this codebase.
-Memories for this work go in project:atlas.
-
-Never write credentials or keys into memory.</div>
+Save the moment we reach a decision or learn
+something non-obvious about this codebase.
+Memories for this work go in project:atlas.</div>
           </div>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a>, with the namespace named — this file is per-repository, so it already knows which project it is.</span></li>
@@ -508,17 +519,16 @@ Never write credentials or keys into memory.</div>
             <div class="shot-bar"><span class="path">~/.gemini/GEMINI.md</span></div>
 <div class="shot-code"><b>## Memory</b>
 
-You have Kemory memory tools. Use them without
-being asked.
+You have Kemory memory tools — my long-term
+memory, shared across all my AIs. Use them in
+every session, without being asked.
 
 Check Kemory before answering anything about my
-work, my projects or decisions we have made
-before.
+work or decisions we have made before. Check
+again when the topic shifts.
 
-Save to Kemory whenever I state a preference or
-we reach a decision. Say what you saved.
-
-Never write credentials or keys into memory.</div>
+Save the moment I state a preference or we
+reach a decision. Say what you saved.</div>
           </div>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a> — no limit on a file.</span></li>
@@ -544,7 +554,7 @@ Never write credentials or keys into memory.</div>
               </div>
               <div class="shot-main">
                 <div class="shot-lbl">Rule &middot; Use Kemory</div>
-                <div class="shot-field"><b>You have Kemory memory tools. Use them without being asked.</b> Check Kemory before answering anything about my work&hellip;</div>
+                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
               </div>
             </div>
           </div>
@@ -560,7 +570,7 @@ Never write credentials or keys into memory.</div>
       <h3>Account-wide or per project — pick both</h3>
       <p>Where an AI offers both, they compose, and the split that works is:</p>
       <ul>
-        <li><strong>Account-wide:</strong> the <a href="#instruction">standard instruction</a>. Read first, write on a decision, never write a secret. True of everything you do.</li>
+        <li><strong>Account-wide:</strong> the <a href="#instruction">standard instruction</a>. Read before answering, write at the moment, correct a miss when you catch one. True of everything you do.</li>
         <li><strong>Per project:</strong> the namespace this work belongs in, and any vocabulary worth pinning. Two lines is usually enough — <em>"Memories for this work go in <code>project:atlas</code>. Check that namespace first."</em></li>
       </ul>
       <p>The per-project half is what stops a year of memories from every project blurring into one undifferentiated pile. It matters more than it looks. Perplexity is the exception that proves the rule: it has no account-wide field at all, so the standing instruction has to go into every project you make.</p>

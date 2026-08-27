@@ -71,6 +71,19 @@ header.top{
   .top-links{
     overflow-x:auto;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;gap:16px;padding-left:4px;
+    /* Scrolling the row made every link reachable, but with the scrollbar
+       hidden there was nothing to say so: the last one simply got cut off at
+       the screen edge and read as a broken layout rather than as "more this
+       way". The fade is that cue.
+
+       padding-right is what makes it honest. The mask is fixed to the visible
+       box, so without the padding it would dim the final link even when the
+       row fits or has been scrolled to its end. With 22px of padding the fade
+       lands on empty space in exactly those two cases, and on real content
+       only while there is real content still to come. */
+    padding-right:22px;
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
+            mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
   }
   .top-links::-webkit-scrollbar{display:none}
   .top-links a{white-space:nowrap}
@@ -79,7 +92,7 @@ header.top{
 @media (max-width:520px){.brandline span{display:none}}
 
 /* ---------- hero ---------- */
-.hero{padding:var(--sp-7) 0 var(--sp-6)}
+.hero{padding-top:var(--sp-7);padding-bottom:var(--sp-6)}
 .pill{
   display:inline-flex;align-items:center;gap:8px;
   font-family:var(--mono);font-size:11px;letter-spacing:.10em;
@@ -135,6 +148,10 @@ h3{font-size:17px;letter-spacing:-.015em;font-weight:600;margin:var(--sp-6) 0 10
 p{max-width:70ch;margin:0 0 14px}
 strong{font-weight:600}
 a{color:var(--ink);text-underline-offset:3px;text-decoration-color:rgba(0,0,0,.28)}
+/* Some links are spelled-out URLs, in headings as well as prose. `break-word`
+   (not `anywhere`) lets one wrap when it cannot fit a line, without pulling
+   min-content width down and reflowing everything else. */
+h1,h2,h3,p,li{overflow-wrap:break-word}
 ol,ul{max-width:70ch;padding-left:20px;margin:0 0 14px}
 li{margin-bottom:7px}
 .muted{color:var(--fg-2)}
@@ -239,7 +256,7 @@ footer .fl{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:18px}
 @media (max-width:700px){
   .cols{grid-template-columns:1fr;gap:0}
   nav.side{display:none}
-  .hero{padding:var(--sp-6) 0 var(--sp-5)}
+  .hero{padding-top:var(--sp-6);padding-bottom:var(--sp-5)}
   section{padding-top:var(--sp-6)}
   section + section{margin-top:var(--sp-6)}
 }

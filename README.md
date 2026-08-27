@@ -135,7 +135,7 @@ server within one release, so it is generated:
 ```bash
 # rewrite both files from the live server
 python tools/gen_tools_table.py \
-  --url  https://kemory.sekondbrain.ai/mcp/v1 \
+  --url  https://api.kemory.s9n.ai/mcp/v1 \
   --api-key "$KEMORY_DOCS_KEY" \
   --write kemory/docs.md --write kemory/index.html
 

@@ -593,7 +593,7 @@ reach a decision. Say what you saved.</div>
       <p>The catalogue is a convenience, not a different product. A connector added this way is the same remote MCP server, on the same address, with the same permissions and the same entry on your connectors page as one added by hand. If Kemory is not yet listed in the catalogue of the AI you are using, add it as a custom connector instead — <a href="#mcp-web">below</a> — and nothing about the result differs.</p>
       <div class="note">
         <span class="lbl">Check the listing is ours</span>
-        <p>A directory entry for Kemory should point at <code>https://kemory.sekondbrain.ai/mcp/v1</code> and name SeKondBrain AI Labs as the publisher, with this documentation as its documentation URL. If any of those three is different, it is not our listing — do not sign in to it, and tell us at <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>.</p>
+        <p>A directory entry for Kemory should point at <code>https://api.kemory.s9n.ai/mcp/v1</code> and name SeKondBrain AI Labs as the publisher, with this documentation as its documentation URL. If any of those three is different, it is not our listing — do not sign in to it, and tell us at <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>.</p>
       </div>
     </section>
 
@@ -602,7 +602,7 @@ reach a decision. Say what you saved.</div>
       <p>For any AI that accepts a custom remote connector. There is no key to copy and nothing to install.</p>
       <div class="addr" style="margin-top:0">
         <span class="k">Server address</span>
-        <code>https://kemory.sekondbrain.ai/mcp/v1</code>
+        <code>https://api.kemory.s9n.ai/mcp/v1</code>
       </div>
       <ol>
         <li>Open the AI's connector settings and choose <strong>Add custom connector</strong>, or the equivalent.</li>
@@ -621,7 +621,7 @@ reach a decision. Say what you saved.</div>
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://kemory.sekondbrain.ai/mcp/v1",
+      "url": "https://api.kemory.s9n.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -683,7 +683,7 @@ reach a decision. Say what you saved.</div>
           <tr><td>It answers from the conversation instead of checking</td><td>Expected, and the reason the instruction says <em>first, not after you have already guessed</em>. A model that thinks it knows will not check. Ask it directly once — <em>"check Kemory first"</em> — and see whether it complies.</td></tr>
           <tr><td>Recall returns nothing you recognise</td><td>Usually vocabulary, not a missing memory. Search with the words the note was written in — identifiers, error strings, tool names — not the words you would use to describe it. See <a href="../retrieval/#phrasing">phrasing</a>.</td></tr>
           <tr><td>It worked, then stopped</td><td>Check the connector is still live on your <a href="https://kemory.sekondbrain.ai/connectors">connectors page</a>. A revoked or expired credential returns <code>401</code>; web clients re-authenticate themselves, local clients need a new key.</td></tr>
-          <tr><td>Tool errors mentioning <code>s9nmem_*</code></td><td>A client running an outdated configuration. Reconnect it.</td></tr>
+          <tr><td>Tool errors mentioning <code>s9nmem_*</code></td><td>Those names were retired in August 2026 and now return <code>Unknown tool</code>. Something is still naming them — usually a standing instruction or rules file written before the rename, not the connection. Change them to <code>kemory_*</code>; reconnecting alone will not fix it.</td></tr>
         </tbody>
       </table>
       <p>If none of that is it, tell us what you asked and what came back — <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>. The full error and limit reference is on the <a href="../#errors">Kemory overview</a>.</p>

@@ -50,7 +50,7 @@
   <p>Every memory is scoped to a user and an organisation, and that scoping is enforced in the database rather than in a prompt. Connect once from any MCP-capable AI, and it is available to every session after that.</p>
   <div class="addr">
     <span class="k">Server address</span>
-    <code>https://kemory.sekondbrain.ai/mcp/v1</code>
+    <code>https://api.kemory.s9n.ai/mcp/v1</code>
   </div>
 </div>
 
@@ -112,7 +112,7 @@
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://kemory.sekondbrain.ai/mcp/v1",
+      "url": "https://api.kemory.s9n.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -295,7 +295,7 @@ Never write credentials, keys or passwords into memory.</code></pre>
           <tr><td><code>429</code></td><td>Rate limited. Back off and retry.</td></tr>
         </tbody>
       </table>
-      <p>Tools returning <code>s9nmem_*</code> migration errors mean a client is running an outdated configuration. Reconnect it.</p>
+      <p>Calls using the old <code>s9nmem_*</code> tool names return <code>Unknown tool</code> — the prefix was retired in August 2026 and no longer resolves. Something is still naming the old tools, and it is usually a standing instruction or rules file written before the rename rather than the connection itself. Change those names to <code>kemory_*</code>; reconnecting on its own will not fix it.</p>
       <p>Memory storage, search and MCP tool calls are governed by your plan limits rather than metered inference. Where usage limits do apply — the Kora features that run inference we pay for — they are set out in the <a href="../legal/fair-usage/">Kemory Fair Usage Policy</a>.</p>
     </section>
 

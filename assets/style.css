@@ -92,7 +92,7 @@ header.top{
 @media (max-width:520px){.brandline span{display:none}}
 
 /* ---------- hero ---------- */
-.hero{padding:var(--sp-7) 0 var(--sp-6)}
+.hero{padding-top:var(--sp-7);padding-bottom:var(--sp-6)}
 .pill{
   display:inline-flex;align-items:center;gap:8px;
   font-family:var(--mono);font-size:11px;letter-spacing:.10em;
@@ -252,7 +252,7 @@ footer .fl{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:18px}
 @media (max-width:700px){
   .cols{grid-template-columns:1fr;gap:0}
   nav.side{display:none}
-  .hero{padding:var(--sp-6) 0 var(--sp-5)}
+  .hero{padding-top:var(--sp-6);padding-bottom:var(--sp-5)}
   section{padding-top:var(--sp-6)}
   section + section{margin-top:var(--sp-6)}
 }

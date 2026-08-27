@@ -60,14 +60,23 @@ header.top{
   background:rgba(250,250,247,.86);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--hair-2);
 }
-.top-in{display:flex;align-items:center;gap:14px;height:60px}
+.top-in{display:flex;align-items:center;gap:14px;height:60px;min-width:0}
 .mark{width:26px;height:26px;flex:none}
-.brandline{font-weight:600;letter-spacing:-.02em;font-size:15px;text-decoration:none;color:var(--ink)}
+.brandline{font-weight:600;letter-spacing:-.02em;font-size:15px;text-decoration:none;color:var(--ink);flex:none}
 .brandline span{color:var(--fg-2);font-weight:500}
-.top-links{margin-left:auto;display:flex;gap:20px;font-size:13.5px}
+.top-links{margin-left:auto;display:flex;gap:20px;font-size:13.5px;min-width:0}
 .top-links a{color:var(--fg-2);text-decoration:none}
 .top-links a:hover{color:var(--ink)}
-@media (max-width:620px){.top-links a:not(:last-child){display:none}}
+@media (max-width:900px){
+  .top-links{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;gap:16px;padding-left:4px;
+  }
+  .top-links::-webkit-scrollbar{display:none}
+  .top-links a{white-space:nowrap}
+}
+/* "Kemory · by SeKondBrain" -> "Kemory", to buy the links room on a phone. */
+@media (max-width:520px){.brandline span{display:none}}
 
 /* ---------- hero ---------- */
 .hero{padding:var(--sp-7) 0 var(--sp-6)}
@@ -96,10 +105,16 @@ h1 em{font-style:normal;color:var(--grey)}          /* ghost-stack second clause
   font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--grey);
 }
-.addr code{font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+.addr code{font-family:var(--mono);font-size:13.5px;color:var(--ink);overflow-wrap:anywhere}
 
 /* ---------- two-column docs layout ---------- */
 .cols{display:grid;grid-template-columns:196px 1fr;gap:var(--sp-7);padding-bottom:96px}
+/* Load-bearing. A grid item's min-width defaults to auto, so it refuses to
+   shrink below its content's intrinsic minimum: one wide table inside <main>
+   pushed the whole column past the viewport and every <p> and <h2> stretched to
+   match it. That was 15 of 23 pages scrolling sideways, two of them on desktop
+   as well. Nothing below works without this. */
+.cols > *{min-width:0}
 nav.side{position:sticky;top:84px;align-self:start;font-size:13.5px}
 nav.side a{
   display:block;padding:5px 0 5px 12px;margin-left:-12px;
@@ -132,7 +147,7 @@ pre{
 code{font-family:var(--mono);font-size:13px}
 p code,li code,td code{
   background:rgba(139,120,245,.09);padding:1px 5px;
-  border-radius:var(--r-sm);font-size:12.5px;
+  border-radius:var(--r-sm);font-size:12.5px;overflow-wrap:anywhere;
 }
 pre code{background:none;padding:0;line-height:1.6}
 
@@ -144,8 +159,19 @@ th{
   padding:0 14px 8px 0;border-bottom:1px solid var(--hair);
 }
 td{padding:11px 14px 11px 0;border-bottom:1px solid var(--hair-2);vertical-align:top}
-td:first-child{white-space:nowrap}
-@media (max-width:720px){td:first-child{white-space:normal}}
+/* `anywhere`, not `break-word` — only `anywhere` reduces an element's
+   min-content width, which is what actually lets a table shrink to its column.
+   Config paths, env-var names and URLs are what need it. */
+th,td{overflow-wrap:anywhere}
+
+/* ---------- a table too wide to wrap ----------
+   Most tables here are prose and should wrap. A few are genuinely dense — an
+   API method/path list, a feature matrix — and read better scrolled than
+   broken across four lines. Wrap those in <div class="scroll-x">. */
+.scroll-x{overflow-x:auto;max-width:100%;margin:0 0 18px;-webkit-overflow-scrolling:touch}
+.scroll-x table{margin-bottom:0}
+.scroll-x th,.scroll-x td{white-space:nowrap;overflow-wrap:normal}
+.scroll-x td:first-child{white-space:normal;min-width:210px}
 
 /* ---------- signature: tool annotation grades ----------
    Read / write / destructive carry the brand status-dot colours. The dot is
@@ -206,9 +232,16 @@ footer a{color:var(--fg-2)}
 footer .fl{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:18px}
 
 @media (max-width:900px){
+  .cols{grid-template-columns:164px 1fr;gap:var(--sp-6)}
+  nav.side{font-size:13px}
+  h2{font-size:28px}
+}
+@media (max-width:700px){
   .cols{grid-template-columns:1fr;gap:0}
   nav.side{display:none}
-  h2{font-size:28px}
+  .hero{padding:var(--sp-6) 0 var(--sp-5)}
+  section{padding-top:var(--sp-6)}
+  section + section{margin-top:var(--sp-6)}
 }
 
 :focus-visible{outline:none;box-shadow:0 0 0 4px rgba(139,120,245,.28);border-radius:var(--r-sm)}

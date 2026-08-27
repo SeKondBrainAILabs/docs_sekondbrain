@@ -13,8 +13,14 @@
 <link rel="stylesheet" href="../../assets/style.css">
 <style>
 :root{ --veil-a:rgba(120,140,255,.16); --veil-b:rgba(95,196,240,.16); }
-table.api td:first-child{width:1%;white-space:nowrap;vertical-align:top}
-table.api td:nth-child(2){white-space:nowrap;vertical-align:top}
+table.api td:first-child{width:1%;vertical-align:top}
+table.api td:nth-child(2){vertical-align:top}
+/* A method and a path read better on one line — but only while there is a line
+   to read them on. These beat the shared max-width:900px release rule on
+   specificity, so they have to lift themselves. */
+@media (min-width:901px){
+  table.api td:first-child,table.api td:nth-child(2){white-space:nowrap}
+}
 table.api code{font-size:.86em}
 .m{display:inline-block;min-width:3.6em;text-align:center;padding:.12em .5em;border-radius:5px;
    font:500 11px/1.5 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.02em}

@@ -67,26 +67,44 @@ header.top{
 .top-links{margin-left:auto;display:flex;gap:20px;font-size:13.5px;min-width:0}
 .top-links a{color:var(--fg-2);text-decoration:none}
 .top-links a:hover{color:var(--ink)}
+/* Hamburger. The row used to scroll sideways below 900px with a fade as the
+   cue; a menu behind one obvious button beats asking the reader to notice a
+   fade. The checkbox is the state — no script required to open or close it —
+   and assets/nav.js only adds the courtesies a checkbox cannot: closing the
+   panel when a link is chosen (a same-page anchor click otherwise leaves it
+   covering the content it just scrolled to) and on Escape. */
+.nav-toggle{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.nav-btn{display:none}
 @media (max-width:900px){
-  .top-links{
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;gap:16px;padding-left:4px;
-    /* Scrolling the row made every link reachable, but with the scrollbar
-       hidden there was nothing to say so: the last one simply got cut off at
-       the screen edge and read as a broken layout rather than as "more this
-       way". The fade is that cue.
-
-       padding-right is what makes it honest. The mask is fixed to the visible
-       box, so without the padding it would dim the final link even when the
-       row fits or has been scrolled to its end. With 22px of padding the fade
-       lands on empty space in exactly those two cases, and on real content
-       only while there is real content still to come. */
-    padding-right:22px;
-    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
-            mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
+  .nav-btn{
+    display:flex;align-items:center;justify-content:center;
+    width:40px;height:40px;margin:0 -8px 0 auto;cursor:pointer;border-radius:8px;
   }
-  .top-links::-webkit-scrollbar{display:none}
-  .top-links a{white-space:nowrap}
+  .nav-btn span{position:relative;display:block;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:background .15s}
+  .nav-btn span::before,.nav-btn span::after{
+    content:"";position:absolute;left:0;width:18px;height:2px;border-radius:2px;
+    background:var(--ink);transition:transform .15s,top .15s;
+  }
+  .nav-btn span::before{top:-6px}
+  .nav-btn span::after{top:6px}
+  .nav-toggle:checked ~ .nav-btn span{background:transparent}
+  .nav-toggle:checked ~ .nav-btn span::before{top:0;transform:rotate(45deg)}
+  .nav-toggle:checked ~ .nav-btn span::after{top:0;transform:rotate(-45deg)}
+  .nav-toggle:focus-visible ~ .nav-btn{outline:2px solid var(--c-blue);outline-offset:2px}
+
+  /* The panel hangs off header.top (sticky, so it is the containing block)
+     and spans the full screen width, not the .wrap column. */
+  .top-links{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;gap:0;margin-left:0;padding:4px 24px 12px;
+    /* Solid, not the masthead's translucency: a tall panel over body text
+       must actually cover it, or the page ghosts through every row. */
+    font-size:15px;background:var(--paper);
+    border-bottom:1px solid var(--hair);
+  }
+  .nav-toggle:checked ~ .top-links{display:flex}
+  .top-links a{padding:12px 0;border-top:1px solid var(--hair-2)}
+  .top-links a:first-child{border-top:0}
 }
 /* "Kemory · by SeKondBrain" -> "Kemory", to buy the links room on a phone. */
 @media (max-width:520px){.brandline span{display:none}}

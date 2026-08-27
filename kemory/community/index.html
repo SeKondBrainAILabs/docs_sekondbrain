@@ -16,8 +16,10 @@
 <body>
 <header class="top">
   <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
     <a class="brandline" href="../">Kemory <span>· Community Edition</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
       <a href="#install">Install</a>
       <a href="#runtime">Runtime</a>
@@ -108,5 +110,6 @@ npx kemory-community@latest up</code></pre>
     </section>
   </main>
 </div>
+<script src="../../assets/nav.js" defer></script>
 </body>
 </html>

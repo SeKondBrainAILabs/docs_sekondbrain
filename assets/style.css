@@ -148,6 +148,10 @@ h3{font-size:17px;letter-spacing:-.015em;font-weight:600;margin:var(--sp-6) 0 10
 p{max-width:70ch;margin:0 0 14px}
 strong{font-weight:600}
 a{color:var(--ink);text-underline-offset:3px;text-decoration-color:rgba(0,0,0,.28)}
+/* Some links are spelled-out URLs, in headings as well as prose. `break-word`
+   (not `anywhere`) lets one wrap when it cannot fit a line, without pulling
+   min-content width down and reflowing everything else. */
+h1,h2,h3,p,li{overflow-wrap:break-word}
 ol,ul{max-width:70ch;padding-left:20px;margin:0 0 14px}
 li{margin-bottom:7px}
 .muted{color:var(--fg-2)}

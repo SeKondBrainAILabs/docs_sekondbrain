@@ -71,6 +71,19 @@ header.top{
   .top-links{
     overflow-x:auto;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;gap:16px;padding-left:4px;
+    /* Scrolling the row made every link reachable, but with the scrollbar
+       hidden there was nothing to say so: the last one simply got cut off at
+       the screen edge and read as a broken layout rather than as "more this
+       way". The fade is that cue.
+
+       padding-right is what makes it honest. The mask is fixed to the visible
+       box, so without the padding it would dim the final link even when the
+       row fits or has been scrolled to its end. With 22px of padding the fade
+       lands on empty space in exactly those two cases, and on real content
+       only while there is real content still to come. */
+    padding-right:22px;
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
+            mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent);
   }
   .top-links::-webkit-scrollbar{display:none}
   .top-links a{white-space:nowrap}

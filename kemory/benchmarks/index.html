@@ -28,9 +28,16 @@
   .score .what{font-size:14px;color:var(--fg-2);max-width:30ch}
   /* result bars */
   .bar{display:grid;grid-template-columns:190px 1fr 74px;align-items:center;gap:12px;margin:0 0 9px;max-width:760px}
+  /* 190px + 74px + gaps is wider than a 320px phone before the track gets a
+     single pixel. Stack the label above its bar instead. */
+  @media (max-width:560px){
+    .bar{grid-template-columns:1fr auto;gap:4px 10px;margin:0 0 14px}
+    .bar .lbl{grid-column:1/-1}
+    .bar .num{text-align:left}
+  }
   .bar .lbl{font-size:13.5px}
-  .bar .track{height:7px;background:rgba(0,0,0,.06);border-radius:999px;overflow:hidden}
-  .bar .fill{height:100%;border-radius:999px;background:var(--c-blue)}
+  .bar .track{display:block;height:7px;background:rgba(0,0,0,.06);border-radius:999px;overflow:hidden}
+  .bar .fill{display:block;height:100%;border-radius:999px;background:var(--c-blue)}
   .bar .fill.hi{background:var(--c-mint)}
   .bar .fill.lo{background:var(--c-yellow)}
   .bar .num{font-family:var(--mono);font-size:12.5px;color:var(--fg-2);text-align:right}

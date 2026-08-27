@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimise your AIs for Kemory | SeKondBrain docs</title>
+<meta name="description" content="Connecting an AI to Kemory gives it the tools. This page gives it the habit — the standing instruction to paste, where it goes in each AI, and how to connect in the first place.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/optimise/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<meta property="og:title" content="Optimise your AIs for Kemory">
+<meta property="og:description" content="Connected is not the same as remembering. The standing instruction, where it goes in each AI, and how to connect.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/optimise/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  /* Page mood: mint — this is the activation surface, and it shares its hue
+     with the activation letter that links here. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(64,203,104,.18); --veil-b:rgba(95,196,240,.16); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· Optimise</span></a>
+    <div class="top-links">
+      <a href="#instruction">The instruction</a>
+      <a href="#where">Where it goes</a>
+      <a href="#connect">Connecting</a>
+      <a href="#verify">Checking it works</a>
+      <a href="../">Kemory docs</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i style="background:var(--c-mint)"></i>Connected is not the same as remembering</span>
+  <h1>Get an AI to<br><em>actually use memory.</em></h1>
+  <p class="lede">Connecting Kemory gives an AI the tools. It does not give it the habit. Left alone, most models treat a memory tool like a reference book on a high shelf — technically available, rarely reached for. This page is the fix: one standing instruction, the place to paste it in each AI, and how to connect in the first place.</p>
+  <p>If you have just been let in and nothing seems to be saving, you are in the right place and nothing is broken. Start with <a href="#instruction">the instruction</a>.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Start</div>
+    <a href="#why">Why it needs telling</a>
+    <a href="#instruction">The standing instruction</a>
+    <a href="#where">Where it goes, per AI</a>
+    <div class="grp">Connecting</div>
+    <a href="#connect">Connecting in the first place</a>
+    <a href="#directory">Directory and marketplace</a>
+    <a href="#mcp-web">Remote MCP — web AIs</a>
+    <a href="#mcp-local">Config file — local clients</a>
+    <div class="grp">Operating</div>
+    <a href="#habits">When it misses one</a>
+    <a href="#verify">Checking it works</a>
+    <a href="#sharper">Making it sharper</a>
+    <a href="#troubleshoot">When it still will not</a>
+    <div class="grp">Reference</div>
+    <a href="../">Kemory overview</a>
+    <a href="../retrieval/">How retrieval works</a>
+  </nav>
+
+  <main>
+
+    <section id="why">
+      <h2>Why a connected AI<br>still needs telling</h2>
+      <p>A model decides for itself when to call a tool. Nothing forces it. Given a memory tool and no instruction about it, most models reason that the conversation in front of them is sufficient — and it usually is, right up until the moment it is not.</p>
+      <p>So the failure looks like this: you connect Kemory, the connector reports its tools, you have a long and useful conversation, and none of it is saved. Nothing errored. The AI simply never reached for the tool, and had no reason to.</p>
+      <p>Two things change that, and you want both:</p>
+      <p><strong>A standing instruction in the AI's own custom-instructions field</strong> is what changes it. It makes reading and writing memory the default behaviour rather than something you have to request, and you write it once per AI and then forget about it.</p>
+      <p>It is not a guarantee. Models are probabilistic, and one that has been told to check memory will still sometimes answer from the conversation in front of it, or reach the end of a session without writing anything down. That is worth knowing in advance so it reads as a known limit rather than a broken product — and a one-line correction in the moment puts it right.</p>
+      <div class="note">
+        <span class="lbl">This is not a Kemory quirk</span>
+        <p>It applies to every tool a model is given, from every provider. The instruction below is worth writing well once, because you will paste it into every AI you connect for as long as you use them.</p>
+      </div>
+    </section>
+
+    <section id="instruction">
+      <h2>The standing instruction</h2>
+      <p>Three versions of the same thing. They differ only in length, because the field you are pasting into differs in length — a personal-preferences box is a couple of sentences, a project rules file is unbounded. Use the longest one that fits.</p>
+
+      <h3>Short — for a small preferences box</h3>
+      <p>Where you have a sentence or two and no more. This is the version in the activation email.</p>
+<pre><code>Save durable facts, decisions and preferences to Kemory. Check Kemory
+before answering questions about my work.</code></pre>
+
+      <h3>Standard — for a custom-instructions field</h3>
+      <p>The one to use by default. It names the three moments that matter — read at the start, write on a decision, never write a secret — without prescribing tool names.</p>
+<pre><code>You have Kemory memory tools. Use them without being asked.
+
+Check Kemory before answering anything about my work, my projects, my
+preferences or decisions we have made before. Do this first, not after
+you have already guessed.
+
+Save to Kemory whenever I state a preference or a way of working, we
+reach a decision, or we learn something non-obvious that would cost
+time to rediscover. Say briefly what you saved.
+
+Never write credentials, keys, tokens or passwords into memory.</code></pre>
+
+      <h3>Full — for a project or rules file</h3>
+      <p>Where you have room, and where the AI is working on one body of work rather than everything. Naming the namespace is what makes recall sharp later, so this version asks for it.</p>
+<pre><code>You have Kemory memory tools available.
+
+At the start of each session: call kemory_list_namespaces, then
+kemory_recall_memory on the current topic. Do this before answering,
+not after.
+
+Write a memory immediately when: I state a preference or a way of
+working, we make a decision, or we learn something non-obvious about
+this codebase or domain. Tell me what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Prefer one specific memory over one long one. Write in the vocabulary
+we actually used — identifiers, error strings, config keys — because
+that is what recall matches against later.
+
+Never write credentials, keys, tokens or passwords into memory.</code></pre>
+
+      <div class="note">
+        <span class="lbl">Why there are no tool names in the short versions</span>
+        <p>Models discover their own tools from the connector. Naming ours in a short instruction spends the characters you have on something the model already knows, and goes stale the moment the tool surface changes. The full version names them only because it is prescribing an order of operations.</p>
+      </div>
+    </section>
+
+    <section id="where">
+      <h2>Where the instruction goes</h2>
+      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Product menus move, so treat the paths below as the current shape rather than a permanent address — what you are looking for is the field named <em>custom instructions</em>, <em>personalisation</em>, <em>preferences</em>, <em>rules</em>, or <em>system prompt</em>.</p>
+
+      <table>
+        <thead><tr><th>AI</th><th>Where the standing instruction goes</th></tr></thead>
+        <tbody>
+          <tr><td>ChatGPT</td><td>Settings → Personalisation → Custom instructions. A Project has its own instructions field that applies on top — put project-specific namespaces there.</td></tr>
+          <tr><td>Claude</td><td>Settings → Profile → personal preferences, which applies everywhere. A Project's own instructions field applies on top of it.</td></tr>
+          <tr><td>Claude Code</td><td>A <code>CLAUDE.md</code> file — <code>~/.claude/CLAUDE.md</code> for every project, or one at the repository root for a single project.</td></tr>
+          <tr><td>Gemini</td><td>Settings → Saved info for the standing version. A Gem takes its own instructions and is the better home for anything project-specific.</td></tr>
+          <tr><td>Perplexity</td><td>A Space's AI instructions. Perplexity scopes instructions to a Space rather than the whole account, so create one per body of work.</td></tr>
+          <tr><td>Cursor</td><td>Settings → Rules for the account-wide version; <code>.cursor/rules/</code> in the repository for a project-specific one.</td></tr>
+          <tr><td>Windsurf</td><td>Cascade → Rules, or a rules file under <code>.windsurf/rules/</code> in the repository.</td></tr>
+          <tr><td>Cline</td><td>A <code>.clinerules</code> file at the repository root.</td></tr>
+          <tr><td>Codex</td><td>An <code>AGENTS.md</code> file at the repository root.</td></tr>
+          <tr><td>Gemini CLI</td><td>A <code>GEMINI.md</code> file — in <code>~/.gemini/</code> globally, or at the repository root.</td></tr>
+          <tr><td>Warp</td><td>Settings → AI → Rules.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Account-wide or per project — pick both</h3>
+      <p>Where an AI offers both, they compose, and the split that works is:</p>
+      <ul>
+        <li><strong>Account-wide:</strong> the <a href="#instruction">standard instruction</a>. Read first, write on a decision, never write a secret. True of everything you do.</li>
+        <li><strong>Per project:</strong> the namespace this work belongs in, and any vocabulary worth pinning. Two lines is usually enough — <em>"Memories for this work go in <code>project:atlas</code>. Check that namespace first."</em></li>
+      </ul>
+      <p>The per-project half is what stops a year of memories from every project blurring into one undifferentiated pile. It matters more than it looks.</p>
+    </section>
+
+    <section id="connect">
+      <h2>Connecting in<br>the first place</h2>
+      <p>There is no instruction to paste until an AI is actually connected. There are three routes in, and which one you use depends on the AI rather than on anything you choose.</p>
+      <table>
+        <thead><tr><th>Route</th><th>For</th><th>What you do</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#directory">Directory or marketplace</a></td><td>AIs that publish a connector catalogue</td><td>Find Kemory, click add, sign in. Nothing to paste.</td></tr>
+          <tr><td><a href="#mcp-web">Remote MCP</a></td><td>Web AIs that accept a custom connector</td><td>Paste one URL, sign in, approve.</td></tr>
+          <tr><td><a href="#mcp-local">Config file</a></td><td>Desktop and terminal clients</td><td>Add a block to a JSON or TOML file, with an API key.</td></tr>
+        </tbody>
+      </table>
+      <p>All three land in the same place. Your <a href="https://kemory.sekondbrain.ai/connectors">connectors page</a> lists every AI currently connected to your account, which route it came in on, and when it last called — and is where you revoke one.</p>
+    </section>
+
+    <section id="directory">
+      <h2>Directory and marketplace listings</h2>
+      <p>Some AIs publish a catalogue of connectors you can add without touching a URL. Where Kemory is listed, this is the shortest route in: find it, add it, sign in with SeKondBrain, done.</p>
+      <p>The catalogue is a convenience, not a different product. A connector added this way is the same remote MCP server, on the same address, with the same permissions and the same entry on your connectors page as one added by hand. If Kemory is not yet listed in the catalogue of the AI you are using, add it as a custom connector instead — <a href="#mcp-web">below</a> — and nothing about the result differs.</p>
+      <div class="note">
+        <span class="lbl">Check the listing is ours</span>
+        <p>A directory entry for Kemory should point at <code>https://kemory.sekondbrain.ai/mcp/v1</code> and name SeKondBrain AI Labs as the publisher, with this documentation as its documentation URL. If any of those three is different, it is not our listing — do not sign in to it, and tell us at <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>.</p>
+      </div>
+    </section>
+
+    <section id="mcp-web">
+      <h2>Remote MCP — web AIs</h2>
+      <p>For any AI that accepts a custom remote connector. There is no key to copy and nothing to install.</p>
+      <div class="addr" style="margin-top:0">
+        <span class="k">Server address</span>
+        <code>https://kemory.sekondbrain.ai/mcp/v1</code>
+      </div>
+      <ol>
+        <li>Open the AI's connector settings and choose <strong>Add custom connector</strong>, or the equivalent.</li>
+        <li>Paste the address above. Leave every other field alone — there is no per-tenant URL, no client ID to fill in and nothing to provision first.</li>
+        <li>Your browser opens a SeKondBrain sign-in page. Sign in and approve.</li>
+        <li>The connector reports the tools it found. That is the whole flow.</li>
+      </ol>
+      <p>Authorisation is OAuth 2.1 with PKCE. The connector holds a short-lived token that refreshes itself, and no long-lived credential exists anywhere on this path. What you are approving, and what it does not grant, is set out on the <a href="../#connect-web">Kemory overview</a>.</p>
+      <p>Once it reports its tools, go and paste <a href="#instruction">the instruction</a>. A connector with no instruction is the state this page exists to fix.</p>
+    </section>
+
+    <section id="mcp-local">
+      <h2>Config file — local clients</h2>
+      <p>For Claude Code, Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and anything else that reads its MCP servers from a file. These authenticate with an API key sent as an <code>X-API-Key</code> header — create one from <strong>Dashboard → Keys</strong>. It is shown once.</p>
+<pre><code>{
+  "mcpServers": {
+    "kemory": {
+      "type": "http",
+      "url": "https://kemory.sekondbrain.ai/mcp/v1",
+      "headers": {
+        "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
+      }
+    }
+  }
+}</code></pre>
+      <p>Where each client keeps that file, and the command-line tool that writes the entry for you using a browser login instead of a key on disk, are both on the <a href="../#connect-local">Kemory overview</a> and in the <a href="../cli/">CLI reference</a>.</p>
+      <p>Restart the client fully afterwards — closing the window is not enough. Then paste <a href="#instruction">the full instruction</a> into that client's rules file, which for a coding agent is where it does the most good.</p>
+      <div class="note">
+        <span class="lbl">One key, one machine</span>
+        <p>A key inherits the organisation of whoever created it, so an agent holding one stays inside your tenant. Revoke it when the machine or the agent is retired; revocation takes effect on the next call. Never commit one to a repository.</p>
+      </div>
+    </section>
+
+    <section id="habits">
+      <h2>When it misses one</h2>
+      <p>It will, occasionally. A model that has been told to use memory is more likely to, not certain to — so expect the odd session where it answers from context without checking, or ends without saving the thing that mattered. Nothing is wrong when that happens, and you do not need to say anything special to Kemory in normal use.</p>
+      <p>When you notice one, a plain sentence fixes it on the spot. There is no syntax and no magic word; the model has the tools and simply needs pointing at them:</p>
+      <ul>
+        <li><em>"Save that to Kemory."</em> — after a decision it did not record.</li>
+        <li><em>"Check Kemory first."</em> — when an answer looks like it ignored something you have already been through.</li>
+        <li><em>"What do you already know about this from Kemory?"</em> — the quickest way to see what recall is actually returning.</li>
+      </ul>
+      <p>Worth doing a few times in the first week for a different reason: it is how you find out whether the instruction you pasted is in effect at all. If the AI has to be asked every single time, the instruction is not reaching this conversation — see <a href="#troubleshoot">below</a>.</p>
+      <p>Write memories in the vocabulary you would search for later. A note saved as <em>"the admin frontend 403s because <code>CORS_ALLOWED_ORIGINS</code> is missing the staging host"</em> is findable; one saved as <em>"fixed the login bug"</em> is not. The reasoning behind that is on the <a href="../retrieval/">retrieval page</a>, and it is the single intervention that most improves what you get back.</p>
+    </section>
+
+    <section id="verify">
+      <h2>Checking it works</h2>
+      <p>One test, and it has to cross a process boundary — a new chat in the same client proves nothing, because the context may simply still be there.</p>
+      <ol>
+        <li>Tell one AI something durable and specific: <em>"Remember that I prefer imperative-mood commit messages, no emoji. Put it in <code>user:preferences</code>."</em></li>
+        <li>Watch for it to say what it saved. If it does not mention saving anything, the instruction is not being applied — go back to <a href="#where">where it goes</a> and check you pasted it into a field that is actually in effect.</li>
+        <li>Quit that client entirely. Open a <strong>different</strong> AI you have also connected, and ask: <em>"What is my commit-message preference?"</em></li>
+      </ol>
+      <p>A correct answer from the second AI is the whole product working end to end: written by one, stored in your account, recalled by another. If it answers correctly without ever mentioning Kemory, check your connectors page — some AIs report a tool call quietly.</p>
+    </section>
+
+    <section id="sharper">
+      <h2>Making it sharper</h2>
+      <p>Once it is reliably reading and writing, three adjustments give most of the remaining gain.</p>
+      <h3>Name a namespace per body of work</h3>
+      <p>Add one line to each project's instructions naming where its memories go. Recall stays fast and stops returning last quarter's project when you ask about this one. The conventions that work are on the <a href="../#scoping">Kemory overview</a>.</p>
+      <h3>Ask for a session summary, and mean it</h3>
+      <p>At the end of a substantial conversation: <em>"Consolidate this session into Kemory."</em> One durable record of what a session was about is worth more later than forty fragments, and the difference between capturing and consolidating is explained on the <a href="../retrieval/#capture">retrieval page</a>.</p>
+      <h3>Prune deliberately</h3>
+      <p>A memory that was true in March and is wrong now is worse than no memory, because it will be recalled with the same confidence as a correct one. When something changes, say so — <em>"that is no longer true, update Kemory"</em> — rather than leaving both versions to compete.</p>
+      <h3>Capture the conversations you are already having</h3>
+      <p>The instruction only reaches the AIs you connect. <a href="../#kora">Kora for Chrome</a> picks up your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have them and syncs them into the same memory, which covers the sessions where you forgot to ask.</p>
+    </section>
+
+    <section id="troubleshoot">
+      <h2>When it still will not<br>reach for memory</h2>
+      <table>
+        <thead><tr><th>What you see</th><th>What is usually true</th></tr></thead>
+        <tbody>
+          <tr><td>Nothing is ever saved, no errors</td><td>The commonest case, and not a fault. The instruction is missing, or it went into a field that does not apply to this conversation — a Project's instructions do not apply outside that Project, and a repository rules file does not apply in a different repository.</td></tr>
+          <tr><td>It saves when asked, never on its own</td><td>The instruction is present but reads as permission rather than direction. Use the <a href="#instruction">standard version</a>, which says <em>use them without being asked</em> in as many words.</td></tr>
+          <tr><td>It answers from the conversation instead of checking</td><td>Expected, and the reason the instruction says <em>first, not after you have already guessed</em>. A model that thinks it knows will not check. Ask it directly once — <em>"check Kemory first"</em> — and see whether it complies.</td></tr>
+          <tr><td>Recall returns nothing you recognise</td><td>Usually vocabulary, not a missing memory. Search with the words the note was written in — identifiers, error strings, tool names — not the words you would use to describe it. See <a href="../retrieval/#phrasing">phrasing</a>.</td></tr>
+          <tr><td>It worked, then stopped</td><td>Check the connector is still live on your <a href="https://kemory.sekondbrain.ai/connectors">connectors page</a>. A revoked or expired credential returns <code>401</code>; web clients re-authenticate themselves, local clients need a new key.</td></tr>
+          <tr><td>Tool errors mentioning <code>s9nmem_*</code></td><td>A client running an outdated configuration. Reconnect it.</td></tr>
+        </tbody>
+      </table>
+      <p>If none of that is it, tell us what you asked and what came back — <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>. The full error and limit reference is on the <a href="../#errors">Kemory overview</a>.</p>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Kemory documentation</a>
+      <a href="../retrieval/">Retrieval</a>
+      <a href="../../legal/fair-usage/">Fair usage</a>
+      <a href="../../legal/privacy/">Privacy</a>
+      <a href="mailto:support@sekondbrain.ai">Support</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+</body>
+</html>

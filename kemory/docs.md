@@ -27,7 +27,7 @@ There is nothing to install for a web AI. Local clients need a config-file entry
 **The server address:**
 
 ```
-https://kemory.sekondbrain.ai/mcp/v1
+https://api.kemory.s9n.ai/mcp/v1
 ```
 
 Every user connects to the same address. There is no per-tenant URL and nothing to
@@ -80,7 +80,7 @@ this is the whole surface.
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://kemory.sekondbrain.ai/mcp/v1",
+      "url": "https://api.kemory.s9n.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -346,8 +346,11 @@ typed message, rather than as an HTTP error — an AI can read the message and a
 | `-32601 Method not found` | An MCP method Kemory does not implement. `resources/*` returns an empty list by design. |
 | `429` | Rate limited. Back off and retry. |
 
-Tools returning `s9nmem_*` migration errors mean a client is running an outdated
-configuration. Reconnect it.
+Calls using the old `s9nmem_*` tool names return `Unknown tool` — the prefix was
+retired in August 2026 and no longer resolves. Something is still naming the old
+tools, and it is usually a standing instruction or rules file written before the
+rename rather than the connection itself. Change those names to `kemory_*`;
+reconnecting on its own will not fix it.
 
 ---
 

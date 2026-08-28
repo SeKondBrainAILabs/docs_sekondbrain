@@ -181,32 +181,24 @@
 
     <section id="instruction">
       <h2>The standing instruction</h2>
-      <p>Three versions of the same thing. They differ only in length, because the field you are pasting into differs in length — a personal-preferences box is a couple of sentences, a project rules file is unbounded. Use the longest one that fits.</p>
-
-      <h3>Short — for a small preferences box</h3>
-      <p>Where you have a sentence or two and no more. This is the version in the activation email.</p>
-<pre><code>Kemory is my long-term memory. In every conversation, check Kemory
-before answering questions about my work, and save preferences and
-decisions to Kemory as they come up — without being asked.</code></pre>
+      <p>Two versions of the same thing. They differ only in length, because the field you are pasting into differs in length — a custom-instructions box has a cap, a project rules file does not. Use the longer one wherever it fits.</p>
 
       <h3>Standard — for a custom-instructions field</h3>
-      <p>The one to use by default. It sets the habit — read before answering, write at the moment — and, just as usefully, the two recoveries: check late rather than never, and update rather than contradict.</p>
-<pre><code>You have Kemory memory tools — my long-term memory, shared across
-all my AIs. Use them in every conversation, without being asked.
+      <p>The one to use by default, and the one in the activation email. Two rules with a name each, because a named rule is one a model can hold on to: <em>read first</em> and <em>write at the moment</em>. Each carries its own recovery — search late rather than never, update rather than contradict.</p>
+<pre><code>Kemory is my long-term memory, shared across all my AIs. Use it in
+every conversation, without being asked.
 
-Check Kemory before answering anything about my work, my projects, my
-preferences or decisions we have made before. Do this first, not after
-you have already guessed. Check again when the topic changes, and if
-you notice you answered without checking, check now and correct
-yourself.
+Read first. Before answering anything about my work, projects,
+preferences or past decisions, search Kemory — before you answer, not
+after. Search again when the topic shifts. If you realise mid-answer
+that Kemory would have known, search now and correct yourself.
 
-Save to Kemory the moment I state a preference or a way of working, we
-reach a decision, or we learn something non-obvious that would cost
-time to rediscover. Do not wait for the end of the conversation — it
-can stop at any point, and an unsaved fact is lost. Do not ask whether
-to save; save it and say briefly what you saved. If a new decision
-replaces an old one, update the existing memory rather than writing a
-contradiction beside it.</code></pre>
+Write at the moment. The instant I state a preference, we reach a
+decision, or we learn something non-obvious, save it. Never wait for
+the end of a session — sessions stop without warning. Never ask
+permission: save it, then say in one line what you saved. When
+something supersedes an older memory, update that memory rather than
+adding a contradiction beside it.</code></pre>
 
       <h3>Full — for a project or rules file</h3>
       <p>Where you have room, and where the AI is working on one body of work rather than everything. Naming the namespace is what makes recall sharp later, so this version asks for it.</p>
@@ -240,14 +232,14 @@ exists; update or supersede it rather than adding a duplicate. Skip
 transient state — anything that stops being true by tomorrow.</code></pre>
 
       <div class="note">
-        <span class="lbl">Why there are no tool names in the short versions</span>
-        <p>Models discover their own tools from the connector. Naming ours in a short instruction spends the characters you have on something the model already knows, and goes stale the moment the tool surface changes. The full version names them only because it is prescribing an order of operations.</p>
+        <span class="lbl">Why the standard version names no tools</span>
+        <p>Models discover their own tools from the connector. Naming ours spends characters on something the model already knows, and goes stale the moment the tool surface changes. The full version names them only because it is prescribing an order of operations.</p>
       </div>
     </section>
 
     <section id="where">
       <h2>Where the instruction goes</h2>
-      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and which of the three versions fits the field.</p>
+      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and which of the two versions fits the field.</p>
       <p class="stamp">Menu paths verified August 2026. Products rename these screens often — if a path below has moved, what you are hunting for is the field called <em>custom instructions</em>, <em>personalisation</em>, <em>preferences</em>, <em>rules</em> or <em>system prompt</em>.</p>
 
       <div class="tabs">
@@ -340,27 +332,17 @@ transient state — anything that stops being true by tomorrow.</code></pre>
         <label for="ai-perplexity">Perplexity</label>
         <div class="panel">
           <div class="route">
-            <b>Projects, left rail</b><i>&rsaquo;</i><b>Your project</b><i>&rsaquo;</i><b class="dest">Custom instructions</b>
+            <b>Settings</b><i>&rsaquo;</i><b>Personalization</b><i>&rsaquo;</i><b class="dest">Custom instructions</b>
           </div>
-          <div class="shot" role="img" aria-label="Perplexity project settings showing the Custom instructions field with the standing instruction pasted into it.">
-            <div class="shot-bar"><em></em><em></em><em></em><span>Project &middot; Atlas</span></div>
-            <div class="shot-body">
-              <div class="shot-nav">
-                <span class="on">Custom instructions</span>
-                <span>Files</span>
-                <span>Links</span>
-                <span>Threads</span>
-              </div>
-              <div class="shot-main">
-                <div class="shot-lbl">Custom instructions</div>
-                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory.</b> Use them in every conversation, without being asked. Memories for this work go in <b>project:atlas</b>&hellip;</div>
-              </div>
-            </div>
+          <div class="shot real">
+            <img src="perplexity-instructions.png" width="810" height="710" loading="lazy" alt="Perplexity settings on Personalization, showing the account-wide Custom instructions field beneath the profile fields.">
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>, plus the namespace line — see the note below.</span></li>
-            <li><span class="k">No account-wide field</span><span>Perplexity scopes instructions to a project rather than the whole account, so there is nowhere to set this once and forget it. Create a project per body of work and paste into each.</span></li>
-            <li><span class="k">Naming</span><span>These were called Spaces until recently and some of the product still says so. Spaces and Projects are the same thing.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
+            <li><span class="k">Per project</span><span>A Project has its own instructions field too — 8,000 characters, applied on top of the account-wide one. That is where the namespace goes.</span></li>
+            <li><span class="k">Naming</span><span>Projects were called Spaces until recently, and parts of the product and its help centre still say so. They are the same thing.</span></li>
+            <li><span class="k">Not Memory</span><span>Settings &rsaquo; Memory is Perplexity's own store — separate from Kemory, and confined to Perplexity. Kemory is the one your other AIs can also read.</span></li>
+            <li><span class="k">Connecting</span><span>Settings &rsaquo; Connectors &rsaquo; <strong>Add custom connector</strong>, then the <a href="#mcp-web">server address</a> — the dialog is pictured there.</span></li>
           </ul>
         </div>
 
@@ -570,7 +552,7 @@ reach a decision. Say what you saved.</div>
         <li><strong>Account-wide:</strong> the <a href="#instruction">standard instruction</a>. Read before answering, write at the moment, correct a miss when you catch one. True of everything you do.</li>
         <li><strong>Per project:</strong> the namespace this work belongs in, and any vocabulary worth pinning. Two lines is usually enough — <em>"Memories for this work go in <code>project:atlas</code>. Check that namespace first."</em></li>
       </ul>
-      <p>The per-project half is what stops a year of memories from every project blurring into one undifferentiated pile. It matters more than it looks. Perplexity is the exception that proves the rule: it has no account-wide field at all, so the standing instruction has to go into every project you make.</p>
+      <p>The per-project half is what stops a year of memories from every project blurring into one undifferentiated pile. It matters more than it looks — and it is the half people skip, because the account-wide field is the one they find first.</p>
     </section>
 
     <section id="connect">
@@ -610,6 +592,10 @@ reach a decision. Say what you saved.</div>
         <li>Your browser opens a SeKondBrain sign-in page. Sign in and approve.</li>
         <li>The connector reports the tools it found. That is the whole flow.</li>
       </ol>
+      <div class="shot real" style="max-width:492px">
+        <img src="perplexity-connector.png" width="490" height="530" loading="lazy" alt="Perplexity's Add custom connector dialog: a name, an optional description, and the Kemory server address in the MCP server URL field.">
+      </div>
+      <p class="stamp">Perplexity's version of the dialog. Every AI words it differently and asks for a name of its own choosing — the only field that has to be exact is the server address.</p>
       <p>Authorisation is OAuth 2.1 with PKCE. The connector holds a short-lived token that refreshes itself, and no long-lived credential exists anywhere on this path. What you are approving, and what it does not grant, is set out on the <a href="../#connect-web">Kemory overview</a>.</p>
       <p>Once it reports its tools, go and paste <a href="#instruction">the instruction</a>. A connector with no instruction is the state this page exists to fix.</p>
     </section>

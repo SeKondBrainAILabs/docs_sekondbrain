@@ -67,6 +67,15 @@ header.top{
 .top-links{margin-left:auto;display:flex;gap:20px;font-size:13.5px;min-width:0}
 .top-links a{color:var(--fg-2);text-decoration:none}
 .top-links a:hover{color:var(--ink)}
+
+/* Up one level. Every page's parent was already declared by the brandline, but
+   on a phone the brandline is truncated to one word and does not read as a way
+   back — so the menu states it. Shown at every width: on desktop it replaces
+   the parent link these rows used to carry in an inconsistent position (and,
+   on two Kemory pages, under the wrong label — "Documentation" pointing at the
+   Kemory index). Leftmost in the row, first in the panel: where back belongs. */
+.nav-back{display:flex;align-items:center;gap:6px}
+.nav-back::before{content:"\2190";font-size:15px;line-height:1}
 /* Hamburger. The row used to scroll sideways below 900px with a fade as the
    cue; a menu behind one obvious button beats asking the reader to notice a
    fade. The checkbox is the state — no script required to open or close it —
@@ -105,6 +114,10 @@ header.top{
   .nav-toggle:checked ~ .top-links{display:flex}
   .top-links a{padding:12px 0;border-top:1px solid var(--hair-2)}
   .top-links a:first-child{border-top:0}
+  /* In the panel the back link is its own group: a full-weight rule under it,
+     against the hairlines separating the section links below. */
+  .top-links a.nav-back{color:var(--ink);font-weight:500;border-bottom:1px solid var(--hair)}
+  .nav-back + a{border-top:0}
 }
 /* "Kemory · by SeKondBrain" -> "Kemory", to buy the links room on a phone. */
 @media (max-width:520px){.brandline span{display:none}}

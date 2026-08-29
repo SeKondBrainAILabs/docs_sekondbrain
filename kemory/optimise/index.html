@@ -301,18 +301,21 @@ transient state — anything that stops being true by tomorrow.</code></pre>
         <label for="ai-gemini">Gemini</label>
         <div class="panel">
           <div class="route">
-            <b>Kora extension</b><i>&rsaquo;</i><b>enable Gemini</b><i>&rsaquo;</i><b class="dest">Enhance with Kora</b>
+            <b>MCP on your account?</b><i>&rsaquo;</i><b>yes: Settings &amp; help &rsaquo; Personal Intelligence</b><i>&rsaquo;</i><b class="dest">no: Enhance with Kora</b>
           </div>
-          <p>Gemini is the one web AI on this list that does not take a Kemory connector. It has no
-          custom-connector setting, and Google's MCP support lives in <a href="#ai-geminicli">Gemini CLI</a>,
-          not in the Gemini app or the web UI. So there is nothing here to paste the standing instruction
-          into that would work — the instruction names tools this surface cannot call.</p>
-          <p>Gemini reaches Kemory through the <a href="../#kora">Kora extension</a> instead, in both
-          directions, and neither needs an instruction field.</p>
+          <p>Gemini is the one AI here where whether you can connect Kemory at all depends on your
+          account. MCP support is not offered on ordinary consumer Gemini: it reaches the app and web UI
+          through enterprise and a limited set of account tiers, and it is always available in
+          <a href="#ai-geminicli">Gemini CLI</a>. Check your own account before assuming either way.</p>
+          <p>So this panel has two paths. If your account carries MCP, connect and paste the standing
+          instruction like any other AI. If it does not, Gemini still reaches Kemory through the
+          <a href="../#kora">Kora extension</a> in both directions, and that path needs no instruction
+          field at all.</p>
           <ul class="facts">
-            <li><span class="k">Do not paste it</span><span>The <a href="#instruction">standing instruction</a> is for AIs that hold the tools. Pasting it under <strong>Personal Intelligence</strong> tells Gemini to call <code>kemory_recall_memory</code>, which it has no way to do — you get a model apologising for a missing tool rather than memory.</span></li>
-            <li><span class="k">Reading — Enhance</span><span>Compose your prompt, then use <strong>Enhance with Kora</strong>. The extension searches your Kemory on the draft you have typed and appends the memories it finds as a labelled context block. Your draft is not rewritten, and it is used only as the search query.</span></li>
-            <li><span class="k">Writing — capture</span><span>Switch Gemini on in the extension and your Gemini conversations sync into Kemory as you have them. That half needs no prompting at all, and it is what makes a Gemini chat recallable from the AIs that <em>are</em> connected.</span></li>
+            <li><span class="k">Check first</span><span>Look for <strong>Settings &rsaquo; Apps</strong> (or your workspace admin's connector controls) before pasting anything. If there is no way to add an MCP connector, your account does not carry it — and the <a href="#instruction">standing instruction</a> will name tools Gemini cannot call, which reads as a model apologising for a missing tool rather than as memory.</span></li>
+            <li><span class="k">If you do have it</span><span>Paste the <a href="#instruction">standard version</a> under <strong>Settings &amp; help &rsaquo; Personal Intelligence &rsaquo; Instructions for Gemini</strong>, and add the connector with the <a href="#mcp-web">server address</a>. Enterprise and Workspace accounts are where this shows up; consumer accounts generally do not have it.</span></li>
+            <li><span class="k">Reading without MCP — Enhance</span><span>Compose your prompt, then use <strong>Enhance with Kora</strong>. The extension searches your Kemory on the draft you have typed and appends the memories it finds as a labelled context block. Your draft is not rewritten, and it is used only as the search query.</span></li>
+            <li><span class="k">Writing without MCP — capture</span><span>Switch Gemini on in the extension and your Gemini conversations sync into Kemory as you have them. That half needs no prompting at all, and it is what makes a Gemini chat recallable from the AIs that <em>are</em> connected.</span></li>
             <li><span class="k">Turning it on</span><span>Enhance runs only where cross-AI recall is on in extension Settings and Gemini is among the platforms you have enabled. Both are off for platforms you have not switched on.</span></li>
             <li><span class="k">Not Saved info</span><span>Saved info is Gemini's own memory — facts it stores about you, confined to Gemini. It is not a route to Kemory, and nothing you put there is visible to your other AIs.</span></li>
             <li><span class="k">Per project</span><span>A Gem takes its own instructions and is the better home for anything scoped to one body of work — for tone and task rules, not for memory tools.</span></li>

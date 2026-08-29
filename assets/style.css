@@ -222,24 +222,25 @@ th,td{overflow-wrap:anywhere}
 .scroll-x td:first-child{white-space:normal;min-width:210px}
 
 /* ---------- the tool tables ----------
-   A tool name is one unbroken token and the whole point of its row. The
-   `overflow-wrap:anywhere` above — load-bearing for config paths and URLs —
-   drops a cell's min-content width to a single character, so auto layout
-   handed the name column ~90px and broke `kemory_get_compressed` across four
-   lines while the description column sat half empty. Pin the column to its
-   content instead: nowrap plus `width:1%` is shrink-to-fit, so the column is
-   exactly as wide as the longest name and the description takes the rest. */
-.tools td:first-child{white-space:nowrap;overflow-wrap:normal;width:1%;padding-right:20px}
+   Two columns cannot work here. Tool names run 85px to 250px wide, so a
+   content-sized column is as wide as `kemory_rehydrate_session_sources` and
+   leaves a 185px river before `kemory_ask`'s description — and because each
+   grade renders its own table, the three of them sized independently (270 /
+   225 / 203) and started their descriptions at three different x positions on
+   one page. Pinning the column to a fixed width fixes the alignment but puts
+   the four longest names back to breaking mid-token, which is the wrap this
+   whole rule exists to stop.
 
-/* Under ~620px the longest name and a readable description stop fitting on one
-   line together. Stack rather than squeeze — the name reads as a heading for
-   the description beneath it, and the row keeps its rule. */
-@media (max-width:620px){
-  .tools tr,.tools td{display:block;width:auto}
-  .tools td{border-bottom:none;padding:0}
-  .tools td:first-child{padding:12px 0 5px}
-  .tools td:last-child{padding:0 0 12px;border-bottom:1px solid var(--hair-2)}
-}
+   So: stack. The name is a label over its description rather than a cell
+   beside it. No river, every table aligned, no name ever broken, and the
+   descriptions — which run to five lines — get the full measure. */
+.tools,.tools tbody,.tools tr,.tools td{display:block;width:auto}
+.tools tr{padding:11px 0;border-bottom:1px solid var(--hair-2)}
+.tools tr:first-child{padding-top:0}
+.tools td{border-bottom:none;padding:0;max-width:70ch}
+.tools td:first-child{margin-bottom:6px}
+/* The chip carries the name's weight now that it owns its own line. */
+.tools td:first-child code{font-size:13px}
 
 /* ---------- signature: tool annotation grades ----------
    Read / write / destructive carry the brand status-dot colours. The dot is

@@ -138,7 +138,7 @@
 <div class="wrap hero">
   <span class="pill"><i style="background:var(--c-mint)"></i>Connected is not the same as remembering</span>
   <h1>Get an AI to<br><em>actually use memory.</em></h1>
-  <p class="lede">Connecting Kemory gives an AI the tools. It does not give it the habit. Left alone, most models treat a memory tool like a reference book on a high shelf — technically available, rarely reached for. This page is the fix: one standing instruction, the place to paste it in each AI, and how to connect in the first place.</p>
+  <p class="lede">Connecting Kemory gives an AI the tools. It does not give it the habit. Left alone, most models treat a memory tool like a reference book on a high shelf — technically available, reached for inconsistently until you have built the habit of asking every time. This page is how you skip that habit-building: one standing instruction that does the asking for you, the place to paste it in each AI, and how to connect in the first place.</p>
   <p>If you have just been let in and nothing seems to be saving, you are in the right place and nothing is broken. Start with <a href="#instruction">the instruction</a>.</p>
 </div>
 
@@ -301,27 +301,21 @@ transient state — anything that stops being true by tomorrow.</code></pre>
         <label for="ai-gemini">Gemini</label>
         <div class="panel">
           <div class="route">
-            <b>Settings &amp; help</b><i>&rsaquo;</i><b>Personal Intelligence</b><i>&rsaquo;</i><b class="dest">Instructions for Gemini</b>
+            <b>Kora extension</b><i>&rsaquo;</i><b>enable Gemini</b><i>&rsaquo;</i><b class="dest">Enhance with Kora</b>
           </div>
-          <div class="shot" role="img" aria-label="Gemini settings, Personal Intelligence, showing the Instructions for Gemini field with the standing instruction pasted into it.">
-            <div class="shot-bar"><em></em><em></em><em></em><span>Settings &amp; help</span></div>
-            <div class="shot-body">
-              <div class="shot-nav">
-                <span class="on">Personal Intelligence</span>
-                <span>Saved info</span>
-                <span>Apps</span>
-                <span>Activity</span>
-              </div>
-              <div class="shot-main">
-                <div class="shot-lbl">Instructions for Gemini</div>
-                <div class="shot-field"><b>You have Kemory memory tools — my long-term memory, shared across all my AIs.</b> Use them in every conversation, without being asked. Check Kemory before&hellip;</div>
-              </div>
-            </div>
-          </div>
+          <p>Gemini is the one web AI on this list that does not take a Kemory connector. It has no
+          custom-connector setting, and Google's MCP support lives in <a href="#ai-geminicli">Gemini CLI</a>,
+          not in the Gemini app or the web UI. So there is nothing here to paste the standing instruction
+          into that would work — the instruction names tools this surface cannot call.</p>
+          <p>Gemini reaches Kemory through the <a href="../#kora">Kora extension</a> instead, in both
+          directions, and neither needs an instruction field.</p>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>, under Personal Intelligence.</span></li>
-            <li><span class="k">Not Saved info</span><span>Saved info is Gemini's own memory — facts it stores about you. It is not an instructions field, and pasting the standing instruction there will not change how Gemini behaves.</span></li>
-            <li><span class="k">Per project</span><span>A Gem takes its own instructions and is the better home for anything scoped to one body of work.</span></li>
+            <li><span class="k">Do not paste it</span><span>The <a href="#instruction">standing instruction</a> is for AIs that hold the tools. Pasting it under <strong>Personal Intelligence</strong> tells Gemini to call <code>kemory_recall_memory</code>, which it has no way to do — you get a model apologising for a missing tool rather than memory.</span></li>
+            <li><span class="k">Reading — Enhance</span><span>Compose your prompt, then use <strong>Enhance with Kora</strong>. The extension searches your Kemory on the draft you have typed and appends the memories it finds as a labelled context block. Your draft is not rewritten, and it is used only as the search query.</span></li>
+            <li><span class="k">Writing — capture</span><span>Switch Gemini on in the extension and your Gemini conversations sync into Kemory as you have them. That half needs no prompting at all, and it is what makes a Gemini chat recallable from the AIs that <em>are</em> connected.</span></li>
+            <li><span class="k">Turning it on</span><span>Enhance runs only where cross-AI recall is on in extension Settings and Gemini is among the platforms you have enabled. Both are off for platforms you have not switched on.</span></li>
+            <li><span class="k">Not Saved info</span><span>Saved info is Gemini's own memory — facts it stores about you, confined to Gemini. It is not a route to Kemory, and nothing you put there is visible to your other AIs.</span></li>
+            <li><span class="k">Per project</span><span>A Gem takes its own instructions and is the better home for anything scoped to one body of work — for tone and task rules, not for memory tools.</span></li>
           </ul>
         </div>
 
@@ -654,7 +648,7 @@ reach a decision. Say what you saved.</div>
       <h3>Prune deliberately</h3>
       <p>A memory that was true in March and is wrong now is worse than no memory, because it will be recalled with the same confidence as a correct one. When something changes, say so — <em>"that is no longer true, update Kemory"</em> — rather than leaving both versions to compete.</p>
       <h3>Capture the conversations you are already having</h3>
-      <p>The instruction only reaches the AIs you connect. <a href="../#kora">Kora for Chrome</a> picks up your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have them and syncs them into the same memory, which covers the sessions where you forgot to ask.</p>
+      <p>The instruction only reaches the AIs you connect. <a href="../#kora">Kora's Chrome extension</a> picks up your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have them and syncs them into the same memory, which covers the sessions where you forgot to ask.</p>
     </section>
 
     <section id="troubleshoot">

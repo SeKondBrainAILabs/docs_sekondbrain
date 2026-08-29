@@ -127,7 +127,7 @@ Write a memory immediately when: I state a preference or a way of working,
 we make a decision, or we learn something non-obvious about this codebase
 or domain. Tell me what you wrote and to which namespace.
 
-Never write credentials, keys or passwords into memory.
+Do not write credentials, keys or passwords into memory unless I ask you to.
 ```
 
 [Optimise your AIs for Kemory](optimise/) has the same instruction sized for every field it
@@ -290,12 +290,12 @@ when comparing it are all set out in full — along with how to reproduce it.
 
 ---
 
-## Capture with Kora for Chrome
+## Capture with Kora's Chrome extension
 
-Kemory is the memory; **Kora** is one way to fill it. Kora is a Chrome extension that
-captures your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have
-them, keeps them in your browser, and syncs them into Kemory — so a chat you had in one AI
-becomes a memory any connected AI can recall.
+Kemory is the memory; **Kora** is one way to fill it. Kora is SeKondBrain's Chief of Staff
+AI, and her Chrome extension captures your conversations with ChatGPT, Claude, Gemini,
+Perplexity and Manus as you have them, keeps them in your browser, and syncs them into
+Kemory — so a chat you had in one AI becomes a memory any connected AI can recall.
 
 It keeps what the host platforms eventually drop: full message text and structured blocks —
 code, tables, reasoning, citations, artifacts — uploaded and generated files, inline images,
@@ -317,7 +317,7 @@ namespaces automatically — a chat with no routing signal lands in an inbox nam
 sorted from there. Once in Kemory they behave like any other memory: `kemory_recall_memory`
 and the rest return them, scoped to you, from any AI you have connected.
 
-**What Kora reads.** The extension reads page content only on the AI sites you switch it on
+**What the extension reads.** The extension reads page content only on the AI sites you switch it on
 for, and only to capture your own conversations. What it stores and syncs is covered by the
 same privacy policy as the rest of Kemory.
 
@@ -339,8 +339,17 @@ set out in full in the privacy policy.
 The privacy policy describes what the audit trail retains afterwards and how to request
 complete erasure.
 
-**Do not put credentials in memory.** Passwords, API keys and tokens have no business in a
-memory layer, and every tool description says so to the model as well as to you.
+**Credentials are your call.** Kemory does not stop you storing a password or an API key. An
+explicit write is stored as you sent it, and no tool refuses one. Two facts should inform that
+choice rather than a rule: content is encrypted at rest only if you have turned encryption on,
+which is opt-in and permanent per account; and memory content is processed by third-party
+language models for enrichment, compression and embedding, so a stored secret reaches those
+providers like any other memory.
+
+What Kemory will not do is make the decision for you. Automatic capture —
+`kemory_capture_session` and the Kora sync behind it — drops credential-shaped text instead of
+persisting it, even though that text was already in the conversation you had. The asymmetry is
+deliberate: you can store a secret on purpose, but nothing will store one on your behalf.
 
 ---
 

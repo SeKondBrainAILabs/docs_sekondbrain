@@ -161,7 +161,7 @@ def render_html(tools: list[dict]) -> str:
             f'      <div class="grade"><span class="dot {css}"></span><h3>{heading}</h3>'
             f'<span class="ann">{annotation}</span></div>',
             f'      <p class="count">{count}</p>',
-            "      <table>",
+            '      <table class="tools">',
             "        <tbody>",
         ]
         for t in members:

@@ -72,7 +72,7 @@
     <a href="cli/">CLI</a>
     <a href="benchmarks/">Benchmarks</a>
     <div class="grp">Operating</div>
-    <a href="#kora">Kora for Chrome</a>
+    <a href="#kora">Kora's extension</a>
     <a href="#data">Your data</a>
     <a href="#errors">Errors and limits</a>
     <a href="#support">Support</a>
@@ -149,7 +149,7 @@ Write a memory immediately when: I state a preference or a way of
 working, we make a decision, or we learn something non-obvious about
 this codebase or domain. Tell me what you wrote and to which namespace.
 
-Never write credentials, keys or passwords into memory.</code></pre>
+Do not write credentials, keys or passwords into memory unless I ask you to.</code></pre>
     </section>
 
     <section id="quickstart">
@@ -169,7 +169,7 @@ Never write credentials, keys or passwords into memory.</code></pre>
 
       <div class="grade"><span class="dot read"></span><h3>Read-only</h3><span class="ann">readOnlyHint: true</span></div>
       <p class="count">18 tools</p>
-      <table>
+      <table class="tools">
         <tbody>
           <tr><td><code>kemory_ask</code></td><td>SURFACES: memories, chat turns AND files — the ONLY search tool that reads all three; every kemory_recall* tool reads memories alone. If a conversation might hold the answer, this is the tool (S9N-7495).</td></tr>
           <tr><td><code>kemory_check_access</code></td><td>Check if the current agent has permission to perform an action. Returns the Gatekeeper evaluation result without performing the action.</td></tr>
@@ -194,7 +194,7 @@ Never write credentials, keys or passwords into memory.</code></pre>
 
       <div class="grade"><span class="dot write"></span><h3>Write</h3><span class="ann">destructiveHint: false</span></div>
       <p class="count">7 tools</p>
-      <table>
+      <table class="tools">
         <tbody>
           <tr><td><code>kemory_capture_session</code></td><td>Extract durable memories from a conversation window in one call — the server pulls out stable facts, preferences and decisions, dedupes them, and stores each through the normal write path (enrichment, provenance, &lt;private&gt; redaction). Call at the end of a significant turn with the recent window; re-sending overlapping windows is safe (dedup absorbs it). Transient state, secret-shaped content, and unknown namespace destinations are skipped and counted; shared is used as a bootstrap only for an empty vault. For a single narrative summary of the session, use kemory_consolidate_session instead. Requires memory:write permission.</td></tr>
           <tr><td><code>kemory_consolidate_session</code></td><td>Trigger consolidation on a session — runs the Reflector agent over its episodic memories and produces ONE semantic summary stored as a new memory. Idempotent. For extracting many discrete durable facts from a conversation window, use kemory_capture_session instead; the two compose.</td></tr>
@@ -208,7 +208,7 @@ Never write credentials, keys or passwords into memory.</code></pre>
 
       <div class="grade"><span class="dot del"></span><h3>Destructive</h3><span class="ann">destructiveHint: true</span></div>
       <p class="count">3 tools</p>
-      <table>
+      <table class="tools">
         <tbody>
           <tr><td><code>kemory_delete_memory</code></td><td>Soft-delete a memory from the user's S9N Memory Vault by its ID. Requires memory:delete permission.</td></tr>
           <tr><td><code>kemory_forget</code></td><td>Forget (soft-delete) one memory by its ID. Friendly alias of kemory_delete_memory — same soft-delete path, recoverable by an administrator. Requires memory:delete permission.</td></tr>
@@ -268,8 +268,8 @@ Never write credentials, keys or passwords into memory.</code></pre>
     </section>
 
     <section id="kora">
-      <h2>Capture with Kora<br>for Chrome</h2>
-      <p>Kemory is the memory; <strong>Kora</strong> is one way to fill it. Kora is a Chrome extension that captures your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have them, keeps them in your browser, and syncs them into Kemory — so a chat you had in one AI becomes a memory any connected AI can recall.</p>
+      <h2>Capture with Kora's<br>Chrome extension</h2>
+      <p>Kemory is the memory; <strong>Kora</strong> is one way to fill it. Kora is SeKondBrain's Chief of Staff AI, and her Chrome extension captures your conversations with ChatGPT, Claude, Gemini, Perplexity and Manus as you have them, keeps them in your browser, and syncs them into Kemory — so a chat you had in one AI becomes a memory any connected AI can recall.</p>
       <p>It keeps what the host platforms eventually drop: full message text and structured blocks — code, tables, reasoning, citations, artifacts — uploaded and generated files, inline images, and conversation metadata. It groups related chats across tools by topic, so your <em>React hooks</em> thread in ChatGPT and your <em>React state</em> thread in Claude land in the same place.</p>
       <h3>Local first</h3>
       <p>Conversations are captured into browser storage first, and sync only to the Kemory you connect — your SeKondBrain account's, or a self-hosted instance you point it at. They go nowhere else.</p>
@@ -278,7 +278,7 @@ Never write credentials, keys or passwords into memory.</code></pre>
       <h3>What reaches Kemory</h3>
       <p>Captured chats become memories in your account, routed into namespaces automatically — a chat with no routing signal lands in an inbox namespace and is sorted from there. Once in Kemory they behave like any other memory: <code>kemory_recall_memory</code> and the rest return them, scoped to you, from any AI you have connected.</p>
       <div class="note">
-        <span class="lbl">What Kora reads</span>
+        <span class="lbl">What the extension reads</span>
         <p>The extension reads page content only on the AI sites you switch it on for, and only to capture your own conversations. What it stores and syncs is covered by the same <a href="../legal/extension-privacy/">privacy policy</a> as the rest of Kemory.</p>
       </div>
     </section>
@@ -289,8 +289,9 @@ Never write credentials, keys or passwords into memory.</code></pre>
       <p>Memory content is processed by third-party language models for enrichment, compression and embedding. Which providers, what is retained, how long, and how to have material erased are set out in full in the <a href="../legal/privacy/">privacy policy</a>.</p>
       <p><code>kemory_delete_memory</code> is a soft delete: the memory stops being returned by any read tool. The privacy policy describes what the audit trail retains afterwards and how to request complete erasure.</p>
       <div class="note">
-        <span class="lbl">Do not put credentials in memory</span>
-        <p>Passwords, API keys and tokens have no business in a memory layer. Every tool description says so to the model as well as to you.</p>
+        <span class="lbl">Credentials are your call</span>
+        <p>Kemory does not stop you storing a password or an API key. An explicit write is stored as you sent it, and no tool refuses one. Two facts should inform that choice rather than a rule: content is encrypted at rest only if you have <a href="api/">turned encryption on</a>, which is opt-in and permanent per account; and memory content is processed by third-party language models for enrichment, compression and embedding, so a stored secret reaches those providers like any other memory.</p>
+        <p>What Kemory will not do is make the decision for you. Automatic capture — <code>kemory_capture_session</code> and the Kora sync behind it — drops credential-shaped text instead of persisting it, even though that text was already in the conversation you had. The asymmetry is deliberate: you can store a secret on purpose, but nothing will store one on your behalf.</p>
       </div>
     </section>
 

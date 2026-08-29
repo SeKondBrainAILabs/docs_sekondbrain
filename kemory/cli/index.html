@@ -53,6 +53,7 @@
     <a href="#signin">Sign in</a>
     <a href="#connect">Connect a local client</a>
     <div class="grp">Using it</div>
+    <a href="#ask">Ask your vault</a>
     <a href="#keys">API keys</a>
     <a href="#orgs">Organisations</a>
     <a href="#doctor">Diagnosing</a>
@@ -97,7 +98,10 @@
 
     <section id="connect">
       <h2>Connect a local client</h2>
-      <p>One command writes the Kemory MCP server into a client's config file:</p>
+      <p>If you have done nothing else yet, this is the whole setup — it signs you in if needed, writes the config, and verifies the result with a live call:</p>
+<pre><code>kemory connect</code></pre>
+      <p>Every step is idempotent, so re-running it is safe and is the first thing to try when a client has stopped seeing Kemory. It takes the same <code>--host</code> choices as below, and <code>--no-browser</code> if you would rather copy the login URL yourself.</p>
+      <p>To write the config without the sign-in and verification around it:</p>
 <pre><code>kemory mcp install --host claude-code</code></pre>
       <table class="tight">
         <thead><tr><th><code>--host</code></th><th>Client</th></tr></thead>
@@ -117,6 +121,26 @@
         <p>The entry it writes runs a local bridge that speaks MCP to your client and HTTPS to Kemory, authenticating with your browser login. No API key is written into the file — so your client configs stay safe to sync between machines, or commit.</p>
       </div>
       <p>This path is for clients running on your own machine. An agent that cannot start a local subprocess — a hosted or cloud agent — should connect to the remote endpoint directly instead. See <a href="../#connect-web">Connect a web AI</a>.</p>
+    </section>
+
+    <section id="ask">
+      <h2>Ask your vault</h2>
+      <p>Everything else on this page configures access. This is the one command that uses it:</p>
+<pre><code>kemory ask "what did we decide about the search architecture"</code></pre>
+      <p>Search returns what matches; <code>ask</code> returns an answer, composed from what it found and followed by the evidence it used. It reads memories, captured chats and text files together — an answer is as likely to be sitting in a conversation as in a memory somebody wrote down.</p>
+      <table class="tight">
+        <thead><tr><th>Option</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>--type</code></td><td><code>memory</code>, <code>chat</code> or <code>file</code>. Repeatable; omit for all three.</td></tr>
+          <tr><td><code>--limit</code></td><td>How many items to ground the answer in.</td></tr>
+          <tr><td><code>--no-synth</code></td><td>Skip the model call and return the evidence only — faster, and costs nothing.</td></tr>
+          <tr><td><code>--json</code></td><td>The raw response, for scripting.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">An answer is not always possible, and it will say so.</span>
+        <p>If nothing relevant is found, or the answer cannot be composed, you get a line saying that plus whatever evidence was retrieved — never a confident answer assembled from material that does not support it. The same request over HTTP is <code>POST /api/v1/ask</code>, and MCP clients get it as <code>kemory_ask</code>.</p>
+      </div>
     </section>
 
     <section id="keys">

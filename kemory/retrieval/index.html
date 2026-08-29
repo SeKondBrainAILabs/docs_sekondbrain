@@ -62,7 +62,7 @@
         <thead><tr><th>Leg</th><th>What it matches</th><th>What it is good at</th></tr></thead>
         <tbody>
           <tr><td>Semantic</td><td>Your query embedded and compared by cosine similarity against every memory's vector</td><td>Finding a memory you can only describe loosely</td></tr>
-          <tr><td>Lexical</td><td>Your query's terms as full-text search, ordered by term frequency and rarity</td><td>Finding a memory by an exact identifier — ticket number, error code, config key</td></tr>
+          <tr><td>Lexical</td><td>Your query's terms as full-text search, ordered by term frequency and rarity. Conservative spelling variants are expanded on the query side — transliteration pairs like <em>vaastu</em>/<em>vastu</em> find each other in both directions, originals ranking first</td><td>Finding a memory by an exact identifier — ticket number, error code, config key</td></tr>
           <tr><td>Blind index</td><td>Identifier-shaped tokens indexed as keyed hashes, matched by equality</td><td>Exact identifiers on <strong>encrypted</strong> accounts, where text matching cannot read the content</td></tr>
         </tbody>
       </table>
@@ -100,8 +100,9 @@
       <table>
         <thead><tr><th>Tool</th><th>Use it for</th></tr></thead>
         <tbody>
+          <tr><td><code>kemory_ask</code></td><td>The one federated tool: searches memories, chat turns and files together (the cross-surface engine below) and, when the question calls for it, synthesises an answer with citations instead of returning a bare list. Reach for it when you don't know which surface holds the answer.</td></tr>
           <tr><td><code>kemory_recall_memory</code></td><td>The main search — text query, optional namespace and content-type filters, pagination. <code>kemory_recall</code> is a friendlier alias with identical ranking that can also return your profile in the same call.</td></tr>
-          <tr><td><code>kemory_find_similar</code></td><td>Searching by relevance to a reference string. It currently shares <code>recall_memory</code>'s ranking exactly and applies <strong>no</strong> separate similarity threshold, so for the same query string it returns the same results in the same order. Choose it for readability, not for a different algorithm.</td></tr>
+          <tr><td><code>kemory_find_similar</code></td><td>Searching by relevance to a reference string. Without arguments it shares <code>recall_memory</code>'s ranking exactly. It additionally accepts <code>min_similarity</code> — a caller-supplied floor applied to semantic matches only (the same mechanism as recall's <code>min_relevance</code>). The floor is a floor, not a verdict: results stay relevance-ranked, and exact-token hits are never floored. Absent <code>min_similarity</code>, no threshold applies.</td></tr>
           <tr><td><code>kemory_get_context</code></td><td>Relevant background for a conversation rather than a list of hits, optionally synthesised. When the results are flat background noise it deliberately returns nothing rather than filling your prompt with near-misses.</td></tr>
           <tr><td><code>kemory_get_user_context</code></td><td>A cross-namespace overview of everything you have stored. The right call at the start of a session.</td></tr>
           <tr><td><code>kemory_get_session_context</code></td><td>A prompt-ready block for one namespace session: recent exchanges verbatim, older ones folded into a rolling digest.</td></tr>
@@ -128,6 +129,8 @@
           <tr><td><code>KMV_RANK_W_UTILITY_SALIENCE</code></td><td><code>0.15</code></td><td>Weight of measured usefulness.</td></tr>
           <tr><td><code>MCP_MIN_RELEVANCE</code></td><td><code>0.0</code> (off)</td><td>An absolute similarity floor applied to results. See below for why this is off.</td></tr>
           <tr><td><code>GET_CONTEXT_FLAT_GATE</code></td><td><code>true</code></td><td>Whether <code>kemory_get_context</code> suppresses a flat, background-noise page instead of returning it.</td></tr>
+          <tr><td><code>KMV_UNIFIED_RRF_RELEVANCE_WEIGHTING</code></td><td><code>true</code></td><td>Cross-surface search only: weight each result's rank contribution by its within-leg relevance. <code>false</code> reverts to pure rank interleaving.</td></tr>
+          <tr><td><code>KMV_UNIFIED_V2_PLAN_FOR_CHAT_FILE</code></td><td><code>true</code></td><td>Cross-surface search only: drive the chat and file lexical legs from the same parsed query plan as the memory leg (phrases, negations, spelling variants). <code>false</code> reverts each leg to its own raw-token parse.</td></tr>
         </tbody>
       </table>
       <p>Raising a weight does not raise quality on its own — the five are normalised against each other, so increasing one necessarily reduces the influence of the rest. Change one at a time and measure against a labelled set you control.</p>
@@ -146,8 +149,10 @@
 
     <section id="unified">
       <h2>Cross-surface search</h2>
-      <p><code>POST /api/v1/search/unified</code> searches memories, chat turns and files together. Each surface is searched by its own leg and the results are merged <strong>by rank</strong>, because the surfaces' raw scores are on different scales.</p>
-      <p>Each result reports its own leg-native score, so compare scores within a type and never across types.</p>
+      <p><code>POST /api/v1/search/unified</code> searches memories, chat turns and files together — it is the engine behind <code>kemory_ask</code> and the extension's Enhance. Each surface is searched by its own leg, and two rules govern the merge.</p>
+      <p><strong>Scores never compare across surfaces.</strong> The surfaces' raw scores are on different scales, so each result reports its own leg-native score — compare within a type, never across types.</p>
+      <p><strong>The merge is rank-based, weighted by within-leg relevance.</strong> Pure rank interleaving treated a leg's weak second hit and another leg's near-top second as equals, producing a strict round-robin of types. Each contribution is now weighted by how close the hit is to <em>its own leg's</em> best score — a ratio taken inside one leg, invariant to that leg's scale, so the cross-surface rule above still holds. A surface with genuinely weak results contributes fewer of them.</p>
+      <p><strong>All three surfaces share one query plan.</strong> The query is parsed once — quoted phrases as adjacency groups, negated terms dropped, spelling variants expanded — and the same plan drives the memory, chat and file lexical legs. A <em>vaastu</em> query lexically matches a chat titled <em>Vastu Mirror Placement</em>, not just memories.</p>
     </section>
 
     <section id="capture">

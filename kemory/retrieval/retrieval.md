@@ -17,7 +17,10 @@ memory's vector. This is what finds a memory when you describe it loosely.
 
 **Lexical.** Your query's terms are matched as full-text search and ordered by term
 frequency and rarity. This is what finds a memory by an exact identifier — a ticket
-number, an error code, a config key.
+number, an error code, a config key. Conservative spelling variants are expanded on the
+query side, so transliteration pairs that stemming never folds — *vaastu*/*vastu*,
+*Raajesh*/*Rajesh* — find each other in both directions. Originals always rank ahead of
+variants.
 
 **Blind index (encrypted accounts).** When memory content is encrypted at rest, ordinary
 text matching cannot read it. Identifier-shaped tokens are therefore indexed as keyed
@@ -65,14 +68,23 @@ fixed threshold stays meaningful.
 
 ## Which tool to use
 
-**`kemory_recall_memory`** — the main search. Text query, optional namespace and content
+**`kemory_ask`** — the one federated tool: searches memories, chat turns and files
+together (the cross-surface engine below) and, when the question calls for it, synthesises
+an answer with citations instead of returning a bare list. Reach for it when you don't
+know which surface holds the answer.
+
+**`kemory_recall_memory`** — the main *memory* search. Text query, optional namespace and content
 type filters, pagination. `kemory_recall` is a friendlier alias with identical ranking that
 can also return your profile in the same call.
 
-**`kemory_find_similar`** — searches by relevance to a reference string. It currently
-shares `recall_memory`'s ranking exactly and applies **no** separate similarity threshold,
-so for the same query string it returns the same results in the same order. Choose it for
-readability, not for a different algorithm.
+**`kemory_find_similar`** — searches by relevance to a reference string. Without
+arguments it shares `recall_memory`'s ranking exactly, so the same query returns the same
+results in the same order. It additionally accepts **`min_similarity`** — a caller-supplied
+floor applied to semantic matches (the same mechanism as recall's `min_relevance`). The
+floor is a floor, not a verdict: results stay relevance-ranked, and exact-token (lexical)
+hits are never floored, so an identifier match survives any threshold. Absent
+`min_similarity`, no threshold applies — see "A fixed similarity floor — inert at scale"
+below for why one is not applied by default.
 
 **`kemory_get_context`** — topical context for a conversation, optionally synthesised. Use
 it when you want relevant background rather than a list of hits. When the results are flat
@@ -111,6 +123,8 @@ set per account; they matter if you run Community Edition or your own deployment
 | `KMV_RANK_W_UTILITY_SALIENCE` | `0.15` | Weight of measured usefulness. |
 | `MCP_MIN_RELEVANCE` | `0.0` (off) | An absolute similarity floor applied to results. See the note below on why this is off. |
 | `GET_CONTEXT_FLAT_GATE` | `true` | Whether `kemory_get_context` suppresses a flat, background-noise page instead of returning it. |
+| `KMV_UNIFIED_RRF_RELEVANCE_WEIGHTING` | `true` | Cross-surface search only: weight each result's rank contribution by its within-leg relevance. `false` reverts to pure rank interleaving. |
+| `KMV_UNIFIED_V2_PLAN_FOR_CHAT_FILE` | `true` | Cross-surface search only: drive the chat and file lexical legs from the same parsed query plan as the memory leg (phrases, negations, spelling variants). `false` reverts each leg to its own raw-token parse. |
 
 Raising a weight does not raise quality on its own — the five are normalised against each
 other, so increasing one necessarily reduces the influence of the rest. Change one at a
@@ -153,10 +167,25 @@ phrasing guidance near the top of this page is the most useful thing on it.
 
 ## Cross-surface search
 
-`POST /api/v1/search/unified` searches memories, chat turns and files together. Each
-surface is searched by its own leg and the results are merged **by rank**, because the
-surfaces' raw scores are on different scales. Each result reports its own leg-native score,
-so compare scores within a type and never across types.
+`POST /api/v1/search/unified` searches memories, chat turns and files together — it is
+the engine behind `kemory_ask` and the extension's Enhance. Each surface is searched by
+its own leg, and two rules govern the merge:
+
+**Scores never compare across surfaces.** The surfaces' raw scores are on different
+scales, so each result reports its own leg-native score — compare within a type, never
+across types.
+
+**The merge is rank-based, weighted by within-leg relevance.** Pure rank interleaving
+treated a leg's weak second hit and another leg's near-top second as equals, producing a
+strict round-robin of types. Each contribution is now weighted by how close the hit is to
+*its own leg's* best score — a ratio taken inside one leg, so it is invariant to that
+leg's scale and the cross-surface rule above still holds. A surface with genuinely weak
+results contributes fewer of them.
+
+**All three surfaces share one query plan.** The query is parsed once — quoted phrases as
+adjacency groups, negated terms dropped, spelling variants expanded — and the same plan
+drives the memory, chat and file lexical legs. A `vaastu` query lexically matches a chat
+titled *Vastu Mirror Placement*, not just memories.
 
 ## Capture versus consolidate
 

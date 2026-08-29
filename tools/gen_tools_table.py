@@ -31,6 +31,7 @@ two conditions that would sink a directory submission on their own:
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import sys
 import urllib.error
@@ -134,7 +135,12 @@ def render_md(tools: list[dict]) -> str:
     lines = [BEGIN, INTRO.format(n=len(tools), s="" if len(tools) == 1 else "s"), ""]
     for heading, annotation, _css, members in classify(tools):
         lines += [f"### {heading} — `{annotation}`", "", "| Tool | What it does |", "|---|---|"]
-        lines += [f"| `{t['name']}` | {clean(t.get('description'))} |" for t in members]
+        # Literal angle brackets in a description ("<private> redaction") read
+        # as an HTML tag to Markdown renderers and vanish — escape them.
+        lines += [
+            f"| `{t['name']}` | {clean(t.get('description')).replace('<', '&lt;').replace('>', '&gt;')} |"
+            for t in members
+        ]
         lines.append("")
     lines.append(END)
     return "\n".join(lines)
@@ -159,8 +165,11 @@ def render_html(tools: list[dict]) -> str:
             "        <tbody>",
         ]
         for t in members:
-            desc = clean(t.get("description")).replace("\\|", "|")
-            lines.append(f'          <tr><td><code>{t["name"]}</code></td><td>{desc}</td></tr>')
+            # Live descriptions are plain text and may contain literal angle
+            # brackets (kemory_capture_session says "<private> redaction") —
+            # unescaped they read as tags and break the published page.
+            desc = html.escape(clean(t.get("description")).replace("\\|", "|"), quote=False)
+            lines.append(f'          <tr><td><code>{html.escape(t["name"])}</code></td><td>{desc}</td></tr>')
         lines += ["        </tbody>", "      </table>", ""]
     lines.append(END)
     return "\n".join(lines)

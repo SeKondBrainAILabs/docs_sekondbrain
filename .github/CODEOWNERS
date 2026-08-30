@@ -1,0 +1,15 @@
+# main is published directly to docs.sekondbrain.ai, so a merge here is live
+# immediately.
+#
+# Deliberately not `*`: ordinary documentation edits do not need to be gated on
+# specific reviewers. These paths are the ones where a change is not just a
+# content change — CNAME controls the custom domain, .github/ is the deploy
+# pipeline, and legal/ and subprocessors/ are published contractual statements.
+#
+# Owners are listed individually rather than as a team, so the rule resolves
+# regardless of a team's visibility settings.
+
+/CNAME               @sachmans @karol-blaszczyk
+/.github/            @sachmans @karol-blaszczyk
+/legal/              @sachmans @karol-blaszczyk
+/subprocessors/      @sachmans @karol-blaszczyk

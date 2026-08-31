@@ -61,6 +61,7 @@
     <div class="grp">Start</div>
     <a href="#before">Before you connect</a>
     <a href="#connect-web">Connect a web AI</a>
+    <a href="#connect-claude-code">Connect Claude Code</a>
     <a href="#connect-local">Connect a local client</a>
     <a href="optimise/">Optimise your AIs</a>
     <a href="#quickstart">Quickstart</a>
@@ -104,9 +105,42 @@
       </div>
     </section>
 
+    <section id="connect-claude-code">
+      <h2>Connect Claude Code</h2>
+      <p>Claude Code has a plugin, and it is the better path: browser sign-in instead of a key in a file, and hooks that make memory get used rather than merely be available.</p>
+      <p>Install the CLI and sign in:</p>
+<pre><code>brew install sekondbrainailabs/s9n/kemory
+kemory login</code></pre>
+      <p>OAuth browser sign-in — nothing to copy or paste. No key is written into any config file: the credentials land in <code>~/.kemory/credentials</code>, and the plugin reads them at runtime.</p>
+      <p>Then, inside Claude Code:</p>
+<pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin install kemory@kemory
+/kemory:status</code></pre>
+      <p><code>/kemory:status</code> reports whether credentials resolve, whether the API accepts them, and whether the CLI is on PATH. All green means done. Context injection begins with your next session, because the hook that performs it fires at session start.</p>
+
+      <h3>What the plugin adds</h3>
+      <p>Connected is not the same as remembering. The plugin closes that gap with four hooks that fire without anyone having to ask:</p>
+      <table>
+        <thead><tr><th>Hook</th><th>When</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>session-start.sh</code></td><td>Session start</td><td>Injects your namespace summaries, so the session begins informed rather than blind</td></tr>
+          <tr><td><code>rate-reminder.sh</code></td><td>After any recall tool</td><td>Reminds the agent to rate what it actually used, so retrieval keeps improving</td></tr>
+          <tr><td>inline</td><td>Before compaction</td><td>Prompts consolidation before a long session is summarised away</td></tr>
+          <tr><td><code>capture.sh</code></td><td>Session end</td><td><strong>Opt-in.</strong> Stores a bounded, redacted digest of the session</td></tr>
+        </tbody>
+      </table>
+      <p>It also ships the <code>/kemory:status</code> command and a skill covering how to recall, rate, store and phrase memories so semantic search can find them again — the standing instruction from <a href="optimise/">Optimise your AIs</a>, already written and kept current.</p>
+      <p>Source: <a href="https://github.com/SeKondBrainAILabs/claude-kemory">SeKondBrainAILabs/claude-kemory</a>.</p>
+      <div class="note">
+        <span class="lbl">Already using the connector</span>
+        <p>Adding <em>Kemory by SeKondBrain</em> in your claude.ai connector settings gives you the tools in Claude Code too. Do not run that alongside the plugin's bundled MCP server — two servers means two copies of every tool in every request. The hooks are separate from MCP and work either way, provided <code>kemory login</code> has run.</p>
+      </div>
+      <p>Prefer no plugin? The manual entry under <a href="#connect-local">Connect a local client</a> works for Claude Code as well.</p>
+    </section>
+
     <section id="connect-local">
       <h2>Connect a local client</h2>
-      <p>For Claude Code, Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client that reads MCP servers from a config file.</p>
+      <p>For Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client that reads MCP servers from a config file. Claude Code has a plugin instead — see <a href="#connect-claude-code">Connect Claude Code</a>.</p>
       <p>These clients authenticate with an API key sent as an <code>X-API-Key</code> header. Create one from <strong>Dashboard → Keys</strong>. It is shown once.</p>
       <p>The entry below is exactly what a local client needs. Read it before you connect anything — this is the whole surface.</p>
 <pre><code>{
@@ -123,7 +157,7 @@
       <table>
         <thead><tr><th>Client</th><th>Config location</th></tr></thead>
         <tbody>
-          <tr><td>Claude Code</td><td><code>~/.claude.json</code></td></tr>
+          <tr><td>Claude Code</td><td><code>~/.claude.json</code> — but prefer the <a href="#connect-claude-code">plugin</a></td></tr>
           <tr><td>Claude Desktop</td><td><code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS)</td></tr>
           <tr><td>Cursor</td><td><code>~/.cursor/mcp.json</code></td></tr>
           <tr><td>Cline</td><td>VS Code settings → Cline → MCP servers</td></tr>

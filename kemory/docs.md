@@ -64,10 +64,66 @@ access to another user's memories, including colleagues in the same organisation
 
 ---
 
+## Connect Claude Code
+
+Claude Code has a plugin, and it is the better path: browser sign-in instead of a key in a
+file, and hooks that make memory get used rather than merely be available.
+
+Install the CLI and sign in:
+
+```bash
+brew install sekondbrainailabs/s9n/kemory
+kemory login
+```
+
+OAuth browser sign-in — nothing to copy or paste. No key is written into any config file:
+the credentials land in `~/.kemory/credentials`, and the plugin reads them at runtime.
+
+Then, inside Claude Code:
+
+```
+/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin install kemory@kemory
+/kemory:status
+```
+
+`/kemory:status` reports whether credentials resolve, whether the API accepts them, and
+whether the CLI is on PATH. All green means done. Context injection begins with your next
+session, because the hook that performs it fires at session start.
+
+### What the plugin adds
+
+Connected is not the same as remembering. The plugin closes that gap with four hooks that
+fire without anyone having to ask:
+
+| Hook | When | What it does |
+|---|---|---|
+| `session-start.sh` | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
+| `rate-reminder.sh` | After any recall tool | Reminds the agent to rate what it actually used, so retrieval keeps improving |
+| inline | Before compaction | Prompts consolidation before a long session is summarised away |
+| `capture.sh` | Session end | **Opt-in.** Stores a bounded, redacted digest of the session |
+
+It also ships the `/kemory:status` command and a skill covering how to recall, rate, store
+and phrase memories so semantic search can find them again — the standing instruction from
+[Optimise your AIs](optimise/), already written and kept current.
+
+Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/claude-kemory).
+
+**Already using the connector?** Adding *Kemory by SeKondBrain* in your claude.ai connector
+settings gives you the tools in Claude Code too. Do not run that alongside the plugin's
+bundled MCP server — two servers means two copies of every tool in every request. The hooks
+are separate from MCP and work either way, provided `kemory login` has run.
+
+**Prefer no plugin?** The manual entry under [Connect a local client](#connect-a-local-client)
+works for Claude Code as well.
+
+---
+
 ## Connect a local client
 
-For Claude Code, Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any
-other client that reads MCP servers from a config file.
+For Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client
+that reads MCP servers from a config file. Claude Code has a plugin instead — see
+[Connect Claude Code](#connect-claude-code).
 
 These clients authenticate with an API key sent as an `X-API-Key` header. Create one from
 **Dashboard → Keys**. It is shown once.
@@ -91,7 +147,7 @@ this is the whole surface.
 
 | Client | Config location |
 |---|---|
-| Claude Code | `~/.claude.json` |
+| Claude Code | `~/.claude.json` — but prefer the [plugin](#connect-claude-code) |
 | Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) |
 | Cursor | `~/.cursor/mcp.json` |
 | Cline | VS Code settings → Cline → MCP servers |

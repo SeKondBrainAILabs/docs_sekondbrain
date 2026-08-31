@@ -66,56 +66,111 @@ access to another user's memories, including colleagues in the same organisation
 
 ## Connect Claude Code
 
-Claude Code has a plugin, and it is the better path: browser sign-in instead of a key in a
-file, and hooks that make memory get used rather than merely be available.
+Claude Code can connect two ways. The **plugin** is the one to reach for: it carries hooks
+that make memory get used rather than merely be available. The manual entry under
+[Connect a local client](#connect-a-local-client) works too, and gives you the same tools
+with none of the hooks.
 
-Install the CLI and sign in:
+**1. Install the CLI and sign in.**
 
 ```bash
 brew install sekondbrainailabs/s9n/kemory
 kemory login
 ```
 
-OAuth browser sign-in — nothing to copy or paste. No key is written into any config file:
-the credentials land in `~/.kemory/credentials`, and the plugin reads them at runtime.
+Homebrew covers macOS and Linux. On Windows, or without Homebrew, take the binary from the
+[CLI install instructions](cli/#install) — then `kemory login` the same way. Sign-in is an
+OAuth browser flow that stores a short-lived, self-refreshing token in `~/.kemory`; the
+plugin reads it at runtime, so no credential is written into any config file.
 
-Then, inside Claude Code:
+**2. Install the plugin**, inside Claude Code:
 
 ```
 /plugin marketplace add SeKondBrainAILabs/claude-kemory
 /plugin install kemory@kemory
+```
+
+**3. Confirm it works.**
+
+```
 /kemory:status
 ```
 
-`/kemory:status` reports whether credentials resolve, whether the API accepts them, and
-whether the CLI is on PATH. All green means done. Context injection begins with your next
-session, because the hook that performs it fires at session start.
+Three checks have to pass: credentials resolve, the API accepts them, and the CLI is on
+`PATH` so the bundled MCP server can start. The same output prints how context injection and
+capture are configured. `/mcp` then shows which Kemory server Claude Code is actually talking
+to. Context injection begins with your *next* session, because the hook that performs it runs
+at session start.
 
 ### What the plugin adds
 
-Connected is not the same as remembering. The plugin closes that gap with four hooks that
-fire without anyone having to ask:
+Connected is not the same as remembering. Tools sit unused unless something prompts the model
+to reach for them; that prompting is the whole of what the plugin contributes. Four hooks,
+none of which need remembering:
 
 | Hook | When | What it does |
 |---|---|---|
 | `session-start.sh` | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
-| `rate-reminder.sh` | After any recall tool | Reminds the agent to rate what it actually used, so retrieval keeps improving |
+| `rate-reminder.sh` | After a recall tool returns something rateable | Reminds the agent to rate what it used, so retrieval keeps improving |
 | inline | Before compaction | Prompts consolidation before a long session is summarised away |
-| `capture.sh` | Session end | **Opt-in.** Stores a bounded, redacted digest of the session |
+| `capture.sh` | Session end | **Opt-in, off by default.** Stores a bounded, redacted digest of the session |
 
-It also ships the `/kemory:status` command and a skill covering how to recall, rate, store
-and phrase memories so semantic search can find them again — the standing instruction from
-[Optimise your AIs](optimise/), already written and kept current.
+It also ships the `/kemory:status` command and a skill covering how to recall, rate, store and
+phrase memories so semantic search can find them again. That skill is the standing instruction
+from [Optimise your AIs](optimise/), already written and kept current — with the plugin
+installed you do not need to paste it into `CLAUDE.md` yourself.
 
 Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/claude-kemory).
 
-**Already using the connector?** Adding *Kemory by SeKondBrain* in your claude.ai connector
-settings gives you the tools in Claude Code too. Do not run that alongside the plugin's
-bundled MCP server — two servers means two copies of every tool in every request. The hooks
-are separate from MCP and work either way, provided `kemory login` has run.
+### Run one server, not two
 
-**Prefer no plugin?** The manual entry under [Connect a local client](#connect-a-local-client)
-works for Claude Code as well.
+There are three ways to give Claude Code the Kemory tools, and they stack silently. Two
+servers means two copies of all 35 tools in every request — wasted context, and no way to
+tell which lane a result came from. Pick one:
+
+| Route | What connects | Use when |
+|---|---|---|
+| The plugin's bundled server | stdio, via `kemory mcp serve` | Default. Installed with the plugin, nothing to configure |
+| `kemory connect` or `kemory mcp install --host claude-code` | HTTP entry in `~/.claude.json` | You want the tools without the plugin |
+| *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
+
+If you ran `kemory connect` before installing the plugin, remove the `kemory` entry from
+`~/.claude.json`. If you use the claude.ai connector, disable the plugin's bundled server.
+The hooks are independent of all three — they call the API directly, and keep working as long
+as `kemory login` has run.
+
+### Configuring it
+
+Set these in the `env` block of `~/.claude/settings.json`, or export them in your shell.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `KEMORY_CONTEXT` | `1` | `0` disables session-start injection |
+| `KEMORY_CONTEXT_DEPTH` | `l3` | Summary depth requested — `l3`, or `l4` for a synthesised cross-namespace briefing |
+| `KEMORY_CONTEXT_MAX_CHARS` | `4000` | Injection budget; summaries beyond it are dropped with a note (floor 500) |
+| `KEMORY_CONTEXT_NAMESPACES` | all | Comma-separated allowlist, e.g. `user:preferences,shared` |
+| `KEMORY_CONTEXT_TIMEOUT` | `6` | Seconds to wait for the API before giving up |
+| `KEMORY_QUIET_SETUP` | `0` | `1` suppresses the "not configured yet" notice |
+| `KEMORY_AUTO_CAPTURE` | `0` | `1` enables the end-of-session digest |
+| `KEMORY_CAPTURE_NAMESPACE` | `shared` | Where digests are written |
+| `KEMORY_CAPTURE_MAX_TURNS` | `12` | How many recent turns a digest may include |
+| `KEMORY_ENV` | `prod` | Which credentials file to read |
+| `KEMORY_URL` | hosted Kemory | Point the hooks at a self-hosted or [Community Edition](community/) instance |
+
+Capture is off unless you set it, because it uploads conversation content to your Kemory
+instance. Everything else the plugin does reads and writes only memories you or the agent
+create deliberately.
+
+### If nothing seems to happen
+
+The hooks fail quiet by design: with no credentials and no Kemory server they no-op rather
+than erroring, so a broken setup looks like an idle one. The plugin prints a short setup
+notice the first time and then stays silent for 24 hours rather than nagging.
+
+Run `/kemory:status` — it names which of the three checks failed. Missing credentials means
+`kemory login`. A rejected key means the token expired; log in again. Tools present but no
+context at session start means the plugin is installed but the hooks cannot reach the API,
+which is the same credential problem seen from the other side.
 
 ---
 
@@ -171,7 +226,8 @@ the [Kemory CLI](cli/).
 ### Making an AI actually use memory
 
 Most clients treat a tool as something to reach for when asked. Put this in your project
-instructions or `CLAUDE.md` and it becomes the first thing checked instead:
+instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
+[Claude Code plugin](#connect-claude-code) ships this as a skill, so plugin users can skip it:
 
 ```markdown
 You have Kemory memory tools available.

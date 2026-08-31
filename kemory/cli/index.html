@@ -115,6 +115,10 @@
         </tbody>
       </table>
       <p><code>--host</code> may be repeated to do several at once.</p>
+      <div class="note">
+        <span class="lbl">Claude Code</span>
+        <p>Claude Code has a plugin that bundles this server and adds hooks for session context, rating and consolidation — see <a href="../#connect-claude-code">Connect Claude Code</a>. Use one or the other: if you install the plugin later, remove the <code>kemory</code> entry this command wrote to <code>~/.claude.json</code>, or you will run two servers and get two copies of every tool.</p>
+      </div>
       <p>Restart the client fully afterwards — quitting the window is not enough. Warp is the exception; it picks the change up on save.</p>
       <div class="note">
         <span class="lbl">Why prefer this over a hand-written config?</span>

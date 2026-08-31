@@ -83,7 +83,7 @@
 
     <section id="before">
       <h2>Before you connect</h2>
-      <p>You need a SeKondBrain account. Sign-in is handled by SeKondBrain's identity service — Kemory never sees or holds a password.</p>
+      <p>You need a SeKondBrain account. Create one, and reach every setting named on this page, at <strong><a href="https://kemory.sekondbrain.ai">kemory.sekondbrain.ai</a></strong> — that is the dashboard. Sign-in is handled by SeKondBrain's identity service; Kemory never sees or holds a password.</p>
       <p>There is nothing to install for a web AI. Local clients need a config-file entry, shown below. Every user connects to the same address; there is no per-tenant URL and nothing to provision before you begin.</p>
       <p class="muted"><strong>Transport.</strong> Streamable HTTP, JSON-RPC 2.0, single endpoint. Protocol revisions <code>2024-11-05</code> through <code>2025-11-25</code> are negotiated on <code>initialize</code>. Server-sent events, server-initiated messages and persistent sessions are deliberately not implemented — every request is stateless and self-authenticating.</p>
     </section>
@@ -176,7 +176,7 @@ kemory login</code></pre>
     <section id="connect-local">
       <h2>Connect a local client</h2>
       <p>For Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client that reads MCP servers from a config file. Claude Code has a plugin instead — see <a href="#connect-claude-code">Connect Claude Code</a>.</p>
-      <p>These clients authenticate with an API key sent as an <code>X-API-Key</code> header. Create one from <strong>Dashboard → Keys</strong>. It is shown once.</p>
+      <p>These clients authenticate with an API key sent as an <code>X-API-Key</code> header. Create one from <strong><a href="https://kemory.sekondbrain.ai">Dashboard</a> → Keys</strong>. It is shown once.</p>
       <p>The entry below is exactly what a local client needs. Read it before you connect anything — this is the whole surface.</p>
 <pre><code>{
   "mcpServers": {
@@ -301,7 +301,7 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <p>A key is minted from an authenticated dashboard session, displayed once, and stored hashed. It carries your organisation and identity. Present it as <code>X-API-Key</code>. Revoke it when the machine or agent is retired.</p>
       <p>Whichever path issued it, a credential resolves to the same authorisation context — a user, an organisation, and an agent identity — and every tool call is checked against it before it runs.</p>
       <h3>Revoking access</h3>
-      <p>Dashboard → Connectors lists every agent connected to your account, with the client it came from and when it last called. Revoke one and its next request returns <code>401</code>.</p>
+      <p><a href="https://kemory.sekondbrain.ai">Dashboard</a> → Connectors lists every agent connected to your account, with the client it came from and when it last called. Revoke one and its next request returns <code>401</code>.</p>
     </section>
 
     <section id="scoping">
@@ -386,6 +386,7 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <p>Kemory is built by SeKondBrain AI Labs. We own and operate the API, the domain and the infrastructure this connector reaches.</p>
       <table>
         <tbody>
+          <tr><td>Dashboard</td><td><a href="https://kemory.sekondbrain.ai">kemory.sekondbrain.ai</a></td></tr>
           <tr><td>Support</td><td><a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a></td></tr>
           <tr><td>Privacy policy</td><td><a href="../legal/privacy/">docs.sekondbrain.ai/legal/privacy/</a></td></tr>
         </tbody>

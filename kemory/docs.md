@@ -19,8 +19,9 @@ available to every session after that.
 
 ## Before you connect
 
-You need a SeKondBrain account. Sign-in is handled by SeKondBrain's identity service — Kemory
-never sees or holds a password.
+You need a SeKondBrain account. Create one, and reach every setting named on this page, at
+**[kemory.sekondbrain.ai](https://kemory.sekondbrain.ai)** — that is the dashboard. Sign-in is handled by SeKondBrain's
+identity service; Kemory never sees or holds a password.
 
 There is nothing to install for a web AI. Local clients need a config-file entry, shown below.
 
@@ -181,7 +182,7 @@ that reads MCP servers from a config file. Claude Code has a plugin instead — 
 [Connect Claude Code](#connect-claude-code).
 
 These clients authenticate with an API key sent as an `X-API-Key` header. Create one from
-**Dashboard → Keys**. It is shown once.
+**[Dashboard](https://kemory.sekondbrain.ai) → Keys**. It is shown once.
 
 The entry below is exactly what a local client needs. Read it before you connect anything —
 this is the whole surface.
@@ -347,7 +348,8 @@ Whichever path issued it, a credential resolves to the same authorisation contex
 an organisation, and an agent identity — and every tool call is checked against it before it
 runs.
 
-**Revoking access.** Dashboard → Connectors lists every agent connected to your account,
+**Revoking access.** [Dashboard](https://kemory.sekondbrain.ai) → Connectors lists every agent connected to your
+account,
 with the client it came from and when it last called. Revoke one and its next request
 returns `401`.
 
@@ -488,6 +490,7 @@ reconnecting on its own will not fix it.
 
 ## Support
 
+- **Dashboard:** https://kemory.sekondbrain.ai
 - **Support:** support@sekondbrain.ai
 - **Privacy policy:** https://docs.sekondbrain.ai/legal/privacy/
 

@@ -24,9 +24,14 @@
   names only an exclusion reads as a claim of pseudonymity.
 
   Payments: there is no merchant of record. SEKONDBRAIN AI LABS FZCO is the seller of
-  record and is listed below as a sub-processor; Stripe is a processor only. Keep these
-  statements consistent with Privacy §7.1 and Terms 4.3B — if one drifts, the DPA's
-  transfer disclosure and the Terms disagree about who you contracted with.
+  record, holds the DMCC trade licence and holds the Stripe account, and is listed below
+  as a sub-processor. Stripe is NOT a processor only: per Stripe's own Data Processing
+  Agreement it is our processor for executing a payment AND an independent controller for
+  its own fraud monitoring, AML and KYC obligations. Keep that consistent with Privacy
+  §7.1, Terms 4.3C and Business Terms Schedule 2 §1 — if one drifts, the DPA's transfer
+  disclosure and the Terms disagree about who processes what, and in what role.
+  The Stripe row's region stays a gap until the account's own Stripe Services Agreement
+  establishes it. A UAE-domiciled account does NOT mean UAE processing — do not infer it.
 -->
 <head>
 <meta charset="utf-8">
@@ -72,7 +77,7 @@
   <p class="lede">The third parties we use to provide the Services, what each one is used for, and where your data is processed. This page is referenced by our <a href="../legal/privacy/">Privacy Policy</a> and forms part of the Data Processing Agreement in our <a href="../legal/business-terms/">Business Terms</a>.</p>
   <div class="addr">
     <span class="k">Last updated</span>
-    <code>1 September 2026</code>
+    <code>1 October 2026</code>
   </div>
 </div>
 
@@ -116,7 +121,7 @@
           </tr>
           <tr>
             <td>Stripe</td>
-            <td>Payment processing on our instructions &mdash; charging your payment method and issuing invoices for the seller of record. See <a href="#payments">Payments</a> below</td>
+            <td>Payment processing on our instructions &mdash; charging your payment method and issuing invoices for the seller of record. Also processes transaction data as an independent controller for its own fraud-prevention, AML and regulatory-compliance purposes. See <a href="#payments">Payments</a> below</td>
             <td><span class="gap">region pending</span></td>
           </tr>
           <tr>
@@ -146,10 +151,10 @@
 
     <section id="payments">
       <h2>Payments and seller of record</h2>
-      <p><strong>There is no merchant of record.</strong> No third party is interposed as the seller of your subscription, and none acts as an independent controller of your transaction.</p>
-      <p><strong>SEKONDBRAIN AI LABS FZCO</strong>, our group billing affiliate, is the <strong>seller of record</strong> for your purchase: it charges your payment method, issues your invoice, and is responsible for applicable taxes on the sale. It is listed above as a sub-processor and acts on our instructions.</p>
-      <p><strong>Stripe</strong> is our payment service provider and acts as a <strong>processor only</strong>, on our instructions. It is not a party to your contract with us and is not the seller of record. See clause 4.3B of the <a href="../legal/terms/">Terms of Service</a>.</p>
-      <p>Your card details are handled by Stripe. We receive transaction confirmations and subscription status, and we do not store full card numbers.</p>
+      <p><strong>There is no merchant of record.</strong> No third party is interposed as the seller of your subscription.</p>
+      <p><strong>SEKONDBRAIN AI LABS FZCO</strong>, our group billing affiliate, is the <strong>seller of record</strong> for your purchase: it holds the Stripe account, charges your payment method, issues your invoice, and is responsible for applicable taxes on the sale. It is listed above as a sub-processor and acts on our instructions.</p>
+      <p><strong>Stripe</strong> is our payment service provider. It acts as our <strong>processor</strong> when it executes a payment on our instructions, and separately as an <strong>independent controller</strong> of transaction data for its own fraud-prevention, anti-money-laundering, sanctions-screening and regulatory-compliance purposes, under Stripe&rsquo;s own privacy policy. It is not a party to your contract with us and is not the seller of record. See clauses 4.3B and 4.3C of the <a href="../legal/terms/">Terms of Service</a>.</p>
+      <p>Your payment details are handled by Stripe. We receive transaction confirmations and subscription status, and we do not store full card or bank details.</p>
     </section>
 
     <section id="transfers">

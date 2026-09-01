@@ -12,6 +12,13 @@
   product surfaces set at runtime, which cannot be written from the policy documents alone.
   That table carries class="gap" until the audit is done — under PECR the specific
   disclosure matters, so do not let the gap sit indefinitely, and do not fill it by guessing.
+
+  IN SCOPE FOR THAT AUDIT, and easy to miss: Stripe. Under the old merchant-of-record
+  arrangement the checkout ran on the provider's own domain, so its cookies were set in
+  its context, not ours. Stripe Checkout and the Payment Element load Stripe.js on OUR
+  pages, so Stripe's fraud-prevention cookies and device fingerprinting are FIRST-PARTY
+  here and belong in the section 4 inventory. Do not write the cookie names in from
+  Stripe's documentation — observe them at runtime like every other row. Tracked S9N-6677.
 -->
 <head>
 <meta charset="utf-8">
@@ -57,7 +64,7 @@
   <p class="lede">What we store on your device, which of it needs your permission, and how to change your mind. This policy supplements our <a href="../privacy/">Privacy Policy</a> and is the Cookie Policy referred to in our <a href="../terms/">Terms of Service</a>.</p>
   <div class="addr">
     <span class="k">Last updated</span>
-    <code>4 August 2026</code>
+    <code>1 October 2026</code>
   </div>
 </div>
 
@@ -101,7 +108,7 @@
         <tbody>
           <tr>
             <td><strong>Strictly necessary</strong></td>
-            <td>Operates the Services: keeping you signed in, maintaining your session, routing requests, load balancing, and security functions such as protecting against cross-site request forgery. The Services do not work without these.</td>
+            <td>Operates the Services: keeping you signed in, maintaining your session, routing requests, load balancing, and security functions such as protecting against cross-site request forgery and detecting payment fraud when you check out. The Services do not work without these.</td>
             <td>No &mdash; exempt under PECR</td>
           </tr>
           <tr>
@@ -124,6 +131,7 @@
       <div class="note">
         <span class="lbl">Being published</span>
         <p>The per-cookie inventory &mdash; each cookie&rsquo;s name, provider, purpose and duration &mdash; is being compiled from an audit of what our sites actually set at runtime, and will be published here. Until it appears, the categories in section 3 describe what we use, and the controls in section 6 work regardless. If you need the detail before it is published, ask us at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a> and we will tell you.</p>
+            <p>The audit covers our checkout. Our payment service provider, Stripe, sets cookies on our own pages to detect payment fraud; those are strictly necessary and will be listed by name here with the rest.</p>
       </div>
       <table>
         <thead>

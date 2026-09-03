@@ -22,6 +22,11 @@
   page it incorporates. Clause 8.0 deliberately still names no payment provider: it refers
   to the "designated payment provider" so a change of processor does not re-paper Orders,
   and the name lives in Schedule 2, which carries the 30-day change notice under Sch 1 §3.
+  Schedule 2 §1 further drops OpenRunner, which appears nowhere in the platform and was
+  never integrated; names Google's Gemini API for image generation and visual analysis,
+  which was in use but undisclosed; fills in Notion's purpose; and states the processing
+  location for every entry rather than only for Google Cloud. Stripe's location is the one
+  that stays open, since it follows the contracting entity on our own Stripe account.
   v1.3 changes from v1.2: Schedule 1 §1 drops Paddle and the merchant-of-record role.
   Clause 8.0 already named only the Billing Entity and a "designated payment provider",
   so it was unchanged.
@@ -252,13 +257,14 @@
       <h3>1. Sub-processors — maintained at <a href="https://docs.sekondbrain.ai/subprocessors">docs.sekondbrain.ai/subprocessors</a></h3>
       <ul>
         <li>Google Cloud (cloud infrastructure and storage) &mdash; Switzerland (rest of world); India (customers in India);</li>
-        <li>Inference providers &mdash; Groq, OpenRunner;</li>
-        <li>Analytics &mdash; PostHog;</li>
+        <li>Inference and audio transcription &mdash; Groq (United States and other locations; no regional residency commitment);</li>
+        <li>Image generation and visual analysis &mdash; Google, Gemini API (United States and other locations; no regional residency commitment);</li>
+        <li>Analytics &mdash; PostHog (European Union);</li>
         <li>Payments &mdash; Stripe. It acts as our processor when executing a payment on our instructions, and separately as an independent controller of transaction data for its own fraud-prevention, anti-money-laundering and regulatory-compliance purposes. There is no merchant of record;</li>
         <li>Group billing affiliate &mdash; SEKONDBRAIN AI LABS FZCO (United Arab Emirates), seller of record and billing and collection agent under clause 8.0;</li>
-        <li>Notion &mdash; <span class="gap">purpose pending confirmation</span>;</li>
+        <li>Notion &mdash; internal support, feedback and account administration records (United States and other locations; no regional residency commitment);</li>
         <li><span class="gap">Speech-to-text / text-to-speech providers for Kora Voice</span>;</li>
-        <li>Transactional and service email &mdash; Twilio SendGrid.</li>
+        <li>Transactional and service email &mdash; Twilio SendGrid (United States and other locations; no regional residency commitment).</li>
       </ul>
 
       <h3>2. Technical and organisational measures (summary)</h3>

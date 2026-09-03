@@ -34,9 +34,9 @@ claiming a credential.
 │   └── community/          Community Edition guide and versioned sources
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
-│   ├── privacy/            master Privacy Policy v2.5
-│   ├── terms/              Terms of Service — Individuals v2.4
-│   ├── business-terms/     Business Terms v1.2 + DPA (Schedules 1 and 2)
+│   ├── privacy/            master Privacy Policy v2.7
+│   ├── terms/              Terms of Service — Individuals v2.6
+│   ├── business-terms/     Business Terms v1.4 + DPA (Schedules 1 and 2)
 │   └── extension-privacy/  Kora for Chrome & Kemory privacy companion
 ├── subprocessors/          sub-processor disclosure — cited by the DPA, keep it live
 │   └── index.html
@@ -85,10 +85,14 @@ two diverge silently.
 
 | Page | Document | Version |
 |---|---|---|
-| `/legal/privacy/` | Privacy Policy | 2.6 |
-| `/legal/terms/` | Terms of Service — Individuals | 2.5 |
-| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.3 |
-| `/legal/extension-privacy/` | Kora for Chrome & Kemory | 1.1 (companion to 2.6) |
+| `/legal/privacy/` | Privacy Policy | 2.7 |
+| `/legal/terms/` | Terms of Service — Individuals | 2.6 |
+| `/legal/business-terms/` | Business Terms + DPA (Schedules 1–2) | 1.4 |
+| `/legal/extension-privacy/` | Kora for Chrome & Kemory | 1.1 (companion to 2.7) |
+
+Privacy 2.7, Terms 2.6 and Business Terms 1.4 are **effective 1 October 2026** — 30 days
+after publication, per Terms 12.1. Until that date the previously published versions
+govern; do not date the source documents earlier than the site says.
 
 Two rules, both enforced by `tools/preflight.py`:
 
@@ -117,12 +121,34 @@ privacy policy.
 - Backup retention `[90]` days in Privacy §9.2.
 - **Source documents are behind the site** for Privacy §7.1 and §8, and Business Terms
   Schedules 1–2. Bring them level or the next mirror will revert what is published.
-- **The FZCO trade licence number is the only open bracket in the new billing wording**
-  (Terms 4.0). It renders as a `gap` until someone supplies it, and the same number blocks
-  the pricing-page footer changes in Core_Kora #188 and Kemory #561. Tracked as **S9N-7313**.
-- **Nobody owns refund processing.** Paddle used to issue refunds and absorb chargebacks;
-  both now land on us, via a manual Stripe action, and chargebacks carry fees. The published
-  wording commits us to acknowledging a request within two working days.
+- **The FZCO trade licence number is still an open bracket** (Terms 4.0). FZCO holds a DMCC
+  licence and holds the Stripe account — this is now data entry, not a blocker — but it
+  renders as a `gap` until someone supplies the number, and the same number blocks the
+  pricing-page footer changes in Core_Kora #188 and Kemory #561. Tracked as **S9N-7313**.
+- **Nobody owns refunds or disputes.** Paddle used to issue refunds and absorb chargebacks;
+  both now land on us, via a manual Stripe action, and every dispute carries a fee whether
+  we win it or lose it. The published wording commits us to acknowledging a request within
+  two working days, on three separate pages. **This needs a named owner.**
+- **The statement descriptor is unset**, and renders as a `gap` in Terms 4.5A and on the
+  Refund Policy. An unrecognised descriptor is the largest single cause of chargebacks —
+  which we now pay for. Set it to something a customer will recognise, then fill both.
+- **Stripe's processing region is still pending** on `/subprocessors`. This row is now
+  load-bearing in a way it was not under a merchant of record: every payment record flows
+  through Stripe, and Schedule 1 §4 says transfers occur only as disclosed there. Needs the
+  Stripe contracting entity and the region from the account's own Stripe Services
+  Agreement. A UAE-domiciled account does **not** imply UAE processing. Part of S9N-6672.
+- **Tax registrations are unbuilt and Terms 4.1 already promises the outcome.** Paddle held
+  the VAT/GST/sales-tax registrations and remitted on its own numbers; they are FZCO's now.
+  The UK has *no* registration threshold for a non-established taxable person, so UK VAT is
+  due from the first B2C sale; EU B2C digital services need a non-Union OSS registration.
+  Terms 4.1 tells consumers prices already include applicable tax. Either register and
+  configure a tax engine before checkout opens, or reword 4.1. Needs the accountants.
+- **Renewal reminders do not exist.** Terms 4.1 promises them "where required by law" and
+  4.3D now grants a fresh 14-day cancellation right on *every* renewal, everywhere. Paddle
+  sent renewal notices; Stripe sends none unless we build them. The DMCC Act subscription
+  regime (reminder notices plus a renewal cooling-off period) is expected Spring 2027.
+- **Stripe's cookies are in scope for the cookie audit** (S9N-6677). The checkout now runs
+  on our own domain, so Stripe.js sets its fraud-prevention cookies first-party.
 
 ---
 

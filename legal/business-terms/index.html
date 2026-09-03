@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <!--
-  Business Terms of Service v1.3 + Schedules — SeKondBrain AI Labs Limited.
-  Source of truth: "SeKondBrain_Business_Terms_and_DPA_v1.3". Edit there first, then
+  Business Terms of Service v1.4 + Schedules — SeKondBrain AI Labs Limited.
+  Source of truth: "SeKondBrain_Business_Terms_and_DPA_v1.4". Edit there first, then
   mirror here.
 
   NOT PUBLISHED FROM THE SOURCE, deliberately: the editorial note in the header, and the
@@ -11,11 +11,20 @@
   The source's [address] bracket is resolved from the registered office stated in the
   Privacy Policy. Any remaining unfilled bracket is rendered with class="gap" — never guessed.
 
-  This page is v1.3, effective 19 August 2026, matching Privacy v2.6, Terms v2.5 and the
+  This page is v1.4, effective 1 October 2026, matching Privacy v2.7, Terms v2.6 and the
   extension policy v1.1. Keep all four aligned.
+  v1.4 changes from v1.3: new 8.2A allocates chargeback and dispute costs, which no clause
+  previously addressed — under the merchant-of-record structure the provider absorbed them.
+  Schedule 2 §1 corrects Stripe's role: it is our processor for executing the payment and
+  an independent controller for its own fraud, AML and KYC purposes, per Stripe's own DPA,
+  so "acting as a processor on our instructions" alone was inaccurate. Schedule 2 §1 also
+  names Twilio SendGrid for email delivery, catching the Schedule up to the sub-processor
+  page it incorporates. Clause 8.0 deliberately still names no payment provider: it refers
+  to the "designated payment provider" so a change of processor does not re-paper Orders,
+  and the name lives in Schedule 2, which carries the 30-day change notice under Sch 1 §3.
   v1.3 changes from v1.2: Schedule 1 §1 drops Paddle and the merchant-of-record role.
-  Stripe is the only payment sub-processor and acts on our instructions. Clause 8.0 already
-  named only the Billing Entity and a "designated payment provider", so it is unchanged.
+  Clause 8.0 already named only the Billing Entity and a "designated payment provider",
+  so it was unchanged.
   v1.2 changes from v1.0: adds 6.0 (third-party systems), 8.0 (UAE billing entity) and
   section 14A (waiver, 12-month claims bar, no class actions), and widens the customer
   indemnity in 13.2 to cover platform measures.
@@ -65,9 +74,9 @@
   <p>Individual and self-serve accounts are governed by the <a href="../terms/">Terms of Service for Individuals</a> instead. Enterprise deals on the KIT Master Subscription Agreement or bespoke paper continue on that paper.</p>
   <div class="addr">
     <span class="k">Version</span>
-    <code>1.3</code>
+    <code>1.4</code>
     <span class="k">Effective</span>
-    <code>19 August 2026</code>
+    <code>1 October 2026</code>
   </div>
 </div>
 
@@ -151,6 +160,7 @@
       <p>8.0 <strong>Billing entity.</strong> The Agreement is with SeKondBrain AI Labs Limited under the laws of England and Wales. Invoicing and collection are administered globally by SeKondBrain&rsquo;s affiliate <strong>SeKondBrain AI Labs FZCO, United Arab Emirates</strong> (the &ldquo;Billing Entity&rdquo;) acting as billing and collection agent, and/or through SeKondBrain&rsquo;s designated payment provider, as stated on the Order or invoice. Payment to the Billing Entity in accordance with the invoice discharges Customer&rsquo;s payment obligation. The billing arrangement does not change the contracting parties, the governing law, or the parties&rsquo; rights and obligations under the Agreement.</p>
       <p>8.1 Customer will pay the fees stated in the Order. Unless the Order says otherwise: fees are exclusive of VAT and other applicable taxes, which Customer will pay in addition; subscription fees are invoiced annually or monthly in advance per the Order; usage-based fees are invoiced in arrears; invoices are payable within 30 days; and seats added mid-term are charged pro rata. Fees are non-refundable except as expressly stated in the Agreement.</p>
       <p>8.2 SeKondBrain may charge interest on overdue undisputed sums at 4% per annum above the Bank of England base rate, and may suspend the Services for undisputed sums more than 30 days overdue after at least 14 days&rsquo; written notice.</p>
+      <p>8.2A <strong>Payment disputes.</strong> Customer will raise any query about a charge with SeKondBrain before initiating a chargeback with its bank or card issuer. Where Customer initiates a chargeback and it is resolved otherwise than in Customer&rsquo;s favour, Customer will reimburse the dispute fees charged to SeKondBrain by its payment provider, which SeKondBrain may set off against sums owing. This clause does not apply to Authorised Users contracting as consumers on individual plans.</p>
       <p>8.3 Renewal pricing may change with at least 60 days&rsquo; notice before the renewal date.</p>
     </section>
 
@@ -244,10 +254,11 @@
         <li>Google Cloud (cloud infrastructure and storage) &mdash; Switzerland (rest of world); India (customers in India);</li>
         <li>Inference providers &mdash; Groq, OpenRunner;</li>
         <li>Analytics &mdash; PostHog;</li>
-        <li>Payments &mdash; Stripe, acting as a processor on our instructions. There is no merchant of record;</li>
+        <li>Payments &mdash; Stripe. It acts as our processor when executing a payment on our instructions, and separately as an independent controller of transaction data for its own fraud-prevention, anti-money-laundering and regulatory-compliance purposes. There is no merchant of record;</li>
         <li>Group billing affiliate &mdash; SEKONDBRAIN AI LABS FZCO (United Arab Emirates), seller of record and billing and collection agent under clause 8.0;</li>
         <li>Notion &mdash; <span class="gap">purpose pending confirmation</span>;</li>
-        <li><span class="gap">Speech-to-text / text-to-speech providers for Kora Voice</span> &middot; <span class="gap">email delivery</span>.</li>
+        <li><span class="gap">Speech-to-text / text-to-speech providers for Kora Voice</span>;</li>
+        <li>Transactional and service email &mdash; Twilio SendGrid.</li>
       </ul>
 
       <h3>2. Technical and organisational measures (summary)</h3>

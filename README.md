@@ -110,9 +110,8 @@ privacy policy.
 
 ### Outstanding
 
-- **`/subprocessors` names every provider but is not complete.** Processing regions for Groq,
-  Concentrate.ai, OpenRunner, PostHog, Stripe and Notion are marked pending, Notion's
-  purpose is unconfirmed, and the speech and email-delivery providers are unnamed. This is
+- **`/subprocessors` is not complete.** The Kora Voice speech providers are unnamed and
+  Stripe's processing region is pending; every other entry is named with a location. This is
   contractual, not cosmetic: Schedule 1 §3 grounds the general sub-processor authorisation in
   that list, and §4 says transfers occur only as disclosed there — so an undisclosed provider
   is one the DPA does not permit us to transfer to. Tracked as **S9N-6672** (Karol).

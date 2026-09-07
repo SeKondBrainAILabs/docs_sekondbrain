@@ -688,5 +688,58 @@ reach a decision. Say what you saved.</div>
 </footer>
 
 <script src="../../assets/nav.js" defer></script>
+<script>
+/* Make a deep link select its own tab.
+ *
+ * The tab strip is a CSS radio pattern — `input:checked + label + .panel` — and
+ * `#ai-chatgpt` is hard-coded `checked` in the markup. A URL fragment scrolls to
+ * an element; it does NOT check a radio. So every deep link into this page (the
+ * connector-setup emails, the activation letter, the dashboard's setup panel)
+ * landed the reader on the right SCROLL POSITION with the wrong AI selected:
+ * they arrived at #ai-claude and read ChatGPT's route.
+ *
+ * Why script and not `:target`. CSS can do the arrival — `input:target + label +
+ * .panel{display:block}` — but not what comes after it. The fragment stays in
+ * the URL, so clicking a different tab afterwards leaves `:target` matching the
+ * old panel while `:checked` moves to the new one, and both show. Setting
+ * `.checked` once hands control straight back to the existing `:checked` rules,
+ * so clicking behaves exactly as it always did.
+ *
+ * Only ids that are real radios in this group are honoured, so a junk or
+ * hostile fragment does nothing. `hashchange` is covered too, for the in-page
+ * "where it goes" links.
+ */
+(function () {
+  function selectFromHash() {
+    var id = (location.hash || '').slice(1);
+    if (!id) return;
+    var input = document.getElementById(id);
+    if (!input || input.type !== 'radio' || input.name !== 'whereai') return;
+    if (input.checked) return;
+    input.checked = true;
+    scrollToStrip(input);
+  }
+
+  /* Scroll the STRIP, not the 1px hidden input the browser aimed at, so the
+   * reader can see which tab is selected rather than just its panel.
+   *
+   * Deferred to `load` on first arrival, and this is the whole reason it is a
+   * separate function: run at end-of-body, it scrolls to where `.tabs` sits
+   * BEFORE the fonts and the six screenshots have loaded, then the page reflows
+   * and the reader ends up somewhere else entirely. Measured: the tab strip
+   * finished 3,299px below a viewport that had scrolled 47px. After `load` the
+   * layout is settled and the offset is real. */
+  function scrollToStrip(input) {
+    var tabs = input.closest('.tabs');
+    if (!tabs || !tabs.scrollIntoView) return;
+    var go = function () { tabs.scrollIntoView({ block: 'start', behavior: 'auto' }); };
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
+  }
+
+  selectFromHash();
+  window.addEventListener('hashchange', selectFromHash);
+})();
+</script>
 </body>
 </html>

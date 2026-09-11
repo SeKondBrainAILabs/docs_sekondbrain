@@ -189,10 +189,10 @@
       one for tight custom-instructions fields, and it did not hold up: a two-rule summary
       reads as background colour and gets skipped, where a named procedure — call this, then
       this, before answering — gets followed. At 1,444 characters it fits every field on this
-      page — but on <a href="#ai-perplexity">Perplexity</a> it fits with nothing to spare, so
-      that one AI has a trimmed 863-character version of the same procedure. You do not have
-      to choose between them: <a href="#where">each AI below shows the text to paste</a>,
-      and it is the right one for that AI.</p>
+      page — but on Perplexity it fits with nothing to spare, so that one AI has a trimmed
+      863-character version of the same procedure, <a href="#instruction">below</a>. You do
+      not have to work out which you need: <a href="#where">each AI further down shows the
+      text to paste</a>, and it is already the right one for that AI.</p>
       <p>Two rules with a name each, because a named rule is one a model can hold on to:
       <em>read before answering</em> and <em>write at the moment</em>. Each carries its own
       recovery — search late rather than never, update rather than contradict. Naming the
@@ -226,6 +226,23 @@ config keys — because that is what recall matches against later.
 Before writing, check whether a memory on the same fact already
 exists; update or supersede it rather than adding a duplicate. Skip
 transient state — anything that stops being true by tomorrow.</code></pre>
+
+      <h3>Perplexity's, which is shorter</h3>
+      <p>The same procedure in 863 characters, and the only AI on this page that gets its
+      own. Perplexity's Custom instructions field holds about 1,500 — the tightest here —
+      and it is the same field you keep your own tone and formatting preferences in. The
+      one above fits it, and leaves you nothing. This one leaves you 637 characters. It is
+      a compression, not the old short version that was being skipped: both rules still
+      named, both tools still named in call order, namespaces still listed.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
+
+Read before answering. Open each session with kemory_list_namespaces, then kemory_recall_memory on the topic. Recall again when the topic shifts. If you are guessing where a memory would have answered, check now and correct yourself.
+
+Write at the moment. A session can stop at any time, so a memory saved for later is lost. Save immediately when I state a preference, we decide something, or we learn something non-obvious. Do not ask — save, then say in one line what you saved and where.
+
+Namespaces: user:preferences, project:&lt;name&gt;, decisions:&lt;period&gt;.
+
+Keep it sharp: one specific memory over one long one, in the words we actually used. Update an existing memory rather than duplicating it. Skip anything that stops being true tomorrow.</code></pre>
 
       <div class="note">
         <span class="lbl">If the email you got had a shorter one</span>

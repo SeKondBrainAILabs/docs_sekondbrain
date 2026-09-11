@@ -181,24 +181,16 @@
 
     <section id="instruction">
       <h2>The standing instruction</h2>
-      <p>Two versions of the same thing. They differ only in length, because the field you are pasting into differs in length — a custom-instructions box has a cap, a project rules file does not. Use the longer one wherever it fits.</p>
-
-      <h3>Standard — for a custom-instructions field</h3>
-      <p>The one to use by default, and the one in the activation email. Two rules with a name each, because a named rule is one a model can hold on to: <em>read first</em> and <em>write at the moment</em>. Each carries its own recovery — search late rather than never, update rather than contradict. At 526 characters it clears the tightest field any of these products offers, with room left for whatever else you keep there.</p>
-<pre><code>Kemory is my long-term memory, shared across all my AIs. Use it in
-every conversation, without being asked.
-
-Read first: search Kemory before answering anything about my work,
-projects or past decisions — not after. Search again when the topic
-shifts, or when you catch yourself guessing.
-
-Write at the moment: the instant I state a preference, we decide
-something, or we learn something non-obvious, save it. Never ask
-permission — save, then say in one line what you saved. If it
-supersedes an older memory, update that one.</code></pre>
-
-      <h3>Full — for a project or rules file</h3>
-      <p>Where you have room, and where the AI is working on one body of work rather than everything. Naming the namespace is what makes recall sharp later, so this version asks for it.</p>
+      <p>One instruction, and it is the long one. A shorter version used to sit above this
+      one for tight custom-instructions fields, and it did not hold up: a two-rule summary
+      reads as background colour and gets skipped, where a named procedure — call this, then
+      this, before answering — gets followed. So there is one to paste everywhere now, and at
+      1,444 characters it fits every field on this page.</p>
+      <p>Two rules with a name each, because a named rule is one a model can hold on to:
+      <em>read before answering</em> and <em>write at the moment</em>. Each carries its own
+      recovery — search late rather than never, update rather than contradict. Naming the
+      namespace is what makes recall sharp later, so it asks for that too; in a per-project
+      field, replace the table with the one namespace that work belongs in.</p>
 <pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
@@ -229,14 +221,14 @@ exists; update or supersede it rather than adding a duplicate. Skip
 transient state — anything that stops being true by tomorrow.</code></pre>
 
       <div class="note">
-        <span class="lbl">Why the standard version names no tools</span>
-        <p>Models discover their own tools from the connector. Naming ours spends characters on something the model already knows, and goes stale the moment the tool surface changes. The full version names them only because it is prescribing an order of operations.</p>
+        <span class="lbl">Why it names the tools</span>
+        <p>Models discover their own tools from the connector, so naming ours is usually spent characters, and it goes stale the moment the tool surface changes. This one names them anyway, because an order of operations needs something to order — <code>kemory_list_namespaces</code>, then <code>kemory_recall_memory</code>, then the answer. If those names ever change, this is the line to update.</p>
       </div>
     </section>
 
     <section id="where">
       <h2>Where the instruction goes</h2>
-      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and which of the two versions fits the field.</p>
+      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and whether the field will hold the instruction.</p>
       <p class="stamp">Menu paths verified August 2026. Products rename these screens often — if a path below has moved, what you are hunting for is the field called <em>custom instructions</em>, <em>personalisation</em>, <em>preferences</em>, <em>rules</em> or <em>system prompt</em>.</p>
 
       <div class="tabs">
@@ -253,7 +245,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <img src="chatgpt-instructions.png" width="1360" height="1058" loading="lazy" alt="ChatGPT settings on Personalization, scrolled to the Custom instructions field, which holds the standing instruction.">
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field holds 5,000 characters since July 2026 — up from 1,500 — so the full version fits too if you want the namespace rules in it.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. The field holds 5,000 characters since July 2026 — up from 1,500 — so it fits whole, namespace rules and all, with room to spare.</span></li>
             <li><span class="k">On mobile</span><span>The path is different: tap your name, then <strong>Customize ChatGPT</strong>. Same field, same account — set it in either place.</span></li>
             <li><span class="k">Per project</span><span>A Project carries its own instructions field, applied on top of the account-wide one. That is the right home for a namespace.</span></li>
             <li><span class="k">Connecting</span><span>Settings &rsaquo; Connected apps. Kemory appears in the directory where it is listed; otherwise add it as a <a href="#mcp-web">custom connector</a>.</span></li>
@@ -270,7 +262,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <img src="claude-instructions.png" width="1360" height="900" loading="lazy" alt="Claude's desktop app settings on General, with the Profile section's Instructions for Claude field holding the standing instruction.">
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. It applies everywhere Claude runs on your account.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. It applies everywhere Claude runs on your account.</span></li>
             <li><span class="k">Finding it</span><span>The field sits under the <strong>Profile</strong> heading partway down the General page, below the name fields — scroll to it. The desktop app is the same screen: your initials, lower-left, then Settings.</span></li>
             <li><span class="k">Saving</span><span>Paste it yourself — you do not need to ask Claude in chat to save it. Asking writes to Claude's separate memory instead, which is best-effort recall, not a guarantee. After pasting, reopen Settings once to confirm it stuck.</span></li>
             <li><span class="k">Per project</span><span>A Project has its own instructions field and it composes with the profile one — put the namespace there.</span></li>
@@ -290,7 +282,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. The field is roomy, so the full version fits if you want the namespace rules in it.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. The field is roomy, so it fits whole, namespace rules and all.</span></li>
             <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
             <li><span class="k">Not Knowledge</span><span>The Knowledge tab — and "Import memory from another AI" — is Manus's own store: separate from Kemory, and confined to Manus. Kemory is the one your other AIs can also read.</span></li>
             <li><span class="k">Connecting</span><span>Settings &rsaquo; Connectors. If Kemory is not in the catalogue, add it as a custom connector with the <a href="#mcp-web">server address</a>.</span></li>
@@ -313,7 +305,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           field at all.</p>
           <ul class="facts">
             <li><span class="k">Check first</span><span>Look for <strong>Settings &rsaquo; Apps</strong> (or your workspace admin's connector controls) before pasting anything. If there is no way to add an MCP connector, your account does not carry it — and the <a href="#instruction">standing instruction</a> will name tools Gemini cannot call, which reads as a model apologising for a missing tool rather than as memory.</span></li>
-            <li><span class="k">If you do have it</span><span>Paste the <a href="#instruction">standard version</a> under <strong>Settings &amp; help &rsaquo; Personal Intelligence &rsaquo; Instructions for Gemini</strong>, and add the connector with the <a href="#mcp-web">server address</a>. Enterprise and Workspace accounts are where this shows up; consumer accounts generally do not have it.</span></li>
+            <li><span class="k">If you do have it</span><span>Paste the <a href="#instruction">instruction</a> under <strong>Settings &amp; help &rsaquo; Personal Intelligence &rsaquo; Instructions for Gemini</strong>, and add the connector with the <a href="#mcp-web">server address</a>. Enterprise and Workspace accounts are where this shows up; consumer accounts generally do not have it.</span></li>
             <li><span class="k">Reading without MCP — Enhance</span><span>Compose your prompt, then use <strong>Enhance with Kora</strong>. The extension searches your Kemory on the draft you have typed and appends the memories it finds as a labelled context block. Your draft is not rewritten, and it is used only as the search query.</span></li>
             <li><span class="k">Writing without MCP — capture</span><span>Switch Gemini on in the extension and your Gemini conversations sync into Kemory as you have them. That half needs no prompting at all, and it is what makes a Gemini chat recallable from the AIs that <em>are</em> connected.</span></li>
             <li><span class="k">Turning it on</span><span>Enhance runs only where cross-AI recall is on in extension Settings and Gemini is among the platforms you have enabled. Both are off for platforms you have not switched on.</span></li>
@@ -332,8 +324,8 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <img src="perplexity-instructions.png" width="810" height="710" loading="lazy" alt="Perplexity settings on Personalization, showing the account-wide Custom instructions field beneath the profile fields.">
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
-            <li><span class="k">The cap</span><span>This field holds about 1,500 characters, the tightest of any product here, and you are sharing it with your own tone and formatting preferences. The standard version is 526, which is why it is written as tightly as it is. The full version does not fit — put that in a Project instead.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
+            <li><span class="k">The cap</span><span>This field holds about 1,500 characters, the tightest of any product here, and the instruction is 1,444 of them. It fits, but only just, and this is also the field holding your own tone and formatting preferences. If you keep those here, put the instruction in a Project instead — 8,000 characters — and leave this field to you.</span></li>
             <li><span class="k">Per project</span><span>A Project has its own instructions field too — 8,000 characters, applied on top of the account-wide one. That is where the namespace goes.</span></li>
             <li><span class="k">Naming</span><span>Projects were called Spaces until recently, and parts of the product and its help centre still say so. They are the same thing.</span></li>
             <li><span class="k">Not Memory</span><span>Settings &rsaquo; Memory is Perplexity's own store — separate from Kemory, and confined to Perplexity. Kemory is the one your other AIs can also read.</span></li>
@@ -366,7 +358,7 @@ a decision, or we learn something non-obvious.
 Say briefly what you saved, and where.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a>. A file has no character limit, so this is the one place to use the long one with the namespace table in it.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the namespace table in.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.claude/CLAUDE.md</code> applies to every project on the machine. A <code>CLAUDE.md</code> at a repository root applies to that repository and is read on top of the global one — put the project namespace there.</span></li>
             <li><span class="k">Shortcut</span><span>Typing <code>/memory</code> in a session opens these files for editing without leaving the terminal.</span></li>
             <li><span class="k">Connecting</span><span><code>claude mcp add</code>, or the <a href="#mcp-local">config file route</a>.</span></li>
@@ -394,7 +386,7 @@ learn something non-obvious. Memories for this
 work go in project:atlas.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a> — no limit on a file.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.codex/AGENTS.md</code> for every project; an <code>AGENTS.md</code> at the repository root for one.</span></li>
             <li><span class="k">Shared format</span><span><code>AGENTS.md</code> is read by several tools now, Warp among them. One file at a repo root can serve more than one of them.</span></li>
           </ul>
@@ -423,7 +415,7 @@ work go in project:atlas.</div>
             </div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a> into User Rules — plain text, global, follows you across every project.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> into User Rules — plain text, global, follows you across every project.</span></li>
             <li><span class="k">Per project</span><span>An <code>.mdc</code> file under <code>.cursor/rules/</code>, committed with the repo. It needs <code>alwaysApply: true</code> in its frontmatter, otherwise Cursor only pulls it in when it judges the rule relevant — which is exactly the behaviour a standing instruction is meant to stop.</span></li>
             <li><span class="k">Deprecated</span><span>A <code>.cursorrules</code> file at the repo root still exists in old projects but is ignored by agent mode. Move it into <code>.cursor/rules/</code>.</span></li>
             <li><span class="k">Connecting</span><span>Settings &rsaquo; MCP &amp; Integrations, or the <a href="#mcp-local">config file route</a>.</span></li>
@@ -451,7 +443,7 @@ a decision, or we learn something non-obvious.
 Say briefly what you saved.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a>. Global rules are capped at 6,000 characters — the standard and full versions both fit with room to spare.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. Global rules are capped at 6,000 characters, so it fits with room to spare.</span></li>
             <li><span class="k">Per project</span><span>A rules file in <code>.devin/rules/</code>. The older <code>.windsurf/rules/</code> and a root <code>.windsurfrules</code> are still read, so existing projects keep working.</span></li>
             <li><span class="k">Naming</span><span>Windsurf was renamed Devin Desktop in June 2026. Recent builds prefer the <code>.devin/</code> paths; everything above applies to both.</span></li>
             <li><span class="k">Not memories</span><span>Cascade's own auto-generated memories live only on your machine and are not the same as Kemory. A rule is what makes behaviour durable and shareable.</span></li>
@@ -478,7 +470,7 @@ something non-obvious about this codebase.
 Memories for this work go in project:atlas.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a>, with the namespace named — this file is per-repository, so it already knows which project it is.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>, with the namespace named — this file is per-repository, so it already knows which project it is.</span></li>
             <li><span class="k">Several rules</span><span><code>.clinerules</code> can also be a directory, with one file per concern. Memory rules in their own file are easier to keep current.</span></li>
           </ul>
         </div>
@@ -505,7 +497,7 @@ Save the moment I state a preference or we
 reach a decision. Say what you saved.</div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">full version</a> — no limit on a file.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.gemini/GEMINI.md</code> for every project; a <code>GEMINI.md</code> at a repository root for one, read on top of the global file.</span></li>
           </ul>
         </div>
@@ -533,7 +525,7 @@ reach a decision. Say what you saved.</div>
             </div>
           </div>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">standard version</a> as a global rule. It applies across every project and every session.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> as a global rule. It applies across every project and every session.</span></li>
             <li><span class="k">Per project</span><span>An <code>AGENTS.md</code> at the repository root — the same file Codex reads. A legacy <code>WARP.md</code> still works.</span></li>
             <li><span class="k">Precedence</span><span>The nearest file wins: a subdirectory's rules file, then the repo root's, then your global rules. So a project namespace does not have to fight the global instruction.</span></li>
           </ul>
@@ -544,7 +536,7 @@ reach a decision. Say what you saved.</div>
       <h3>Account-wide or per project — pick both</h3>
       <p>Where an AI offers both, they compose, and the split that works is:</p>
       <ul>
-        <li><strong>Account-wide:</strong> the <a href="#instruction">standard instruction</a>. Read before answering, write at the moment, correct a miss when you catch one. True of everything you do.</li>
+        <li><strong>Account-wide:</strong> the <a href="#instruction">standing instruction</a>. Read before answering, write at the moment, correct a miss when you catch one. True of everything you do.</li>
         <li><strong>Per project:</strong> the namespace this work belongs in, and any vocabulary worth pinning. Two lines is usually enough — <em>"Memories for this work go in <code>project:atlas</code>. Check that namespace first."</em></li>
       </ul>
       <p>The per-project half is what stops a year of memories from every project blurring into one undifferentiated pile. It matters more than it looks — and it is the half people skip, because the account-wide field is the one they find first.</p>
@@ -610,7 +602,7 @@ reach a decision. Say what you saved.</div>
   }
 }</code></pre>
       <p>Where each client keeps that file, and the command-line tool that writes the entry for you using a browser login instead of a key on disk, are both on the <a href="../#connect-local">Kemory overview</a> and in the <a href="../cli/">CLI reference</a>.</p>
-      <p>Restart the client fully afterwards — closing the window is not enough. Then paste <a href="#instruction">the full instruction</a> into that client's rules file, which for a coding agent is where it does the most good.</p>
+      <p>Restart the client fully afterwards — closing the window is not enough. Then paste <a href="#instruction">the instruction</a> into that client's rules file, which for a coding agent is where it does the most good.</p>
       <div class="note">
         <span class="lbl">One key, one machine</span>
         <p>A key inherits the organisation of whoever created it, so an agent holding one stays inside your tenant. Revoke it when the machine or the agent is retired; revocation takes effect on the next call. Never commit one to a repository.</p>
@@ -660,7 +652,7 @@ reach a decision. Say what you saved.</div>
         <thead><tr><th>What you see</th><th>What is usually true</th></tr></thead>
         <tbody>
           <tr><td>Nothing is ever saved, no errors</td><td>The commonest case, and not a fault. The instruction is missing, or it went into a field that does not apply to this conversation — a Project's instructions do not apply outside that Project, and a repository rules file does not apply in a different repository.</td></tr>
-          <tr><td>It saves when asked, never on its own</td><td>The instruction is present but reads as permission rather than direction. Use the <a href="#instruction">standard version</a>, which says <em>use them without being asked</em> in as many words.</td></tr>
+          <tr><td>It saves when asked, never on its own</td><td>The instruction is present but reads as permission rather than direction. Use the <a href="#instruction">instruction</a> as written — it says <em>use them without being asked</em> in as many words.</td></tr>
           <tr><td>It answers from the conversation instead of checking</td><td>Expected, and the reason the instruction says <em>first, not after you have already guessed</em>. A model that thinks it knows will not check. Ask it directly once — <em>"check Kemory first"</em> — and see whether it complies.</td></tr>
           <tr><td>Recall returns nothing you recognise</td><td>Usually vocabulary, not a missing memory. Search with the words the note was written in — identifiers, error strings, tool names — not the words you would use to describe it. See <a href="../retrieval/#phrasing">phrasing</a>.</td></tr>
           <tr><td>It worked, then stopped</td><td>Check the connector is still live on your <a href="https://kemory.sekondbrain.ai/connectors">connectors page</a>. A revoked or expired credential returns <code>401</code>; web clients re-authenticate themselves, local clients need a new key.</td></tr>

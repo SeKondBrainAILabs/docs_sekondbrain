@@ -108,24 +108,26 @@
     <section id="connect-claude-code">
       <h2>Connect Claude Code</h2>
       <p>Claude Code can connect two ways. The <strong>plugin</strong> is the one to reach for: it carries hooks that make memory get used rather than merely be available. The manual entry under <a href="#connect-local">Connect a local client</a> works too, and gives you the same tools with none of the hooks.</p>
-      <p><strong>1. Install the CLI and sign in.</strong></p>
-<pre><code>brew install sekondbrainailabs/s9n/kemory
-kemory login</code></pre>
-      <p>Homebrew covers macOS and Linux. On Windows, or without Homebrew, take the binary from the <a href="cli/#install">CLI install instructions</a> — then <code>kemory login</code> the same way. Sign-in is an OAuth browser flow that stores a short-lived, self-refreshing token in <code>~/.kemory</code>; the plugin reads it at runtime, so no credential is written into any config file.</p>
-      <p><strong>2. Install the plugin</strong>, inside Claude Code:</p>
+      <p><strong>1. Install the plugin</strong>, inside Claude Code:</p>
 <pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
 /plugin install kemory@kemory</code></pre>
+      <p>Nothing is downloaded beyond the plugin itself. Its bundled MCP entry is an HTTP connection to <code>api.kemory.s9n.ai/mcp/v1</code>, so there is no binary to install and nothing to put on <code>PATH</code>.</p>
+      <p><strong>2. Give it one credential.</strong> The tools and the hooks read the same environment variable, so a single export turns on both halves:</p>
+<pre><code>export KEMORY_API_KEY="kemory_..."</code></pre>
+      <p>Put it where your shell loads it on startup, then restart Claude Code fully — quitting the window is not enough. It must be an environment <em>variable</em>: a key written into an MCP config file authenticates the tools and is invisible to the hooks, which never read MCP config.</p>
+      <p>Prefer a browser login to a key in your environment? Install the <a href="cli/#install">CLI</a>, then <code>kemory login</code> and <code>kemory connect</code>. That writes its own entry backed by a short-lived, self-refreshing token in <code>~/.kemory</code>, with no credential in any config file — disable the plugin's bundled entry if you go that way, so you are not running two.</p>
       <p><strong>3. Confirm it works.</strong></p>
 <pre><code>/kemory:status</code></pre>
-      <p>Three checks have to pass: credentials resolve, the API accepts them, and the CLI is on <code>PATH</code> so the bundled MCP server can start. The same output prints how context injection and capture are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
+      <p>Two checks have to pass: credentials resolve, and the API accepts them. The same output prints how context injection and capture are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
 
       <h3>What the plugin adds</h3>
-      <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. Four hooks, none of which need remembering:</p>
+      <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. Five hooks, none of which need remembering:</p>
       <table>
         <thead><tr><th>Hook</th><th>When</th><th>What it does</th></tr></thead>
         <tbody>
           <tr><td><code>session-start.sh</code></td><td>Session start</td><td>Injects your namespace summaries, so the session begins informed rather than blind</td></tr>
-          <tr><td><code>rate-reminder.sh</code></td><td>After a recall tool returns something rateable</td><td>Reminds the agent to rate what it used, so retrieval keeps improving</td></tr>
+          <tr><td><code>prompt-recall.sh</code></td><td>Every prompt you send</td><td>Searches your vault with what you just typed and injects what matches, so relevant history arrives without you asking. <strong>On by default</strong>, and the one hook that sends your prompt text — <code>KEMORY_PROMPT_RECALL=0</code> turns it off</td></tr>
+          <tr><td><code>rate-reminder.sh</code></td><td>After a recall tool returns something rateable</td><td>Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call</td></tr>
           <tr><td>inline</td><td>Before compaction</td><td>Prompts consolidation before a long session is summarised away</td></tr>
           <tr><td><code>capture.sh</code></td><td>Session end</td><td><strong>Opt-in, off by default.</strong> Stores a bounded, redacted digest of the session</td></tr>
         </tbody>
@@ -138,18 +140,20 @@ kemory login</code></pre>
       <table>
         <thead><tr><th>Route</th><th>What connects</th><th>Use when</th></tr></thead>
         <tbody>
-          <tr><td>The plugin's bundled server</td><td>stdio, via <code>kemory mcp serve</code></td><td>Default. Installed with the plugin, nothing to configure</td></tr>
+          <tr><td>The plugin's bundled entry</td><td>HTTP to <code>api.kemory.s9n.ai/mcp/v1</code>, carrying <code>KEMORY_API_KEY</code></td><td>Default. Installed with the plugin, nothing to configure beyond the variable</td></tr>
           <tr><td><code>kemory connect</code> or <code>kemory mcp install --host claude-code</code></td><td>HTTP entry in <code>~/.claude.json</code></td><td>You want the tools without the plugin</td></tr>
           <tr><td><em>Kemory by SeKondBrain</em> in claude.ai connector settings</td><td>OAuth, account-wide</td><td>You want the same tools in the web and desktop apps too</td></tr>
         </tbody>
       </table>
-      <p>If you ran <code>kemory connect</code> before installing the plugin, remove the <code>kemory</code> entry from <code>~/.claude.json</code>. If you use the claude.ai connector, disable the plugin's bundled server. The hooks are independent of all three — they call the API directly, and keep working as long as <code>kemory login</code> has run.</p>
+      <p>If you ran <code>kemory connect</code> before installing the plugin, remove the <code>kemory</code> entry from <code>~/.claude.json</code>. If you use the claude.ai connector, disable the plugin's bundled entry. The hooks are independent of all three — they call the API directly, and keep working as long as <code>KEMORY_API_KEY</code> is exported or <code>kemory login</code> has run.</p>
 
       <h3>Configuring it</h3>
       <p>Set these in the <code>env</code> block of <code>~/.claude/settings.json</code>, or export them in your shell.</p>
       <table>
         <thead><tr><th>Variable</th><th>Default</th><th>Meaning</th></tr></thead>
         <tbody>
+          <tr><td><code>KEMORY_API_KEY</code></td><td>—</td><td>Authenticates both the bundled tools and the hooks. The one variable most setups need</td></tr>
+          <tr><td><code>KEMORY_PROMPT_RECALL</code></td><td><code>1</code></td><td><code>0</code> stops the per-prompt vault search, and with it the only default-on transmission of your prompt text</td></tr>
           <tr><td><code>KEMORY_CONTEXT</code></td><td><code>1</code></td><td><code>0</code> disables session-start injection</td></tr>
           <tr><td><code>KEMORY_CONTEXT_DEPTH</code></td><td><code>l3</code></td><td>Summary depth requested — <code>l3</code>, or <code>l4</code> for a synthesised cross-namespace briefing</td></tr>
           <tr><td><code>KEMORY_CONTEXT_MAX_CHARS</code></td><td><code>4000</code></td><td>Injection budget; summaries beyond it are dropped with a note (floor 500)</td></tr>
@@ -165,12 +169,12 @@ kemory login</code></pre>
       </table>
       <div class="note">
         <span class="lbl">What leaves your machine</span>
-        <p>Capture is off unless you set it, because it uploads conversation content to your Kemory instance. Everything else the plugin does reads and writes only memories you or the agent create deliberately.</p>
+        <p>Two hooks transmit anything. <strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query — it skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent. <strong>Capture is off</strong> unless you set it, because it uploads your own turns. Context injection sends only your credential, and the rating and approval hooks make no network calls at all. The full per-hook policy is in the <a href="https://github.com/SeKondBrainAILabs/claude-kemory#privacy-policy">plugin README</a>.</p>
       </div>
 
       <h3>If nothing seems to happen</h3>
       <p>The hooks fail quiet by design: with no credentials and no Kemory server they no-op rather than erroring, so a broken setup looks like an idle one. The plugin prints a short setup notice the first time and then stays silent for 24 hours rather than nagging.</p>
-      <p>Run <code>/kemory:status</code> — it names which of the three checks failed. Missing credentials means <code>kemory login</code>. A rejected key means the token expired; log in again. Tools present but no context at session start means the plugin is installed but the hooks cannot reach the API, which is the same credential problem seen from the other side.</p>
+      <p>Run <code>/kemory:status</code> — it names which check failed. No credential means <code>KEMORY_API_KEY</code> was not exported into the environment Claude Code started from, or the CLI is not logged in. A rejected one means it expired or was revoked. No <code>kemory_*</code> tools at all is usually the same problem seen from the other side: the bundled entry sent an unexpanded variable and the API answered <code>401</code>. Tools present but no context at session start is the config-file case — the key authenticates the tools, and the hooks cannot see it.</p>
     </section>
 
     <section id="connect-local">

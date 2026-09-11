@@ -94,6 +94,10 @@
   }
   .shot-code b{color:var(--ink);font-weight:500}
 
+  /* the block of text to paste, one per AI panel */
+  .paste-lead{margin:0 0 8px;font-size:14px;color:var(--fg-2)}
+  .paste-lead b{color:var(--ink);font-weight:600}
+
   /* per-AI notes */
   .facts{margin:0 0 var(--sp-4);padding-left:0;list-style:none;max-width:72ch}
   .facts li{
@@ -184,8 +188,11 @@
       <p>One instruction, and it is the long one. A shorter version used to sit above this
       one for tight custom-instructions fields, and it did not hold up: a two-rule summary
       reads as background colour and gets skipped, where a named procedure — call this, then
-      this, before answering — gets followed. So there is one to paste everywhere now, and at
-      1,444 characters it fits every field on this page.</p>
+      this, before answering — gets followed. At 1,444 characters it fits every field on this
+      page — but on <a href="#ai-perplexity">Perplexity</a> it fits with nothing to spare, so
+      that one AI has a trimmed 863-character version of the same procedure. You do not have
+      to choose between them: <a href="#where">each AI below shows the text to paste</a>,
+      and it is the right one for that AI.</p>
       <p>Two rules with a name each, because a named rule is one a model can hold on to:
       <em>read before answering</em> and <em>write at the moment</em>. Each carries its own
       recovery — search late rather than never, update rather than contradict. Naming the
@@ -233,7 +240,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
 
     <section id="where">
       <h2>Where the instruction goes</h2>
-      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and whether the field will hold the instruction.</p>
+      <p>Every AI has somewhere to put a standing instruction, and every one of them calls it something different. Pick yours below and you get the route, the screen you are looking for, and the exact text to paste into it — already the right length for that field.</p>
       <p class="stamp">Menu paths verified August 2026. Products rename these screens often — if a path below has moved, what you are hunting for is the field called <em>custom instructions</em>, <em>personalisation</em>, <em>preferences</em>, <em>rules</em> or <em>system prompt</em>.</p>
 
       <div class="tabs">
@@ -249,6 +256,35 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="chatgpt-instructions.png" width="1360" height="1058" loading="lazy" alt="ChatGPT settings on Personalization, scrolled to the Custom instructions field, which holds the standing instruction.">
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. The field holds 5,000 characters since July 2026 — up from 1,500 — so it fits whole, namespace rules and all, with room to spare.</span></li>
             <li><span class="k">On mobile</span><span>The path is different: tap your name, then <strong>Customize ChatGPT</strong>. Same field, same account — set it in either place.</span></li>
@@ -266,6 +302,35 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="claude-instructions.png" width="1360" height="900" loading="lazy" alt="Claude's desktop app settings on General, with the Profile section's Instructions for Claude field holding the standing instruction.">
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. It applies everywhere Claude runs on your account.</span></li>
             <li><span class="k">Finding it</span><span>The field sits under the <strong>Profile</strong> heading partway down the General page, below the name fields — scroll to it. The desktop app is the same screen: your initials, lower-left, then Settings.</span></li>
@@ -286,6 +351,35 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. The field is roomy, so it fits whole, namespace rules and all.</span></li>
             <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
@@ -308,6 +402,35 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           instruction like any other AI. If it does not, Gemini still reaches Kemory through the
           <a href="../#kora">Kora extension</a> in both directions, and that path needs no instruction
           field at all.</p>
+                    <p class="paste-lead"><b>What to paste</b> — only if your account carries MCP. If it does not, paste nothing: see <em>Check first</em> below.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Check first</span><span>Look for <strong>Settings &rsaquo; Apps</strong> (or your workspace admin's connector controls) before pasting anything. If there is no way to add an MCP connector, your account does not carry it — and the <a href="#instruction">standing instruction</a> will name tools Gemini cannot call, which reads as a model apologising for a missing tool rather than as memory.</span></li>
             <li><span class="k">If you do have it</span><span>Paste the <a href="#instruction">instruction</a> under <strong>Settings &amp; help &rsaquo; Personal Intelligence &rsaquo; Instructions for Gemini</strong>, and add the connector with the <a href="#mcp-web">server address</a>. Enterprise and Workspace accounts are where this shows up; consumer accounts generally do not have it.</span></li>
@@ -328,9 +451,19 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="perplexity-instructions.png" width="810" height="710" loading="lazy" alt="Perplexity settings on Personalization, showing the account-wide Custom instructions field beneath the profile fields.">
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — Perplexity's own shorter version, because its field is the tightest here. 863 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
+
+Read before answering. Open each session with kemory_list_namespaces, then kemory_recall_memory on the topic. Recall again when the topic shifts. If you are guessing where a memory would have answered, check now and correct yourself.
+
+Write at the moment. A session can stop at any time, so a memory saved for later is lost. Save immediately when I state a preference, we decide something, or we learn something non-obvious. Do not ask — save, then say in one line what you saved and where.
+
+Namespaces: user:preferences, project:&lt;name&gt;, decisions:&lt;period&gt;.
+
+Keep it sharp: one specific memory over one long one, in the words we actually used. Update an existing memory rather than duplicating it. Skip anything that stops being true tomorrow.</code></pre>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
-            <li><span class="k">The cap</span><span>This field holds about 1,500 characters, the tightest of any product here, and the instruction is 1,444 of them. It fits, but only just, and this is also the field holding your own tone and formatting preferences. If you keep those here, put the instruction in a Project instead — 8,000 characters — and leave this field to you.</span></li>
+            <li><span class="k">Where it goes</span><span>Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
+            <li><span class="k">Why this one is shorter</span><span>This field holds about 1,500 characters, the tightest of any product here, and you share it with your own tone and formatting preferences. The full instruction is 1,444 — it fits, but leaves you nothing. The version above says the same things in 863 and leaves you the rest of the field.</span></li>
             <li><span class="k">Per project</span><span>A Project has its own instructions field too — 8,000 characters, applied on top of the account-wide one. That is where the namespace goes.</span></li>
             <li><span class="k">Naming</span><span>Projects were called Spaces until recently, and parts of the product and its help centre still say so. They are the same thing.</span></li>
             <li><span class="k">Not Memory</span><span>Settings &rsaquo; Memory is Perplexity's own store — separate from Kemory, and confined to Perplexity. Kemory is the one your other AIs can also read.</span></li>
@@ -362,6 +495,35 @@ Save the moment I state a preference, we reach
 a decision, or we learn something non-obvious.
 Say briefly what you saved, and where.</div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the namespace table in.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.claude/CLAUDE.md</code> applies to every project on the machine. A <code>CLAUDE.md</code> at a repository root applies to that repository and is read on top of the global one — put the project namespace there.</span></li>
@@ -390,6 +552,35 @@ Save to Kemory when we reach a decision or
 learn something non-obvious. Memories for this
 work go in project:atlas.</div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.codex/AGENTS.md</code> for every project; an <code>AGENTS.md</code> at the repository root for one.</span></li>
@@ -419,6 +610,35 @@ work go in project:atlas.</div>
               </div>
             </div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> into User Rules — plain text, global, follows you across every project.</span></li>
             <li><span class="k">Per project</span><span>An <code>.mdc</code> file under <code>.cursor/rules/</code>, committed with the repo. It needs <code>alwaysApply: true</code> in its frontmatter, otherwise Cursor only pulls it in when it judges the rule relevant — which is exactly the behaviour a standing instruction is meant to stop.</span></li>
@@ -447,6 +667,35 @@ Save the moment I state a preference, we reach
 a decision, or we learn something non-obvious.
 Say briefly what you saved.</div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. Global rules are capped at 6,000 characters, so it fits with room to spare.</span></li>
             <li><span class="k">Per project</span><span>A rules file in <code>.devin/rules/</code>. The older <code>.windsurf/rules/</code> and a root <code>.windsurfrules</code> are still read, so existing projects keep working.</span></li>
@@ -474,6 +723,35 @@ Save the moment we reach a decision or learn
 something non-obvious about this codebase.
 Memories for this work go in project:atlas.</div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>, with the namespace named — this file is per-repository, so it already knows which project it is.</span></li>
             <li><span class="k">Several rules</span><span><code>.clinerules</code> can also be a directory, with one file per concern. Memory rules in their own file are easier to keep current.</span></li>
@@ -501,6 +779,35 @@ again when the topic shifts.
 Save the moment I state a preference or we
 reach a decision. Say what you saved.</div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.gemini/GEMINI.md</code> for every project; a <code>GEMINI.md</code> at a repository root for one, read on top of the global file.</span></li>
@@ -529,6 +836,35 @@ reach a decision. Say what you saved.</div>
               </div>
             </div>
           </div>
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,444 characters.</p>
+<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
+
+Read before answering. At the start of each session: call
+kemory_list_namespaces, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
+
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it, and tell me in one line
+what you wrote and to which namespace.
+
+Namespaces to prefer:
+  user:preferences      how I like to work
+  project:&lt;name&gt;        facts and decisions about one project
+  decisions:&lt;period&gt;    a dated decision log, with the reasoning
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> as a global rule. It applies across every project and every session.</span></li>
             <li><span class="k">Per project</span><span>An <code>AGENTS.md</code> at the repository root — the same file Codex reads. A legacy <code>WARP.md</code> still works.</span></li>

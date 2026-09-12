@@ -19,8 +19,9 @@ available to every session after that.
 
 ## Before you connect
 
-You need a SeKondBrain account. Sign-in is handled by SeKondBrain's identity service — Kemory
-never sees or holds a password.
+You need a SeKondBrain account. Create one, and reach every setting named on this page, at
+**[kemory.sekondbrain.ai](https://kemory.sekondbrain.ai)** — that is the dashboard. Sign-in is handled by SeKondBrain's
+identity service; Kemory never sees or holds a password.
 
 There is nothing to install for a web AI. Local clients need a config-file entry, shown below.
 
@@ -64,13 +65,140 @@ access to another user's memories, including colleagues in the same organisation
 
 ---
 
+## Connect Claude Code
+
+Claude Code can connect two ways. The **plugin** is the one to reach for: it carries hooks
+that make memory get used rather than merely be available. The manual entry under
+[Connect a local client](#connect-a-local-client) works too, and gives you the same tools
+with none of the hooks.
+
+**1. Install the plugin**, inside Claude Code:
+
+```
+/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin install kemory@kemory
+```
+
+Nothing is downloaded beyond the plugin itself. Its bundled MCP entry is an HTTP connection
+to `api.kemory.s9n.ai/mcp/v1`, so there is no binary to install and nothing to put on `PATH`.
+
+**2. Give it one credential.** The tools and the hooks read the same environment variable, so
+a single export turns on both halves:
+
+```bash
+export KEMORY_API_KEY="kemory_..."
+```
+
+Put it where your shell loads it on startup, then restart Claude Code fully — quitting the
+window is not enough. It must be an environment *variable*: a key written into an MCP config
+file authenticates the tools and is invisible to the hooks, which never read MCP config.
+
+Prefer a browser login to a key in your environment? Install the
+[CLI](cli/#install), then `kemory login` and `kemory connect`. That writes its own entry
+backed by a short-lived, self-refreshing token in `~/.kemory`, with no credential in any
+config file — disable the plugin's bundled entry if you go that way, so you are not running
+two.
+
+**3. Confirm it works.**
+
+```
+/kemory:status
+```
+
+Two checks have to pass: credentials resolve, and the API accepts them. The same output
+prints how context injection and capture are configured. `/mcp` then shows which Kemory server Claude Code is actually talking
+to. Context injection begins with your *next* session, because the hook that performs it runs
+at session start.
+
+### What the plugin adds
+
+Connected is not the same as remembering. Tools sit unused unless something prompts the model
+to reach for them; that prompting is the whole of what the plugin contributes. Five hooks,
+none of which need remembering:
+
+| Hook | When | What it does |
+|---|---|---|
+| `session-start.sh` | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
+| `prompt-recall.sh` | Every prompt you send | Searches your vault with what you just typed and injects what matches, so relevant history arrives without you asking. **On by default**, and the one hook that sends your prompt text — `KEMORY_PROMPT_RECALL=0` turns it off |
+| `rate-reminder.sh` | After a recall tool returns something rateable | Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call |
+| inline | Before compaction | Prompts consolidation before a long session is summarised away |
+| `capture.sh` | Session end | **Opt-in, off by default.** Stores a bounded, redacted digest of the session |
+
+It also ships the `/kemory:status` command and a skill covering how to recall, rate, store and
+phrase memories so semantic search can find them again. That skill is the standing instruction
+from [Optimise your AIs](optimise/), already written and kept current — with the plugin
+installed you do not need to paste it into `CLAUDE.md` yourself.
+
+Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/claude-kemory).
+
+### Run one server, not two
+
+There are three ways to give Claude Code the Kemory tools, and they stack silently. Two
+servers means two copies of every tool in every request — wasted context, and no way to
+tell which lane a result came from. Pick one:
+
+| Route | What connects | Use when |
+|---|---|---|
+| The plugin's bundled entry | HTTP to `api.kemory.s9n.ai/mcp/v1`, carrying `KEMORY_API_KEY` | Default. Installed with the plugin, nothing to configure beyond the variable |
+| `kemory connect` or `kemory mcp install --host claude-code` | HTTP entry in `~/.claude.json` | You want the tools without the plugin |
+| *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
+
+If you ran `kemory connect` before installing the plugin, remove the `kemory` entry from
+`~/.claude.json`. If you use the claude.ai connector, disable the plugin's bundled entry.
+The hooks are independent of all three — they call the API directly, and keep working as long
+as `KEMORY_API_KEY` is exported or `kemory login` has run.
+
+### Configuring it
+
+Set these in the `env` block of `~/.claude/settings.json`, or export them in your shell.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `KEMORY_API_KEY` | — | Authenticates both the bundled tools and the hooks. The one variable most setups need |
+| `KEMORY_PROMPT_RECALL` | `1` | `0` stops the per-prompt vault search, and with it the only default-on transmission of your prompt text |
+| `KEMORY_CONTEXT` | `1` | `0` disables session-start injection |
+| `KEMORY_CONTEXT_DEPTH` | `l3` | Summary depth requested — `l3`, or `l4` for a synthesised cross-namespace briefing |
+| `KEMORY_CONTEXT_MAX_CHARS` | `4000` | Injection budget; summaries beyond it are dropped with a note (floor 500) |
+| `KEMORY_CONTEXT_NAMESPACES` | all | Comma-separated allowlist, e.g. `user:preferences,shared` |
+| `KEMORY_CONTEXT_TIMEOUT` | `6` | Seconds to wait for the API before giving up |
+| `KEMORY_QUIET_SETUP` | `0` | `1` suppresses the "not configured yet" notice |
+| `KEMORY_AUTO_CAPTURE` | `0` | `1` enables the end-of-session digest |
+| `KEMORY_CAPTURE_NAMESPACE` | `shared` | Where digests are written |
+| `KEMORY_CAPTURE_MAX_TURNS` | `12` | How many recent turns a digest may include |
+| `KEMORY_ENV` | `prod` | Which credentials file to read |
+| `KEMORY_URL` | hosted Kemory | Point the hooks at a self-hosted or [Community Edition](community/) instance |
+
+**What leaves your machine.** Two hooks transmit anything. **Prompt recall is on by default**
+and sends the text of each prompt to your Kemory instance as a search query — it skips
+prompts under 12 characters and anything starting with `/`, `!` or `#`, so slash commands are
+never sent. **Capture is off** unless you set it, because it uploads your own turns. Context
+injection sends only your credential, and the rating and approval hooks make no network calls
+at all. The full per-hook policy is in the
+[plugin README](https://github.com/SeKondBrainAILabs/claude-kemory#privacy-policy).
+
+### If nothing seems to happen
+
+The hooks fail quiet by design: with no credentials and no Kemory server they no-op rather
+than erroring, so a broken setup looks like an idle one. The plugin prints a short setup
+notice the first time and then stays silent for 24 hours rather than nagging.
+
+Run `/kemory:status` — it names which check failed. No credential means `KEMORY_API_KEY` was
+not exported into the environment Claude Code started from, or the CLI is not logged in. A
+rejected one means it expired or was revoked. No `kemory_*` tools at all is usually the same
+problem seen from the other side: the bundled entry sent an unexpanded variable and the API
+answered `401`. Tools present but no context at session start is the config-file case — the
+key authenticates the tools, and the hooks cannot see it.
+
+---
+
 ## Connect a local client
 
-For Claude Code, Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any
-other client that reads MCP servers from a config file.
+For Claude Desktop, Cursor, Cline, Windsurf, Warp, Codex, Gemini CLI and any other client
+that reads MCP servers from a config file. Claude Code has a plugin instead — see
+[Connect Claude Code](#connect-claude-code).
 
 These clients authenticate with an API key sent as an `X-API-Key` header. Create one from
-**Dashboard → Keys**. It is shown once.
+**[Dashboard](https://kemory.sekondbrain.ai) → Keys**. It is shown once.
 
 The entry below is exactly what a local client needs. Read it before you connect anything —
 this is the whole surface.
@@ -91,7 +219,7 @@ this is the whole surface.
 
 | Client | Config location |
 |---|---|
-| Claude Code | `~/.claude.json` |
+| Claude Code | `~/.claude.json` — but prefer the [plugin](#connect-claude-code) |
 | Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) |
 | Cursor | `~/.cursor/mcp.json` |
 | Cline | VS Code settings → Cline → MCP servers |
@@ -115,7 +243,8 @@ the [Kemory CLI](cli/).
 ### Making an AI actually use memory
 
 Most clients treat a tool as something to reach for when asked. Put this in your project
-instructions or `CLAUDE.md` and it becomes the first thing checked instead:
+instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
+[Claude Code plugin](#connect-claude-code) ships this as a skill, so plugin users can skip it:
 
 ```markdown
 You have Kemory memory tools available.
@@ -235,7 +364,8 @@ Whichever path issued it, a credential resolves to the same authorisation contex
 an organisation, and an agent identity — and every tool call is checked against it before it
 runs.
 
-**Revoking access.** Dashboard → Connectors lists every agent connected to your account,
+**Revoking access.** [Dashboard](https://kemory.sekondbrain.ai) → Connectors lists every agent connected to your
+account,
 with the client it came from and when it last called. Revoke one and its next request
 returns `401`.
 
@@ -376,6 +506,7 @@ reconnecting on its own will not fix it.
 
 ## Support
 
+- **Dashboard:** https://kemory.sekondbrain.ai
 - **Support:** support@sekondbrain.ai
 - **Privacy policy:** https://docs.sekondbrain.ai/legal/privacy/
 

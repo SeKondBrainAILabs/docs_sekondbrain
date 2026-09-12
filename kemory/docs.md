@@ -134,7 +134,7 @@ Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/c
 ### Run one server, not two
 
 There are three ways to give Claude Code the Kemory tools, and they stack silently. Two
-servers means two copies of all 35 tools in every request — wasted context, and no way to
+servers means two copies of every tool in every request — wasted context, and no way to
 tell which lane a result came from. Pick one:
 
 | Route | What connects | Use when |

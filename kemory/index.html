@@ -119,6 +119,9 @@
       <p><strong>3. Confirm it works.</strong></p>
 <pre><code>/kemory:status</code></pre>
       <p>Two checks have to pass: credentials resolve, and the API accepts them. The same output prints how context injection and capture are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
+      <p><strong>4. Keep it current.</strong> Plugins do not update themselves. What you installed is a snapshot, and hooks are where this plugin's behaviour lives — an install left alone keeps running the set that was current the day you ran it, however much has been fixed since:</p>
+<pre><code>/plugin update kemory@kemory</code></pre>
+      <p>It refreshes the marketplace on its way through, so this is the whole command. Restart Claude Code afterwards to load the new hooks — the update itself does not apply them. <code>/kemory:status</code> prints the installed version, and the <a href="https://github.com/SeKondBrainAILabs/claude-kemory/blob/main/CHANGELOG.md">changelog</a> says what moved.</p>
 
       <h3>What the plugin adds</h3>
       <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. Five hooks, none of which need remembering:</p>

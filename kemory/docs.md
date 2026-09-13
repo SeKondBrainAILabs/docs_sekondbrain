@@ -110,6 +110,19 @@ prints how context injection and capture are configured. `/mcp` then shows which
 to. Context injection begins with your *next* session, because the hook that performs it runs
 at session start.
 
+**4. Keep it current.** Plugins do not update themselves. What you installed is a snapshot,
+and hooks are where this plugin's behaviour lives — an install left alone keeps running the
+set that was current the day you ran it, however much has been fixed since:
+
+```
+/plugin update kemory@kemory
+```
+
+It refreshes the marketplace on its way through, so this is the whole command. Restart Claude
+Code afterwards to load the new hooks — the update itself does not apply them. `/kemory:status`
+prints the installed version, and the [changelog](https://github.com/SeKondBrainAILabs/claude-kemory/blob/main/CHANGELOG.md)
+says what moved.
+
 ### What the plugin adds
 
 Connected is not the same as remembering. Tools sit unused unless something prompts the model

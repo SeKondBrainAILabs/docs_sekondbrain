@@ -142,7 +142,7 @@
 <div class="wrap hero">
   <span class="pill"><i style="background:var(--c-mint)"></i>Connected is not the same as remembering</span>
   <h1>Get an AI to<br><em>actually use memory.</em></h1>
-  <p class="lede">Connecting Kemory gives an AI the tools. It does not give it the habit. Left alone, most models treat a memory tool like a reference book on a high shelf — technically available, reached for inconsistently until you have built the habit of asking every time. This page is how you skip that habit-building: one standing instruction that does the asking for you, the place to paste it in each AI, and how to connect in the first place.</p>
+  <p class="lede">Connecting Kemory gives an AI the tools. It does not give it the habit. Left alone, most models treat a memory tool like a reference book on a high shelf — technically available, reached for inconsistently until you have built the habit of asking every time. This page is how you skip that habit-building: one standing instruction that does the asking for you, the place to paste it in each AI, and how to connect in the first place. <strong>Claude Code is the exception</strong> — it has a plugin that carries the instruction and more besides, so there is nothing to paste there.</p>
   <p>If you have just been let in and nothing seems to be saving, you are in the right place and nothing is broken. Start with <a href="#instruction">the instruction</a>.</p>
 </div>
 
@@ -493,6 +493,13 @@ Keep it sharp: one specific memory over one long one, in the words we actually u
         <input type="radio" name="whereai" id="ai-claudecode">
         <label for="ai-claudecode">Claude Code</label>
         <div class="panel">
+          <div class="note">
+            <span class="lbl">There is a plugin — prefer it to pasting</span>
+            <p>Claude Code is the one place where the instruction is not the whole story. The plugin carries it for you, and adds what no instruction can do on its own: your memories are searched and injected <em>under every prompt</em> rather than when the model remembers to look, and Kemory's read tools stop interrupting you for permission. Two lines in a session:</p>
+<pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin install kemory@kemory</code></pre>
+            <p>Then put <code>KEMORY_API_KEY</code> in your shell profile — an environment variable, not the MCP config file, which the plugin's hooks cannot read — restart Claude Code, and run <code>/kemory:status</code>. Updates come from <code>/plugin update kemory@kemory</code>; plugins do not update themselves. Everything below is the manual route, for anyone who would rather not install it.</p>
+          </div>
           <div class="route">
             <b class="dest">CLAUDE.md</b><i>&rsaquo;</i><b>~/.claude/ for everything</b><i>&rsaquo;</i><b>or the repo root for one project</b>
           </div>
@@ -542,7 +549,8 @@ Before writing, check whether a memory on the same fact already
 exists; update or supersede it rather than adding a duplicate. Skip
 transient state — anything that stops being true by tomorrow.</code></pre>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the namespace table in.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the namespace table in. Skip this entirely if you installed the plugin — it ships the instruction.</span></li>
+            <li><span class="k">Already pasted, then installed the plugin?</span><span>Delete the pasted copy. Both together are not harmful, but the pasted one opens every session with <code>kemory_list_namespaces</code> and a recall that the plugin has already done by then, which costs two tool calls a session to repeat. The plugin says so once a week until you remove it.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.claude/CLAUDE.md</code> applies to every project on the machine. A <code>CLAUDE.md</code> at a repository root applies to that repository and is read on top of the global one — put the project namespace there.</span></li>
             <li><span class="k">Shortcut</span><span>Typing <code>/memory</code> in a session opens these files for editing without leaving the terminal.</span></li>
             <li><span class="k">Connecting</span><span><code>claude mcp add</code>, or the <a href="#mcp-local">config file route</a>.</span></li>
@@ -1010,7 +1018,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
         <thead><tr><th>What you see</th><th>What is usually true</th></tr></thead>
         <tbody>
           <tr><td>Nothing is ever saved, no errors</td><td>The commonest case, and not a fault. The instruction is missing, or it went into a field that does not apply to this conversation — a Project's instructions do not apply outside that Project, and a repository rules file does not apply in a different repository.</td></tr>
-          <tr><td>It saves when asked, never on its own</td><td>The instruction is present but reads as permission rather than direction. Use the <a href="#instruction">instruction</a> as written — it says <em>use them without being asked</em> in as many words.</td></tr>
+          <tr><td>It saves when asked, never on its own</td><td>The instruction is present but reads as permission rather than direction. Use the <a href="#instruction">instruction</a> as written — it says <em>use them without being asked</em> in as many words. On <a href="#ai-claudecode">Claude Code</a>, install the plugin instead: an instruction asks, and its hooks do not.</td></tr>
           <tr><td>It answers from the conversation instead of checking</td><td>Expected, and the reason the instruction says <em>first, not after you have already guessed</em>. A model that thinks it knows will not check. Ask it directly once — <em>"check Kemory first"</em> — and see whether it complies.</td></tr>
           <tr><td>Recall returns nothing you recognise</td><td>Usually vocabulary, not a missing memory. Search with the words the note was written in — identifiers, error strings, tool names — not the words you would use to describe it. See <a href="../retrieval/#phrasing">phrasing</a>.</td></tr>
           <tr><td>It worked, then stopped</td><td>Check the connector is still live on your <a href="https://kemory.sekondbrain.ai/connectors">connectors page</a>. A revoked or expired credential returns <code>401</code>; web clients re-authenticate themselves, local clients need a new key.</td></tr>

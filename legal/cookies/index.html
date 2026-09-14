@@ -130,7 +130,7 @@
       <h2>4. The cookies we set</h2>
       <div class="note">
         <span class="lbl">Being published</span>
-        <p>The per-cookie inventory &mdash; each cookie&rsquo;s name, provider, purpose and duration &mdash; is being compiled from an audit of what our sites actually set at runtime, and will be published here. Until it appears, the categories in section 3 describe what we use, and the controls in section 6 work regardless. If you need the detail before it is published, ask us at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a> and we will tell you.</p>
+        <p>The per-cookie inventory &mdash; each cookie&rsquo;s name, provider, purpose and duration &mdash; is being compiled from an audit of what our sites actually set at runtime, and will be published here. <strong>This documentation site is done</strong> &mdash; the two rows naming a cookie below are everything docs.sekondbrain.ai sets. The product surfaces are still being audited. Until it appears, the categories in section 3 describe what we use, and the controls in section 6 work regardless. If you need the detail before it is published, ask us at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a> and we will tell you.</p>
             <p>The audit covers our checkout. Our payment service provider, Stripe, sets cookies on our own pages to detect payment fraud; those are strictly necessary and will be listed by name here with the rest.</p>
       </div>
       <table>
@@ -151,9 +151,21 @@
             <td><span class="gap">Pending</span></td>
           </tr>
           <tr>
+            <td><code>s9n_cookie_consent</code><br><small style="color:var(--grey)">docs.sekondbrain.ai &middot; local storage</small></td>
+            <td>Strictly necessary</td>
+            <td>Records whether you accepted or declined analytics, so you are not asked again. Storing your refusal is what lets us honour it.</td>
+            <td>Until you clear site data</td>
+          </tr>
+          <tr>
+            <td><code>ph_phc_&hellip;_posthog</code><br><small style="color:var(--grey)">PostHog &middot; set only after you accept</small></td>
+            <td>Analytics</td>
+            <td>Distinguishes one browser from another so a page view is not counted twice, and records which page was read. Set only if you accept; declining stores nothing.</td>
+            <td>12 months</td>
+          </tr>
+          <tr>
             <td><span class="gap">Inventory pending audit</span></td>
             <td>Analytics</td>
-            <td>Feature usage and error diagnostics</td>
+            <td>Feature usage and error diagnostics on the product surfaces</td>
             <td><span class="gap">Pending</span></td>
           </tr>
         </tbody>
@@ -168,7 +180,7 @@
 
     <section id="choices">
       <h2>6. Your choices</h2>
-      <p><strong>Our cookie banner.</strong> When you first visit, you can accept or decline non-essential cookies. You can change that choice at any time through the banner or the cookie settings in the product, and withdrawing consent is as easy as giving it. Withdrawal takes effect going forward and does not affect processing already carried out lawfully.</p>
+      <p><strong>Our cookie banner.</strong> When you first visit, you can accept or decline non-essential cookies. You can change that choice at any time through the banner or the cookie settings in the product, and withdrawing consent is as easy as giving it. Withdrawal takes effect going forward and does not affect processing already carried out lawfully. On this site you can <a href="#choices" data-cookie-settings>reopen the cookie choice</a> at any time.</p>
       <p><strong>Your browser.</strong> Every major browser lets you block or delete cookies, and clearing site data removes what we have stored. Blocking strictly necessary cookies will stop you signing in and will break parts of the Services.</p>
       <p><strong>Other rights.</strong> Where a cookie involves personal data, the rights in section 11 of the <a href="../privacy/">Privacy Policy</a> apply &mdash; access, rectification, erasure, restriction, portability and objection. Contact <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
     </section>
@@ -202,5 +214,6 @@
 </footer>
 
 <script src="../../assets/nav.js" defer></script>
+<script src="../../assets/consent.js" defer></script>
 </body>
 </html>

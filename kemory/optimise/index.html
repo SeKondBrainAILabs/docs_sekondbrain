@@ -495,10 +495,7 @@ Keep it sharp: one specific memory over one long one, in the words we actually u
         <div class="panel">
           <div class="note">
             <span class="lbl">There is a plugin — prefer it to pasting</span>
-            <p>Claude Code is the one place where the instruction is not the whole story. The plugin carries it for you, and adds what no instruction can do on its own: your memories are searched and injected <em>under every prompt</em> rather than when the model remembers to look, and Kemory's read tools stop interrupting you for permission. Two lines in a session:</p>
-<pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
-/plugin install kemory@kemory</code></pre>
-            <p>It needs one credential, and takes either: <code>kemory login</code> if you have <a href="../cli/">the CLI</a>, or <code>KEMORY_API_KEY</code> in your shell profile. It must be an environment <em>variable</em> — a key written into an MCP config file authenticates a hand-made connection and is invisible to the plugin. Restart Claude Code fully, then run <code>/kemory:status</code>, which says which half is working. Updates come from <code>/plugin update kemory@kemory</code>; plugins do not update themselves. Everything below is the manual route, for anyone who would rather not install it.</p>
+            <p>Claude Code is the one place where this instruction is not the whole story. The plugin ships it for you, so there is nothing to paste here and nothing to keep in sync per project — and it adds what no instruction can do on its own: your memories are searched and injected under <em>every</em> prompt, rather than when the model thinks to look. Install it from <a href="../#connect-claude-code">Connect Claude Code</a>. Everything below is the manual route, for anyone who would rather not.</p>
           </div>
           <div class="route">
             <b class="dest">CLAUDE.md</b><i>&rsaquo;</i><b>~/.claude/ for everything</b><i>&rsaquo;</i><b>or the repo root for one project</b>

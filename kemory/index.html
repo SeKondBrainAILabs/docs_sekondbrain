@@ -111,11 +111,11 @@
       <p><strong>1. Install the plugin</strong>, inside Claude Code:</p>
 <pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
 /plugin install kemory@kemory</code></pre>
-      <p>Nothing is downloaded beyond the plugin itself. Its bundled MCP entry is an HTTP connection to <code>api.kemory.s9n.ai/mcp/v1</code>, so there is no binary to install and nothing to put on <code>PATH</code>.</p>
-      <p><strong>2. Give it one credential.</strong> The tools and the hooks read the same environment variable, so a single export turns on both halves:</p>
+      <p>Nothing is downloaded beyond the plugin itself. Its bundled MCP entry starts a small launcher that resolves your credential and connects over HTTP, so there is no binary to install and nothing to put on <code>PATH</code>.</p>
+      <p><strong>2. Give it one credential.</strong> The tools and the hooks resolve it the same way, in the same order — <code>KEMORY_API_KEY</code>, then <code>KEMORY_TOKEN</code>, then a <code>kemory login</code> on this machine — so any one of them turns on both halves. The shortest is an export:</p>
 <pre><code>export KEMORY_API_KEY="kemory_..."</code></pre>
       <p>Put it where your shell loads it on startup, then restart Claude Code fully — quitting the window is not enough. It must be an environment <em>variable</em>: a key written into an MCP config file authenticates the tools and is invisible to the hooks, which never read MCP config.</p>
-      <p>Prefer a browser login to a key in your environment? Install the <a href="cli/#install">CLI</a>, then <code>kemory login</code> and <code>kemory connect</code>. That writes its own entry backed by a short-lived, self-refreshing token in <code>~/.kemory</code>, with no credential in any config file — disable the plugin's bundled entry if you go that way, so you are not running two.</p>
+      <p>Prefer a browser login to a key in your environment? Install the <a href="cli/#install">CLI</a> and run <code>kemory login</code>. The plugin's bundled entry reads that stored login on its own, so nothing else is needed for Claude Code — no credential ends up in any config file. <code>kemory connect</code> is for <em>other</em> MCP hosts (Cursor, Warp, Claude Desktop); if you run it for Claude Code as well, disable the bundled entry so you are not running two.</p>
       <p><strong>3. Confirm it works.</strong></p>
 <pre><code>/kemory:status</code></pre>
       <p>Two checks have to pass: credentials resolve, and the API accepts them. The same output prints how context injection and capture are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
@@ -143,7 +143,7 @@
       <table>
         <thead><tr><th>Route</th><th>What connects</th><th>Use when</th></tr></thead>
         <tbody>
-          <tr><td>The plugin's bundled entry</td><td>HTTP to <code>api.kemory.s9n.ai/mcp/v1</code>, carrying <code>KEMORY_API_KEY</code></td><td>Default. Installed with the plugin, nothing to configure beyond the variable</td></tr>
+          <tr><td>The plugin's bundled entry</td><td>A launcher that resolves your credential — an environment variable or a <code>kemory login</code> — then connects to <code>api.kemory.s9n.ai/mcp/v1</code></td><td>Default. Installed with the plugin; nothing to configure beyond having a credential</td></tr>
           <tr><td><code>kemory connect</code> or <code>kemory mcp install --host claude-code</code></td><td>HTTP entry in <code>~/.claude.json</code></td><td>You want the tools without the plugin</td></tr>
           <tr><td><em>Kemory by SeKondBrain</em> in claude.ai connector settings</td><td>OAuth, account-wide</td><td>You want the same tools in the web and desktop apps too</td></tr>
         </tbody>

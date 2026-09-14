@@ -79,11 +79,13 @@ with none of the hooks.
 /plugin install kemory@kemory
 ```
 
-Nothing is downloaded beyond the plugin itself. Its bundled MCP entry is an HTTP connection
-to `api.kemory.s9n.ai/mcp/v1`, so there is no binary to install and nothing to put on `PATH`.
+Nothing is downloaded beyond the plugin itself. Its bundled MCP entry starts a small launcher
+that resolves your credential and connects over HTTP, so there is no binary to install and
+nothing to put on `PATH`.
 
-**2. Give it one credential.** The tools and the hooks read the same environment variable, so
-a single export turns on both halves:
+**2. Give it one credential.** The tools and the hooks resolve it the same way, in the same
+order — `KEMORY_API_KEY`, then `KEMORY_TOKEN`, then a `kemory login` on this machine — so any
+one of them turns on both halves. The shortest is an export:
 
 ```bash
 export KEMORY_API_KEY="kemory_..."
@@ -93,11 +95,11 @@ Put it where your shell loads it on startup, then restart Claude Code fully — 
 window is not enough. It must be an environment *variable*: a key written into an MCP config
 file authenticates the tools and is invisible to the hooks, which never read MCP config.
 
-Prefer a browser login to a key in your environment? Install the
-[CLI](cli/#install), then `kemory login` and `kemory connect`. That writes its own entry
-backed by a short-lived, self-refreshing token in `~/.kemory`, with no credential in any
-config file — disable the plugin's bundled entry if you go that way, so you are not running
-two.
+Prefer a browser login to a key in your environment? Install the [CLI](cli/#install) and run
+`kemory login`. The plugin's bundled entry reads that stored login on its own, so nothing else
+is needed for Claude Code — no credential ends up in any config file. `kemory connect` is for
+*other* MCP hosts (Cursor, Warp, Claude Desktop); if you run it for Claude Code as well,
+disable the bundled entry so you are not running two.
 
 **3. Confirm it works.**
 
@@ -152,7 +154,7 @@ tell which lane a result came from. Pick one:
 
 | Route | What connects | Use when |
 |---|---|---|
-| The plugin's bundled entry | HTTP to `api.kemory.s9n.ai/mcp/v1`, carrying `KEMORY_API_KEY` | Default. Installed with the plugin, nothing to configure beyond the variable |
+| The plugin's bundled entry | A launcher that resolves your credential — an environment variable or a `kemory login` — then connects to `api.kemory.s9n.ai/mcp/v1` | Default. Installed with the plugin; nothing to configure beyond having a credential |
 | `kemory connect` or `kemory mcp install --host claude-code` | HTTP entry in `~/.claude.json` | You want the tools without the plugin |
 | *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
 

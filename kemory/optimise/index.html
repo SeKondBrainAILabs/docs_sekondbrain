@@ -498,7 +498,7 @@ Keep it sharp: one specific memory over one long one, in the words we actually u
             <p>Claude Code is the one place where the instruction is not the whole story. The plugin carries it for you, and adds what no instruction can do on its own: your memories are searched and injected <em>under every prompt</em> rather than when the model remembers to look, and Kemory's read tools stop interrupting you for permission. Two lines in a session:</p>
 <pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
 /plugin install kemory@kemory</code></pre>
-            <p>Then put <code>KEMORY_API_KEY</code> in your shell profile — an environment variable, not the MCP config file, which the plugin's hooks cannot read — restart Claude Code, and run <code>/kemory:status</code>. Updates come from <code>/plugin update kemory@kemory</code>; plugins do not update themselves. Everything below is the manual route, for anyone who would rather not install it.</p>
+            <p>It needs one credential, and takes either: <code>kemory login</code> if you have <a href="../cli/">the CLI</a>, or <code>KEMORY_API_KEY</code> in your shell profile. It must be an environment <em>variable</em> — a key written into an MCP config file authenticates a hand-made connection and is invisible to the plugin. Restart Claude Code fully, then run <code>/kemory:status</code>, which says which half is working. Updates come from <code>/plugin update kemory@kemory</code>; plugins do not update themselves. Everything below is the manual route, for anyone who would rather not install it.</p>
           </div>
           <div class="route">
             <b class="dest">CLAUDE.md</b><i>&rsaquo;</i><b>~/.claude/ for everything</b><i>&rsaquo;</i><b>or the repo root for one project</b>

@@ -10,15 +10,18 @@
     - Kora for Chrome & Kemory privacy policy §6 and §8
   Keep it live. A dead link here weakens the Article 28 authorisation the DPA relies on.
 
-  Processing locations are marked with class="gap" where the entity's processing region
-  has not been confirmed. Do not fill one in from the vendor's headquarters, from the
-  nationality of its parent company, or from a global API/SMTP endpoint — Schedule 1 §4
-  ties the transfer mechanism to what is disclosed here, so a guessed region is a false
-  statement about a safeguard. A region goes in this table only when it is established by
-  something that IS the region (a region-specific ingest endpoint, a residency setting on
-  our account, or the vendor's written confirmation). The derivation for every filled-in
-  cell is recorded in this repository's commit history — evidence and audit narrative
-  belong there, not on a served page.
+  A processing location cell takes one of two forms and nothing else. Either a named
+  region, which goes in only when established by something that IS the region (a
+  region-specific ingest endpoint, a residency setting on our account, or the vendor's
+  written confirmation); or an explicit statement that the service is used through a
+  global endpoint with no regional residency commitment, which is what we say when the
+  integration itself establishes that no region is pinned. Never fill a region in from
+  the vendor's headquarters, from the nationality of its parent company, or from wherever
+  a global endpoint happens to resolve — Schedule 1 §4 ties the transfer mechanism to what
+  is disclosed here, so a guessed region is a false statement about a safeguard. Where
+  neither form can be evidenced yet, the cell stays class="gap". The derivation for every
+  filled-in cell is recorded in this repository's commit history — evidence and audit
+  narrative belong there, not on a served page.
 
   Purpose cells state what a provider RECEIVES, not only what is excluded. A row that
   names only an exclusion reads as a claim of pseudonymity.
@@ -87,7 +90,7 @@
     <section id="status" style="padding-top:var(--sp-6)">
       <div class="note">
         <span class="lbl">Status of this list</span>
-        <p>Every party we use is named below. Two things are still being completed: the <strong>processing region</strong> for some entries, and the providers for <strong>speech</strong>. Those are marked, not omitted. Where a region is marked pending, treat the transfer disclosure for that entry as incomplete. Email delivery is now named; its region is still open, and is discussed in <a href="#transfers">International transfers</a>.</p>
+        <p>Two things are still being completed: the providers for <strong>speech</strong> in Kora Voice, and <strong>Stripe&rsquo;s processing region</strong>. Those are marked, not omitted, and where a region is marked pending you should treat the transfer disclosure for that entry as incomplete. Several other entries carry no regional residency commitment, which means data on those paths may be processed outside the country you are in &mdash; see <a href="#transfers">International transfers</a>.</p>
       </div>
     </section>
 
@@ -105,14 +108,14 @@
             <td>Switzerland (customers in the rest of the world); India (customers in India)</td>
           </tr>
           <tr>
-            <td>Groq</td>
-            <td>Large language model inference &mdash; generating requested outputs and the background processing that organises your memory</td>
-            <td><span class="gap">region pending</span></td>
+            <td>Google &mdash; Gemini API</td>
+            <td>Image generation and visual analysis &mdash; receives the prompts you supply for generated images, and the images processed on those paths</td>
+            <td>United States and other locations &mdash; global endpoint, no regional residency commitment</td>
           </tr>
           <tr>
-            <td>OpenRunner</td>
-            <td>Large language model inference</td>
-            <td><span class="gap">region pending</span></td>
+            <td>Groq</td>
+            <td>Large language model inference &mdash; generating requested outputs and the background processing that organises your memory. Also receives audio you record or upload, for speech-to-text transcription, and images you submit for visual analysis</td>
+            <td>United States and other locations &mdash; global endpoint, no regional residency commitment</td>
           </tr>
           <tr>
             <td>PostHog</td>
@@ -126,8 +129,8 @@
           </tr>
           <tr>
             <td>Notion</td>
-            <td><span class="gap">purpose pending confirmation</span></td>
-            <td><span class="gap">region pending</span></td>
+            <td>Internal support, feedback and account administration records. Receives your name and email address, the content of support conversations and of feedback you send us, the filenames of anything you attach, and your account and organisation identifiers</td>
+            <td>United States and other locations &mdash; global endpoint, no regional residency commitment</td>
           </tr>
           <tr>
             <td>SeKondBrain AI Labs FZCO</td>
@@ -142,7 +145,7 @@
           <tr>
             <td>Twilio SendGrid</td>
             <td>Transactional and service email &mdash; account, waitlist, billing, support and security messages. Receives your email address, your name where the message uses it, and the content of the message itself.</td>
-            <td><span class="gap">region pending</span></td>
+            <td>United States and other locations &mdash; global endpoint, no regional residency commitment</td>
           </tr>
         </tbody>
       </table>
@@ -161,8 +164,9 @@
       <h2>International transfers</h2>
       <p>Data at rest is stored in the deployment region selected at organisation creation: Google Cloud Switzerland (rest of world) or Google Cloud India (customers in India). Transfers to Switzerland are covered by UK adequacy regulations.</p>
       <p>Billing and account administration data is processed by our group affiliate in the <strong>United Arab Emirates</strong>. The UAE is not covered by a UK adequacy decision, so that transfer is made under an intra-group data transfer agreement incorporating the UK International Data Transfer Agreement, supported by a transfer risk assessment.</p>
-      <p>Transactional and service email is processed by Twilio SendGrid, which receives the recipient address and the content of the message. <span class="gap">Its processing region is being confirmed with the provider</span> &mdash; SendGrid operates in more than one region and the SMTP endpoint we use does not identify which applies to our account, so no region is stated here. Until it is confirmed, treat the transfer disclosure for this entry as incomplete.</p>
-      <p>Transfers to India, to the UAE, and any other restricted transfer &mdash; including processing by inference providers in other jurisdictions &mdash; are made under the UK International Data Transfer Agreement or the UK Addendum to the EU Standard Contractual Clauses, with supplementary measures where appropriate. You may request details of the safeguards applicable to a specific transfer at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
+      <p><strong>Providers used through global endpoints.</strong> Groq, Google (Gemini API), Notion and Twilio SendGrid are used through their global endpoints, which are operated from the United States. We hold no regional residency commitment for those services, so data sent to them may be processed in the United States or in another country in which the provider operates. This applies to conversation content and to any audio or images you send for inference or transcription, to support and feedback records, and to the content of service email.</p>
+      <p><span class="gap">Stripe&rsquo;s processing region is not yet stated.</span> It is established by the contracting entity and terms of our own Stripe account rather than by the endpoint we call, and a UAE-domiciled account does not imply processing in the UAE. Until it is confirmed, treat the transfer disclosure for that entry as incomplete.</p>
+      <p>Transfers to India, to the UAE, to the United States, and any other restricted transfer &mdash; including processing by inference, transcription and email providers in other jurisdictions &mdash; are made under the UK International Data Transfer Agreement or the UK Addendum to the EU Standard Contractual Clauses, with supplementary measures where appropriate. You may request details of the safeguards applicable to a specific transfer at <a href="mailto:privacy@sekondbrain.ai">privacy@sekondbrain.ai</a>.</p>
     </section>
 
     <section id="changes">

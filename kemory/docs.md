@@ -75,7 +75,7 @@ with none of the hooks.
 **1. Install the plugin**, inside Claude Code:
 
 ```
-/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin marketplace add SeKondBrainAILabs/kemory-plugin
 /plugin install kemory@kemory
 ```
 
@@ -83,21 +83,26 @@ Nothing is downloaded beyond the plugin itself. Its bundled MCP entry starts a s
 that resolves your credential and connects over HTTP, so there is no binary to install and
 nothing to put on `PATH`.
 
-**2. Give it one credential.** The tools and the hooks resolve it the same way, in the same
-order — `KEMORY_API_KEY`, then `KEMORY_TOKEN`, then a `kemory login` on this machine — so any
-one of them turns on both halves. The shortest is an export:
+**2. Sign in.** From plugin 0.6.0 the plugin does this itself — no CLI, no key to paste:
 
-```bash
-export KEMORY_API_KEY="kemory_..."
+```
+/kemory:login
 ```
 
-Put it where your shell loads it on startup, then restart Claude Code fully — quitting the
-window is not enough. It must be an environment *variable*: a key written into an MCP config
-file authenticates the tools and is invisible to the hooks, which never read MCP config.
+It prints one link. Open it, approve in the browser, and the credential is written for you.
+Restart Claude Code fully afterwards — quitting the window is not enough.
 
-Prefer a browser login to a key in your environment? Install the [CLI](cli/#install) and run
-`kemory login`. The plugin's bundled entry reads that stored login on its own, so nothing else
-is needed for Claude Code — no credential ends up in any config file. `kemory connect` is for
+It is a device-flow sign-in against the same account the Kemory CLI uses, and it writes the
+same credential file, so a CLI installed later finds you already signed in. Both halves of the
+plugin read it: the tools and the hooks resolve a credential the same way, in the same order —
+`KEMORY_API_KEY`, then `KEMORY_TOKEN`, then that stored login.
+
+`KEMORY_API_KEY` remains the route for a machine with no browser to approve a sign-in in — CI,
+a container. It must be an environment *variable*: a key written into an MCP config file
+authenticates the tools and is invisible to the hooks, which never read MCP config.
+
+The CLI's own `kemory login` does the same job from a terminal and writes the same file, so
+either is enough. `kemory connect` is for
 *other* MCP hosts (Cursor, Warp, Claude Desktop); if you run it for Claude Code as well,
 disable the bundled entry so you are not running two.
 
@@ -122,7 +127,7 @@ set that was current the day you ran it, however much has been fixed since:
 
 It refreshes the marketplace on its way through, so this is the whole command. Restart Claude
 Code afterwards to load the new hooks — the update itself does not apply them. `/kemory:status`
-prints the installed version, and the [changelog](https://github.com/SeKondBrainAILabs/claude-kemory/blob/main/CHANGELOG.md)
+prints the installed version, and the [changelog](https://github.com/SeKondBrainAILabs/kemory-plugin/blob/main/CHANGELOG.md)
 says what moved.
 
 ### What the plugin adds
@@ -144,7 +149,7 @@ phrase memories so semantic search can find them again. That skill is the standi
 from [Optimise your AIs](optimise/), already written and kept current — with the plugin
 installed you do not need to paste it into `CLAUDE.md` yourself.
 
-Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/claude-kemory).
+Source: [SeKondBrainAILabs/kemory-plugin](https://github.com/SeKondBrainAILabs/kemory-plugin).
 
 ### Run one server, not two
 
@@ -189,7 +194,7 @@ prompts under 12 characters and anything starting with `/`, `!` or `#`, so slash
 never sent. **Capture is off** unless you set it, because it uploads your own turns. Context
 injection sends only your credential, and the rating and approval hooks make no network calls
 at all. The full per-hook policy is in the
-[plugin README](https://github.com/SeKondBrainAILabs/claude-kemory#privacy-policy).
+[plugin README](https://github.com/SeKondBrainAILabs/kemory-plugin#privacy-policy).
 
 ### If nothing seems to happen
 

@@ -109,19 +109,21 @@
       <h2>Connect Claude Code</h2>
       <p>Claude Code can connect two ways. The <strong>plugin</strong> is the one to reach for: it carries hooks that make memory get used rather than merely be available. The manual entry under <a href="#connect-local">Connect a local client</a> works too, and gives you the same tools with none of the hooks.</p>
       <p><strong>1. Install the plugin</strong>, inside Claude Code:</p>
-<pre><code>/plugin marketplace add SeKondBrainAILabs/claude-kemory
+<pre><code>/plugin marketplace add SeKondBrainAILabs/kemory-plugin
 /plugin install kemory@kemory</code></pre>
       <p>Nothing is downloaded beyond the plugin itself. Its bundled MCP entry starts a small launcher that resolves your credential and connects over HTTP, so there is no binary to install and nothing to put on <code>PATH</code>.</p>
-      <p><strong>2. Give it one credential.</strong> The tools and the hooks resolve it the same way, in the same order — <code>KEMORY_API_KEY</code>, then <code>KEMORY_TOKEN</code>, then a <code>kemory login</code> on this machine — so any one of them turns on both halves. The shortest is an export:</p>
-<pre><code>export KEMORY_API_KEY="kemory_..."</code></pre>
-      <p>Put it where your shell loads it on startup, then restart Claude Code fully — quitting the window is not enough. It must be an environment <em>variable</em>: a key written into an MCP config file authenticates the tools and is invisible to the hooks, which never read MCP config.</p>
-      <p>Prefer a browser login to a key in your environment? Install the <a href="cli/#install">CLI</a> and run <code>kemory login</code>. The plugin's bundled entry reads that stored login on its own, so nothing else is needed for Claude Code — no credential ends up in any config file. <code>kemory connect</code> is for <em>other</em> MCP hosts (Cursor, Warp, Claude Desktop); if you run it for Claude Code as well, disable the bundled entry so you are not running two.</p>
+      <p><strong>2. Sign in.</strong> From plugin 0.6.0 the plugin does this itself — no CLI, no key to paste:</p>
+<pre><code>/kemory:login</code></pre>
+      <p>It prints one link. Open it, approve in the browser, and the credential is written for you. Restart Claude Code fully afterwards — quitting the window is not enough.</p>
+      <p>It is a device-flow sign-in against the same account the Kemory CLI uses, and it writes the same credential file, so a CLI installed later finds you already signed in. Both halves of the plugin read it: the tools and the hooks resolve a credential the same way, in the same order — <code>KEMORY_API_KEY</code>, then <code>KEMORY_TOKEN</code>, then that stored login.</p>
+      <p><code>KEMORY_API_KEY</code> remains the route for a machine with no browser to approve a sign-in in — CI, a container. It must be an environment <em>variable</em>: a key written into an MCP config file authenticates the tools and is invisible to the hooks, which never read MCP config.</p>
+      <p>The CLI's own <code>kemory login</code> does the same job from a terminal and writes the same file, so either is enough. <code>kemory connect</code> is for <em>other</em> MCP hosts (Cursor, Warp, Claude Desktop); if you run it for Claude Code as well, disable the bundled entry so you are not running two.</p>
       <p><strong>3. Confirm it works.</strong></p>
 <pre><code>/kemory:status</code></pre>
       <p>Two checks have to pass: credentials resolve, and the API accepts them. The same output prints how context injection and capture are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
       <p><strong>4. Keep it current.</strong> Plugins do not update themselves. What you installed is a snapshot, and hooks are where this plugin's behaviour lives — an install left alone keeps running the set that was current the day you ran it, however much has been fixed since:</p>
 <pre><code>/plugin update kemory@kemory</code></pre>
-      <p>It refreshes the marketplace on its way through, so this is the whole command. Restart Claude Code afterwards to load the new hooks — the update itself does not apply them. <code>/kemory:status</code> prints the installed version, and the <a href="https://github.com/SeKondBrainAILabs/claude-kemory/blob/main/CHANGELOG.md">changelog</a> says what moved.</p>
+      <p>It refreshes the marketplace on its way through, so this is the whole command. Restart Claude Code afterwards to load the new hooks — the update itself does not apply them. <code>/kemory:status</code> prints the installed version, and the <a href="https://github.com/SeKondBrainAILabs/kemory-plugin/blob/main/CHANGELOG.md">changelog</a> says what moved.</p>
 
       <h3>What the plugin adds</h3>
       <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. Five hooks, none of which need remembering:</p>
@@ -136,7 +138,7 @@
         </tbody>
       </table>
       <p>It also ships the <code>/kemory:status</code> command and a skill covering how to recall, rate, store and phrase memories so semantic search can find them again. That skill is the standing instruction from <a href="optimise/">Optimise your AIs</a>, already written and kept current — with the plugin installed you do not need to paste it into <code>CLAUDE.md</code> yourself.</p>
-      <p>Source: <a href="https://github.com/SeKondBrainAILabs/claude-kemory">SeKondBrainAILabs/claude-kemory</a>.</p>
+      <p>Source: <a href="https://github.com/SeKondBrainAILabs/kemory-plugin">SeKondBrainAILabs/kemory-plugin</a>.</p>
 
       <h3>Run one server, not two</h3>
       <p>There are three ways to give Claude Code the Kemory tools, and they stack silently. Two servers means two copies of every tool in every request — wasted context, and no way to tell which lane a result came from. Pick one:</p>
@@ -172,7 +174,7 @@
       </table>
       <div class="note">
         <span class="lbl">What leaves your machine</span>
-        <p>Two hooks transmit anything. <strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query — it skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent. <strong>Capture is off</strong> unless you set it, because it uploads your own turns. Context injection sends only your credential, and the rating and approval hooks make no network calls at all. The full per-hook policy is in the <a href="https://github.com/SeKondBrainAILabs/claude-kemory#privacy-policy">plugin README</a>.</p>
+        <p>Two hooks transmit anything. <strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query — it skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent. <strong>Capture is off</strong> unless you set it, because it uploads your own turns. Context injection sends only your credential, and the rating and approval hooks make no network calls at all. The full per-hook policy is in the <a href="https://github.com/SeKondBrainAILabs/kemory-plugin#privacy-policy">plugin README</a>.</p>
       </div>
 
       <h3>If nothing seems to happen</h3>

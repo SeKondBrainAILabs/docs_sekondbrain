@@ -64,7 +64,7 @@ table.api code{font-size:.86em}
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>167 operations · 32 areas · generated from the service</span>
+  <span class="pill"><i></i>195 operations · 37 areas · generated from the service</span>
   <h1>The Kemory<br><em>API reference.</em></h1>
   <p class="lede">Every REST endpoint the service exposes, generated from the API's own schema rather than written by hand. Alongside it, the parts you cannot infer from a path: how a memory is compacted over time, and what actually happens behind the extension's <em>enhance</em>.</p>
 </div>
@@ -79,14 +79,14 @@ table.api code{font-size:.86em}
     <a href="#enhance">Search summary (enhance)</a>
     <a href="#context">User context</a>
     <div class="grp">Endpoints</div>
-    <a href="#Memories">Memories <span class="ct">21</span></a>
+    <a href="#Memories">Memories <span class="ct">24</span></a>
     <a href="#Unified-Search">Unified Search <span class="ct">1</span></a>
     <a href="#User-Context">User Context <span class="ct">11</span></a>
     <a href="#Consolidation">Consolidation <span class="ct">6</span></a>
     <a href="#Enrichment">Enrichment <span class="ct">3</span></a>
     <a href="#Relations">Relations <span class="ct">4</span></a>
     <a href="#Projects">Projects <span class="ct">2</span></a>
-    <a href="#AI-Chats">AI Chats <span class="ct">10</span></a>
+    <a href="#AI-Chats">AI Chats <span class="ct">13</span></a>
     <a href="#AI-Chats---Merge">AI Chats — Merge <span class="ct">6</span></a>
     <a href="#AI-Chats---Mappings">AI Chats — Mappings <span class="ct">4</span></a>
     <a href="#artifacts">artifacts <span class="ct">8</span></a>
@@ -94,28 +94,34 @@ table.api code{font-size:.86em}
     <a href="#Extension-Keys">Extension Keys <span class="ct">4</span></a>
     <a href="#Pair">Pair <span class="ct">4</span></a>
     <a href="#MCP-Server">MCP Server <span class="ct">5</span></a>
-    <a href="#MCP">MCP <span class="ct">1</span></a>
+    <a href="#MCP">MCP <span class="ct">6</span></a>
     <a href="#OAuth-discovery">OAuth discovery <span class="ct">4</span></a>
+    <a href="#Cells-directory">Cells directory <span class="ct">1</span></a>
     <a href="#Identity">Identity <span class="ct">2</span></a>
     <a href="#Permissions">Permissions <span class="ct">5</span></a>
     <a href="#Gatekeeper">Gatekeeper <span class="ct">3</span></a>
     <a href="#Teams">Teams <span class="ct">5</span></a>
     <a href="#Graph">Graph <span class="ct">2</span></a>
     <a href="#Audit---Governance">Audit &amp; Governance <span class="ct">4</span></a>
-    <a href="#Dashboard">Dashboard <span class="ct">5</span></a>
-    <a href="#Analytics">Analytics <span class="ct">17</span></a>
+    <a href="#Dashboard">Dashboard <span class="ct">6</span></a>
+    <a href="#Analytics">Analytics <span class="ct">21</span></a>
     <a href="#Usage">Usage <span class="ct">1</span></a>
     <a href="#Telemetry">Telemetry <span class="ct">1</span></a>
-    <a href="#Health">Health <span class="ct">5</span></a>
+    <a href="#Health">Health <span class="ct">6</span></a>
     <a href="#billing">billing <span class="ct">7</span></a>
     <a href="#referral">referral <span class="ct">2</span></a>
-    <a href="#residency">residency <span class="ct">2</span></a>
+    <a href="#residency">residency <span class="ct">3</span></a>
     <a href="#join">join <span class="ct">2</span></a>
+    <a href="#Ask">Ask <span class="ct">1</span></a>
+    <a href="#Kora">Kora <span class="ct">1</span></a>
+    <a href="#Notifications">Notifications <span class="ct">6</span></a>
+    <a href="#OpenAI-plugin-verification">OpenAI plugin verification <span class="ct">1</span></a>
     <div class="grp">Maintenance</div>
     <a href="#regen">Keeping this page honest</a>
   </nav>
 
   <main>
+
 
 <section id="base">
   <h2>Base URL, auth and conventions</h2>
@@ -140,7 +146,7 @@ table.api code{font-size:.86em}
       <tr><td>API key</td><td><code>X-API-Key: &lt;key&gt;</code> — or <code>Authorization: Bearer &lt;key&gt;</code>, which is what remote MCP clients configured for API-key auth actually send</td><td>Registered agents; the usual choice for MCP.</td></tr>
     </tbody>
   </table>
-  <p><strong>Seventeen</strong> of the operations below need no credential, each marked <code>no auth</code> in the tables. They are not only probes and public documents, so the full list is worth reading rather than assuming:</p>
+  <p>20 of the operations below need no credential, each marked <code>no auth</code> in the tables. They are not only probes and public documents, so the categories are worth reading rather than assuming:</p>
   <ul>
     <li><strong>Health</strong> — five probes.</li>
     <li><strong>OAuth discovery</strong> — three <code>.well-known</code> documents, plus the dynamic client registration shim, which echoes a fixed pre-registered public PKCE client rather than creating one.</li>
@@ -148,6 +154,32 @@ table.api code{font-size:.86em}
     <li><strong>Code-claiming endpoints</strong> — the pair claim, and the join claim and validate. The code <em>is</em> the credential, so these are unauthenticated by design and are the security-interesting members of this list: a pair claim self-registers an agent.</li>
     <li><strong>Telemetry ingest</strong> and the <strong>public plan catalogue</strong>.</li>
   </ul>
+  <p>The full list is generated from the same document as the endpoint tables, so it cannot fall behind the code:</p>
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>Why it is open</th></tr></thead>
+    <tbody>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/kemory-cells</code></td><td>Kemory Cells</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-authorization-server</code></td><td>Oauth Authorization Server</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource</code></td><td>Oauth Protected Resource</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource/mcp/v1</code></td><td>Oauth Protected Resource Mcp</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/openai-apps-challenge</code></td><td>Openai Apps Challenge</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/artifacts/{artifact_id}/blob</code></td><td>Stream artifact binary (signed-URL auth — no bearer needed)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code></td><td>Kemory&#x27;s plan catalogue, unauthenticated</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/{artifact_id}/blob</code></td><td>Stream a binary artifact body (signed-URL auth, no bearer needed)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code></td><td>Claim a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code></td><td>Validate a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/pair/{code}/claim</code></td><td>Self‑register an agent using a pair code (called by the AI)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/telemetry</code></td><td>Ingest an opt-in anonymous CLI telemetry event</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/artifacts/{token}</code></td><td>Stream a LocalFS artifact by signed token</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/deep</code></td><td>Deep Health</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/history</code></td><td>Health History</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/live</code></td><td>Liveness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/pipeline</code></td><td>Pipeline Health</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/ready</code></td><td>Readiness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/retrieval</code></td><td>Retrieval Health</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/oauth/register</code></td><td>Oauth Register</td></tr>
+    </tbody>
+  </table>
   <p class="note"><strong>A credential is not the whole access boundary.</strong> Some Analytics and Consolidation operations additionally require an internal-staff identity and are not reachable with an API key or an agent token, however valid.</p>
 
   <h3>Scoping</h3>
@@ -236,8 +268,10 @@ table.api code{font-size:.86em}
 </section>
 
 
+
+
 <section id="Memories">
-  <h2>Memories <span class="ct">21</span></h2>
+  <h2>Memories <span class="ct">24</span></h2>
   <p>Create, read, search and version memories. The core surface — everything else is either feeding this or reading from it.</p>
   
   <table class="api">
@@ -246,7 +280,9 @@ table.api code{font-size:.86em}
             <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories</code></td><td>Create a memory</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/aggregate</code></td><td>Aggregation queries over memories (count / sum / list / duration)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/bulk</code></td><td>Bulk-create memories (backfill / import)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/bulk-move</code></td><td>Preview or apply an audited memory namespace/tag move</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/memories/export</code></td><td>Export all active memories as a streamed JSON download</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/facets</code></td><td>Count Memory Explorer facets exactly</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/purge</code></td><td>Purge (soft-delete) all memories, optionally scoped to a namespace</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/search</code></td><td>Search memories</td></tr>
       <tr><td><span class="m m-delete">DELETE</span></td><td><code>/api/v1/memories/{memory_id}</code></td><td>Delete a memory</td></tr>
@@ -256,6 +292,7 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/memories/{memory_id}/rate</code></td><td>Rate a recalled memory (KMV-ANA-06) — thumbs up/down + reason</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/memories/{memory_id}/similar</code></td><td>Find cosine-similar memories (dedup affordance)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/namespaces</code></td><td>List namespaces</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/namespaces/hygiene</code></td><td>Count exact singleton and two-item namespace tail</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/namespaces/{namespace}/compressed</code></td><td>Multi-level memory read (L1 raw / L2 AAAK / L3.1 concept / L4 cognition)</td></tr>
       <tr><td><span class="m m-put">PUT</span></td><td><code>/api/v1/namespaces/{namespace}/description</code></td><td>Set a namespace&#x27;s human-readable description (S9N-6188)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/namespaces/{namespace}/merge-into/{target}</code></td><td>Merge one namespace into another (memories, chats, artifacts, policy)</td></tr>
@@ -362,7 +399,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="AI-Chats">
-  <h2>AI Chats <span class="ct">10</span></h2>
+  <h2>AI Chats <span class="ct">13</span></h2>
   <p>Captured conversations from ChatGPT, Claude, Gemini, Perplexity and Manus — upsert, list, classify and move.</p>
   
   <table class="api">
@@ -376,7 +413,10 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/upload</code></td><td>Upload a binary artifact (file / audio / video / image) for a turn</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/{artifact_id}/blob</code><span class="flag pub">no auth</span></td><td>Stream a binary artifact body (signed-URL auth, no bearer needed)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/classify</code></td><td>Suggest destination namespaces for a chat based on its content</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/context</code></td><td>Stored session digest for one captured chat (read-only, no regeneration)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/move</code></td><td>Move a chat to a different namespace</td></tr>
+      <tr><td><span class="m m-patch">PATCH</span></td><td><code>/api/v1/chats/{chat_id}/project-metadata</code></td><td>Enrich project identity without changing stored turns</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/timeline</code></td><td>Unified cross-surface timeline for one chat (KMV-WA-E3-S2)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/chats/{chat_id}/turns:batch</code></td><td>Append (or upsert by source_turn_id) a batch of turns</td></tr>
     </tbody>
   </table>
@@ -442,7 +482,7 @@ table.api code{font-size:.86em}
     <tbody>
             <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/agents</code></td><td>List user&#x27;s agents</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/agents</code></td><td>Register a new agent</td></tr>
-      <tr><td><span class="m m-delete">DELETE</span></td><td><code>/api/v1/agents/{agent_id}</code></td><td>Delete a revoked agent</td></tr>
+      <tr><td><span class="m m-delete">DELETE</span></td><td><code>/api/v1/agents/{agent_id}</code></td><td>Delete a revoked agent (or revoke-and-delete with ?force=true)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/agents/{agent_id}</code></td><td>Get agent details</td></tr>
       <tr><td><span class="m m-patch">PATCH</span></td><td><code>/api/v1/agents/{agent_id}</code></td><td>Rename an agent&#x27;s friendly display name</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/agents/{agent_id}/approve</code></td><td>Approve a pending agent</td></tr>
@@ -501,13 +541,18 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="MCP">
-  <h2>MCP <span class="ct">1</span></h2>
+  <h2>MCP <span class="ct">6</span></h2>
   <p>Connected MCP client status.</p>
   
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
             <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/mcp/clients</code></td><td>List Mcp Clients</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/mcp/clients/{client_slug}/connect</code></td><td>Start Mcp Connect</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/mcp/clients/{client_slug}/revoke/complete</code></td><td>Complete Mcp Revoke</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/mcp/clients/{client_slug}/revoke/start</code></td><td>Start Mcp Revoke</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/mcp/org-selection</code></td><td>Get Mcp Org Selection</td></tr>
+      <tr><td><span class="m m-put">PUT</span></td><td><code>/api/v1/mcp/org-selection</code></td><td>Put Mcp Org Selection</td></tr>
     </tbody>
   </table>
 </section>
@@ -523,6 +568,18 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource</code><span class="flag pub">no auth</span></td><td>Oauth Protected Resource</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource/mcp/v1</code><span class="flag pub">no auth</span></td><td>Oauth Protected Resource Mcp</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/oauth/register</code><span class="flag pub">no auth</span></td><td>Oauth Register</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="Cells-directory">
+  <h2>Cells directory <span class="ct">1</span></h2>
+  <p>Unauthenticated residency-cell directory — which cells exist and their public hosts, so clients route to the right region without a hardcoded list.</p>
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/kemory-cells</code><span class="flag pub">no auth</span></td><td>Kemory Cells</td></tr>
     </tbody>
   </table>
 </section>
@@ -615,13 +672,14 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="Dashboard">
-  <h2>Dashboard <span class="ct">5</span></h2>
+  <h2>Dashboard <span class="ct">6</span></h2>
   <p>Aggregates backing the dashboard home.</p>
   
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
-            <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/memories-by-agent</code></td><td>Per-agent memories-written series (Analytics chart 4)</td></tr>
+            <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/embedding-coverage</code></td><td>Embedding coverage for the calling user&#x27;s own rows</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/memories-by-agent</code></td><td>Per-agent memories-written series (Analytics chart 4)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/overview</code></td><td>Dashboard overview — counts, services, and recent activity</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/search-latency</code></td><td>Per-day search latency p50/p95 (Analytics chart 2)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/dashboard/summary-skips</code></td><td>Weekly optimiser summary-skip count (Analytics chart 6)</td></tr>
@@ -631,7 +689,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="Analytics">
-  <h2>Analytics <span class="ct">17</span></h2>
+  <h2>Analytics <span class="ct">21</span></h2>
   <p>Storage, usage and quality analytics.</p>
   
   <table class="api">
@@ -642,6 +700,9 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/analytics/activation/stages</code></td><td>Onboarding-stage timestamps for a batch of accounts (admin users list)</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/agent-activity</code></td><td>Agent activity over time — reads/writes/denied per day</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/exec-dashboard</code></td><td>KMV-ANA-12 — executive dashboard: health scorecard + segmentation + usage distribution + savings</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/exec-dashboard/platform</code></td><td>KMV-ANA-12 — the exec dashboard pooled across EVERY org (platform scope)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/recall/memories</code></td><td>S9N-7207 — per-memory recall counts, or the memories never recalled in the window</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/recall/summary</code></td><td>S9N-7207 — recall volume and TOKEN COST for the caller&#x27;s own account</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/savings</code></td><td>KMV-ANA-08 — cumulative modelled savings for the caller&#x27;s own account, compaction vs routing</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/scorecard</code></td><td>KMV-ANA-10 — the 5/5/5 scorecard: lead, lag, and health indicators, always together</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/storage</code></td><td>Storage analytics — memories by tier + type, approximate size, totals</td></tr>
@@ -652,6 +713,7 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/usage-ladder/progression</code></td><td>KMV-ANA-07 — % of accounts reaching usage_L1/usage_L2 within 30 days of first connect</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/value-mode</code></td><td>KMV-ANA-11 — continuity / cross-AI / builder classification for the caller&#x27;s own account</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/value-mode/activation</code></td><td>KMV-ANA-11 — activation rate segmented by value mode</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/value-mode/activation/platform</code></td><td>KMV-ANA-11 — activation rate by value mode, pooled across EVERY org</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/value-mode/segment-mix</code></td><td>KMV-ANA-11 — org-wide segment mix, insurance-retained vs genuinely-dormant split</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/analytics/value-mode/segment-mix/trend</code></td><td>KMV-ANA-11 — segment mix over time, one snapshot per week</td></tr>
     </tbody>
@@ -683,7 +745,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="Health">
-  <h2>Health <span class="ct">5</span></h2>
+  <h2>Health <span class="ct">6</span></h2>
   <p>Liveness, readiness and deep dependency health.</p>
   
   <table class="api">
@@ -694,6 +756,7 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/live</code><span class="flag pub">no auth</span></td><td>Liveness</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/pipeline</code><span class="flag pub">no auth</span></td><td>Pipeline Health</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/health/ready</code><span class="flag pub">no auth</span></td><td>Readiness</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/health/retrieval</code><span class="flag pub">no auth</span></td><td>Retrieval Health</td></tr>
     </tbody>
   </table>
 </section>
@@ -730,7 +793,7 @@ table.api code{font-size:.86em}
 </section>
 
 <section id="residency">
-  <h2>residency <span class="ct">2</span></h2>
+  <h2>residency <span class="ct">3</span></h2>
   <p>Data-residency region selection. Proxies Core_Backend.</p>
   <p class="note">These endpoints forward to Core_Backend. Kemory serves the route; the behaviour behind it is owned elsewhere.</p>
   <table class="api">
@@ -738,6 +801,7 @@ table.api code{font-size:.86em}
     <tbody>
             <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/residency</code></td><td>Get Residency</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/residency</code></td><td>Choose Residency</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/residency/cell</code></td><td>Get Residency Cell</td></tr>
     </tbody>
   </table>
 </section>
@@ -755,6 +819,59 @@ table.api code{font-size:.86em}
   </table>
 </section>
 
+<section id="Ask">
+  <h2>Ask <span class="ct">1</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/ask</code></td><td>Synthesized answer over retrieved memory, with its sources</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="Kora">
+  <h2>Kora <span class="ct">1</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/kora/v1/chat/orchestrated/stream</code></td><td>Ask Kora — relays core-ai-backend&#x27;s orchestrated chat stream</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="Notifications">
+  <h2>Notifications <span class="ct">6</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/notifications</code></td><td>List the caller&#x27;s notifications</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/notifications/preferences</code></td><td>Per-family notification preferences</td></tr>
+      <tr><td><span class="m m-put">PUT</span></td><td><code>/api/v1/notifications/preferences</code></td><td>Update notification preferences</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/notifications/read-all</code></td><td>Mark all as read, except Action required</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/notifications/unread-count</code></td><td>Unread count for the header bell</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/notifications/{notification_id}/read</code></td><td>Mark one notification as read</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="OpenAI-plugin-verification">
+  <h2>OpenAI plugin verification <span class="ct">1</span></h2>
+  
+  
+  <table class="api">
+    <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
+    <tbody>
+            <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/openai-apps-challenge</code><span class="flag pub">no auth</span></td><td>Openai Apps Challenge</td></tr>
+    </tbody>
+  </table>
+</section>
+
     <section id="regen">
       <h2>Keeping this page honest</h2>
       <p>The endpoint tables on this page are generated from the running service's own OpenAPI document by <code>scripts/generate_api_reference.py</code> in the Kemory repository. They are not maintained by hand, because a reference covering this many operations drifts the moment someone adds a route — and a docs page that is quietly wrong is worse than no page at all, since it is trusted.</p>
@@ -768,6 +885,9 @@ table.api code{font-size:.86em}
     <p>Questions: <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a> · <a href="../">Kemory docs</a> · <a href="../../legal/privacy/">Privacy</a></p>
   </div>
 </footer>
+<!-- The shared mobile-nav behaviour every other docs page loads. Emitted here
+     so a regeneration keeps this page in step with the site instead of
+     quietly dropping the hamburger, as it did before this was added. -->
 <script src="../../assets/nav.js" defer></script>
 <script src="../../assets/consent.js" defer></script>
 </body>

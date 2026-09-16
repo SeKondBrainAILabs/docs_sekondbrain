@@ -72,77 +72,66 @@ that make memory get used rather than merely be available. The manual entry unde
 [Connect a local client](#connect-a-local-client) works too, and gives you the same tools
 with none of the hooks.
 
-**1. Install the plugin**, inside Claude Code:
+**1. Install it**, in a Claude Code terminal:
 
 ```
-/plugin marketplace add SeKondBrainAILabs/claude-kemory
+/plugin marketplace add SeKondBrainAILabs/kemory-plugin
 /plugin install kemory@kemory
+/reload-plugins
 ```
 
-Nothing is downloaded beyond the plugin itself. Its bundled MCP entry is an HTTP connection
-to `api.kemory.s9n.ai/mcp/v1`, so there is no binary to install and nothing to put on `PATH`.
+`/reload-plugins` is not optional — until it runs, the plugin's commands do not exist yet.
+Nothing is downloaded beyond the plugin itself: its bundled MCP entry launches a script
+inside the plugin, so there is no binary to install and nothing to put on `PATH`.
 
-**2. Give it one credential.** The tools and the hooks read the same environment variable, so
-a single export turns on both halves:
+**2. Sign in.**
 
-```bash
-export KEMORY_API_KEY="kemory_..."
+```
+/kemory:login
 ```
 
-Put it where your shell loads it on startup, then restart Claude Code fully — quitting the
-window is not enough. It must be an environment *variable*: a key written into an MCP config
-file authenticates the tools and is invisible to the hooks, which never read MCP config.
+It prints one link. Open it, approve in the browser, and the credential is written for you —
+nothing to install, nothing to paste. It writes the same file the [CLI](cli/) does, so a CLI
+installed later finds you already signed in. On a headless machine,
+`export KEMORY_API_KEY="kemory_..."` instead.
 
-Prefer a browser login to a key in your environment? Install the
-[CLI](cli/#install), then `kemory login` and `kemory connect`. That writes its own entry
-backed by a short-lived, self-refreshing token in `~/.kemory`, with no credential in any
-config file — disable the plugin's bundled entry if you go that way, so you are not running
-two.
-
-**3. Confirm it works.**
+**3. Restart Claude Code fully** — quitting the window is not enough — then confirm:
 
 ```
 /kemory:status
 ```
 
 Two checks have to pass: credentials resolve, and the API accepts them. The same output
-prints how context injection and capture are configured. `/mcp` then shows which Kemory server Claude Code is actually talking
-to. Context injection begins with your *next* session, because the hook that performs it runs
+prints which server will serve the tools and how capture and context injection are
+configured. `/mcp` then shows which Kemory server Claude Code is actually talking to.
+Context injection begins with your *next* session, because the hook that performs it runs
 at session start.
-
-**4. Keep it current.** Plugins do not update themselves. What you installed is a snapshot,
-and hooks are where this plugin's behaviour lives — an install left alone keeps running the
-set that was current the day you ran it, however much has been fixed since:
-
-```
-/plugin update kemory@kemory
-```
-
-It refreshes the marketplace on its way through, so this is the whole command. Restart Claude
-Code afterwards to load the new hooks — the update itself does not apply them. `/kemory:status`
-prints the installed version, and the [changelog](https://github.com/SeKondBrainAILabs/claude-kemory/blob/main/CHANGELOG.md)
-says what moved.
 
 ### What the plugin adds
 
 Connected is not the same as remembering. Tools sit unused unless something prompts the model
-to reach for them; that prompting is the whole of what the plugin contributes. Five hooks,
-none of which need remembering:
+to reach for them; that prompting is the whole of what the plugin contributes. Seven hooks,
+none of which need remembering — five on by default, and the two that could surprise you
+ship off:
 
 | Hook | When | What it does |
 |---|---|---|
-| `session-start.sh` | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
-| `prompt-recall.sh` | Every prompt you send | Searches your vault with what you just typed and injects what matches, so relevant history arrives without you asking. **On by default**, and the one hook that sends your prompt text — `KEMORY_PROMPT_RECALL=0` turns it off |
-| `rate-reminder.sh` | After a recall tool returns something rateable | Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call |
-| inline | Before compaction | Prompts consolidation before a long session is summarised away |
-| `capture.sh` | Session end | **Opt-in, off by default.** Stores a bounded, redacted digest of the session |
+| context injection | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
+| prompt recall | Every prompt you send | Searches your vault with what you just typed and injects what matches. **On by default**, and the one hook that sends your prompt text — `KEMORY_PROMPT_RECALL=0` turns it off |
+| recall approval | Before a Kemory tool call | Auto-approves read-only tools so memory stops interrupting you. Writes still ask, every time |
+| rate reminder | After a recall returns something rateable | Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call |
+| consolidate reminder | After compaction | Prompts the agent to store facts that would otherwise survive only as a summary |
+| store nudge | End of a turn | **Opt-in, off by default.** When the turn settled something durable and nothing was written, asks for it before the turn ends |
+| session capture | End of a turn, session end | **Opt-in, off by default.** Stores a bounded, redacted digest of your own prompts |
 
-It also ships the `/kemory:status` command and a skill covering how to recall, rate, store and
-phrase memories so semantic search can find them again. That skill is the standing instruction
-from [Optimise your AIs](optimise/), already written and kept current — with the plugin
-installed you do not need to paste it into `CLAUDE.md` yourself.
+It also ships `/kemory:login`, `/kemory:status`, and a skill covering how to recall, rate,
+store and phrase memories so semantic search can find them again. That skill is the standing
+instruction from [Optimise your AIs](optimise/), already written and kept current — with the
+plugin installed you do not need to paste it into `CLAUDE.md` yourself.
 
-Source: [SeKondBrainAILabs/claude-kemory](https://github.com/SeKondBrainAILabs/claude-kemory).
+Every environment variable, what each hook sends, the surfaces that do and do not have
+plugins, and what to do when nothing seems to happen: **[the plugin documentation](plugin/)**.
+Source: [SeKondBrainAILabs/kemory-plugin](https://github.com/SeKondBrainAILabs/kemory-plugin).
 
 ### Run one server, not two
 
@@ -152,42 +141,25 @@ tell which lane a result came from. Pick one:
 
 | Route | What connects | Use when |
 |---|---|---|
-| The plugin's bundled entry | HTTP to `api.kemory.s9n.ai/mcp/v1`, carrying `KEMORY_API_KEY` | Default. Installed with the plugin, nothing to configure beyond the variable |
-| `kemory connect` or `kemory mcp install --host claude-code` | HTTP entry in `~/.claude.json` | You want the tools without the plugin |
+| The plugin's bundled entry | A launcher that resolves the same credential the hooks use | Default. Installed with the plugin, nothing to configure beyond signing in |
+| `kemory connect` or `kemory mcp install --host claude-code` | An entry in `~/.claude.json` | You want the tools without the plugin |
 | *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
 
-If you ran `kemory connect` before installing the plugin, remove the `kemory` entry from
-`~/.claude.json`. If you use the claude.ai connector, disable the plugin's bundled entry.
-The hooks are independent of all three — they call the API directly, and keep working as long
-as `KEMORY_API_KEY` is exported or `kemory login` has run.
+You do not have to police this yourself: the bundled entry stands down when this machine
+already has a server for the same Kemory, and says so rather than starting and exposing
+nothing. The hooks are unaffected either way — they call the API directly. The one case it
+cannot detect is a claude.ai connector, which lives inside Claude and is invisible from a
+shell; disable the bundled entry under `/mcp` if you use it.
 
-### Configuring it
+### What leaves your machine
 
-Set these in the `env` block of `~/.claude/settings.json`, or export them in your shell.
-
-| Variable | Default | Meaning |
-|---|---|---|
-| `KEMORY_API_KEY` | — | Authenticates both the bundled tools and the hooks. The one variable most setups need |
-| `KEMORY_PROMPT_RECALL` | `1` | `0` stops the per-prompt vault search, and with it the only default-on transmission of your prompt text |
-| `KEMORY_CONTEXT` | `1` | `0` disables session-start injection |
-| `KEMORY_CONTEXT_DEPTH` | `l3` | Summary depth requested — `l3`, or `l4` for a synthesised cross-namespace briefing |
-| `KEMORY_CONTEXT_MAX_CHARS` | `4000` | Injection budget; summaries beyond it are dropped with a note (floor 500) |
-| `KEMORY_CONTEXT_NAMESPACES` | all | Comma-separated allowlist, e.g. `user:preferences,shared` |
-| `KEMORY_CONTEXT_TIMEOUT` | `6` | Seconds to wait for the API before giving up |
-| `KEMORY_QUIET_SETUP` | `0` | `1` suppresses the "not configured yet" notice |
-| `KEMORY_AUTO_CAPTURE` | `0` | `1` enables the end-of-session digest |
-| `KEMORY_CAPTURE_NAMESPACE` | `shared` | Where digests are written |
-| `KEMORY_CAPTURE_MAX_TURNS` | `12` | How many recent turns a digest may include |
-| `KEMORY_ENV` | `prod` | Which credentials file to read |
-| `KEMORY_URL` | hosted Kemory | Point the hooks at a self-hosted or [Community Edition](community/) instance |
-
-**What leaves your machine.** Two hooks transmit anything. **Prompt recall is on by default**
-and sends the text of each prompt to your Kemory instance as a search query — it skips
-prompts under 12 characters and anything starting with `/`, `!` or `#`, so slash commands are
-never sent. **Capture is off** unless you set it, because it uploads your own turns. Context
-injection sends only your credential, and the rating and approval hooks make no network calls
-at all. The full per-hook policy is in the
-[plugin README](https://github.com/SeKondBrainAILabs/claude-kemory#privacy-policy).
+Two hooks transmit anything. **Prompt recall is on by default** and sends the text of each
+prompt to your Kemory instance as a search query — it skips prompts under 12 characters and
+anything starting with `/`, `!` or `#`, so slash commands are never sent. **Capture is off**
+unless you set it, because it uploads your own turns. Context injection sends only your
+credential, and the approval, rating and store-nudge hooks make no network calls at all. The
+full per-hook policy, with the redaction rules and the local files the plugin keeps, is in
+[the plugin documentation](plugin/#privacy).
 
 ### If nothing seems to happen
 
@@ -195,12 +167,13 @@ The hooks fail quiet by design: with no credentials and no Kemory server they no
 than erroring, so a broken setup looks like an idle one. The plugin prints a short setup
 notice the first time and then stays silent for 24 hours rather than nagging.
 
-Run `/kemory:status` — it names which check failed. No credential means `KEMORY_API_KEY` was
-not exported into the environment Claude Code started from, or the CLI is not logged in. A
-rejected one means it expired or was revoked. No `kemory_*` tools at all is usually the same
-problem seen from the other side: the bundled entry sent an unexpanded variable and the API
-answered `401`. Tools present but no context at session start is the config-file case — the
-key authenticates the tools, and the hooks cannot see it.
+Run `/kemory:status` — it names which check failed. `Unknown command: /kemory:login` means
+the plugin is installed but not loaded yet; run `/reload-plugins`. No credential means
+nothing was exported into the environment Claude Code started from and no browser login is
+stored. A rejected one means it expired or was revoked. Tools present but no context at
+session start is the config-file case — a key inside an MCP config file authenticates the
+tools, and the hooks never read MCP config.
+[The full troubleshooting table](plugin/#trouble) covers the rest.
 
 ---
 
@@ -257,7 +230,7 @@ the [Kemory CLI](cli/).
 
 Most clients treat a tool as something to reach for when asked. Put this in your project
 instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
-[Claude Code plugin](#connect-claude-code) ships this as a skill, so plugin users can skip it:
+[Kemory plugin](plugin/) ships this as a skill, so plugin users can skip it:
 
 ```markdown
 You have Kemory memory tools available.

@@ -230,7 +230,7 @@ the [Kemory CLI](cli/).
 
 Most clients treat a tool as something to reach for when asked. Put this in your project
 instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
-[Claude Code plugin](#connect-claude-code) ships this as a skill, so plugin users can skip it:
+[Kemory plugin](plugin/) ships this as a skill, so plugin users can skip it:
 
 ```markdown
 You have Kemory memory tools available.

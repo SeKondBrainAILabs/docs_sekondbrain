@@ -31,7 +31,7 @@ claiming a credential.
 │   ├── docs.md             copy source of truth (prose)
 │   ├── optimise/           the standing instruction, and where it goes in each AI
 │   ├── retrieval/          how search works, which read tool to use
-│   ├── plugin/             the Claude Code plugin — hooks, config, what it sends
+│   ├── plugin/             the Kemory plugin — hooks, config, what it sends
 │   ├── cli/                the kemory command
 │   ├── api/                REST API reference
 │   ├── benchmarks/         LongMemEval-S method and results

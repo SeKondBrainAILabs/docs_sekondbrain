@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory plugin for Claude Code — install, hooks, configuration | SeKondBrain</title>
-<meta name="description" content="The Kemory plugin for Claude Code: install and sign in, what each of the seven hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing.">
+<title>The Kemory plugin — install, hooks, configuration | SeKondBrain</title>
+<meta name="description" content="The Kemory plugin: install and sign in, what each of the seven hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing. Claude Code is the host it ships on today.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/plugin/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
-<meta property="og:title" content="Kemory plugin for Claude Code">
+<meta property="og:title" content="The Kemory plugin">
 <meta property="og:description" content="Hooks that make an agent actually use memory — install, configuration, and what leaves your machine.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/plugin/">
 <meta property="og:type" content="website">
@@ -41,10 +41,11 @@
 </header>
 
 <div class="wrap hero">
-  <span class="pill"><i></i>Claude Code plugin · Apache-2.0</span>
+  <span class="pill"><i></i>Agent plugin · Apache-2.0</span>
   <h1>Tools make memory possible.<br><em>Hooks make it happen.</em></h1>
   <p class="lede">An MCP server gives an agent memory <em>tools</em>. This plugin makes it actually use them: relevant memories arrive under every prompt, a turn that settles something durable does not end with it unwritten, and recalls get rated so retrieval improves instead of decaying.</p>
   <p>It is a client and nothing more. It sends data to one place — the Kemory instance you point it at — and adds no telemetry, no analytics and no endpoint of its own. With no credential configured, every hook no-ops and nothing is sent.</p>
+  <p class="muted">One plugin, one tree, a manifest per host. <strong>Claude Code is the first host</strong> — the one it installs and is tested on today, and the commands on this page are its commands. A Grok Build manifest ships alongside and that catalog entry is in review.</p>
   <div class="addr">
     <span class="k">Marketplace</span>
     <code>SeKondBrainAILabs/kemory-plugin</code>
@@ -56,7 +57,7 @@
   <nav class="side" aria-label="On this page">
     <div class="grp">Start</div>
     <a href="#what">What it adds</a>
-    <a href="#surfaces">Which surface you are on</a>
+    <a href="#surfaces">Hosts and surfaces</a>
     <a href="#install">Install</a>
     <a href="#signin">Sign in</a>
     <a href="#confirm">Confirm it works</a>
@@ -79,7 +80,7 @@
 
     <section id="what">
       <h2>What it adds</h2>
-      <p>You can reach Kemory from Claude Code without this plugin — a config-file entry gives you the same <code>kemory_*</code> tools, and <a href="../#connect-local">Connect a local client</a> covers that path. What it does not give you is any reason for the model to reach for them. A tool sits unused unless something prompts it, and prompting is the whole of what the plugin contributes.</p>
+      <p>You can reach Kemory from any host without this plugin — a config-file entry gives you the same <code>kemory_*</code> tools, and <a href="../#connect-local">Connect a local client</a> covers that path. What it does not give you is any reason for the model to reach for them. A tool sits unused unless something prompts it, and prompting is the whole of what the plugin contributes.</p>
       <ul>
         <li><strong>A standing instruction that ships with the plugin</strong> — nothing to paste into <code>CLAUDE.md</code>, nothing to keep in sync per project.</li>
         <li><strong>Prompt recall</strong> — every substantive prompt is searched against your vault and the matches arrive before the agent answers, without it deciding to look.</li>
@@ -89,12 +90,22 @@
         <li><strong>Session capture</strong> — <em>opt-in.</em> A bounded, redacted digest of what the session was about, stored as it goes.</li>
         <li><strong><code>/kemory:status</code></strong> — one command that says what is and is not working.</li>
       </ul>
-      <p>One plugin, one tree, a manifest per host: <code>.claude-plugin/plugin.json</code> for Claude Code and <code>.grok-plugin/plugin.json</code> for Grok Build, both carrying the same version. Claude Code is the host it is installed and tested on today.</p>
       <p>It works against hosted Kemory and against the open-source <a href="../community/">Community Edition</a> — one variable, <code>KEMORY_URL</code>, moves the whole plugin.</p>
     </section>
 
     <section id="surfaces">
-      <h2>Which surface<br>you are on</h2>
+      <h2>Hosts and surfaces</h2>
+      <p>The plugin is one tree with a manifest per host, so a second host is a manifest rather than a fork. <code>${CLAUDE_PLUGIN_ROOT}</code> in the hook and MCP entries is what the hosts resolve, not a Claude-only spelling — the hooks, skills, commands and scripts underneath are shared.</p>
+      <table class="tight">
+        <thead><tr><th>Host</th><th>Manifest</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Claude Code</td><td><code>.claude-plugin/plugin.json</code></td><td><strong>Ships today.</strong> The host it installs and is tested on, and the one every command on this page is written for</td></tr>
+          <tr><td>Grok Build</td><td><code>.grok-plugin/plugin.json</code></td><td>Same manifest, same version. The catalog entry is in review</td></tr>
+        </tbody>
+      </table>
+      <p>A release check fails if the two manifests drift: nothing at runtime reads both, so a version bump applied to one and not the other would ship a plugin that disagrees with itself, and the host reading the stale manifest would never see the update — every marketplace gates on the version string, not the commit.</p>
+
+      <h3>Which Claude surface you are on</h3>
       <p>Read this before the install commands. <strong>Claude Code and Claude Desktop are different products, and only one of them has plugins at all.</strong> The row that trips people is the middle one: the plugin works there, the command to manage it does not.</p>
       <table>
         <thead><tr><th>Surface</th><th>Plugin: tools + hooks</th><th><code>/plugin</code></th><th>How to install</th></tr></thead>
@@ -114,7 +125,7 @@
 
     <section id="install">
       <h2>Install</h2>
-      <p>In a Claude Code <strong>terminal</strong>:</p>
+      <p>On Claude Code, in a <strong>terminal</strong>:</p>
 <pre><code>/plugin marketplace add SeKondBrainAILabs/kemory-plugin
 /plugin install kemory@kemory
 /reload-plugins</code></pre>

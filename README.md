@@ -31,6 +31,10 @@ claiming a credential.
 │   ├── docs.md             copy source of truth (prose)
 │   ├── optimise/           the standing instruction, and where it goes in each AI
 │   ├── retrieval/          how search works, which read tool to use
+│   ├── plugin/             the Claude Code plugin — hooks, config, what it sends
+│   ├── cli/                the kemory command
+│   ├── api/                REST API reference
+│   ├── benchmarks/         LongMemEval-S method and results
 │   └── community/          Community Edition guide and versioned sources
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
@@ -52,6 +56,14 @@ claiming a credential.
 Edit prose in the Markdown first, then mirror it. The tool table between the
 `<!-- TOOLS:BEGIN -->` / `<!-- TOOLS:END -->` markers is generated in **both** files — never
 hand-edit it.
+
+**`kemory/plugin/` mirrors another repository.** Its source of truth is
+`SeKondBrainAILabs/kemory-plugin` — `README.md`, `plugin/README.md`, `PRIVACY.md`,
+`SECURITY.md` and the manifests under `plugin/`. Defaults, hook events and environment
+variable names come from the scripts themselves, not from prose about them. The `Connect
+Claude Code` section on the Kemory index is a summary of that page and has to move with it;
+it went stale once already, naming a repository that had been renamed and a hook set two
+releases old.
 
 ---
 

@@ -9,9 +9,13 @@ claiming a credential.
 | | |
 |---|---|
 | Live | https://docs.sekondbrain.ai |
-| Documentation URL for the listing | https://docs.sekondbrain.ai/kemory/ |
+| Documentation URL for the connector listing | https://docs.sekondbrain.ai/kemory/ |
+| Plugin homepage for the plugin directory listing | https://docs.sekondbrain.ai/kemory/plugin/ |
 | Repo | `SeKondBrainAILabs/docs_sekondbrain` (public) |
 | Owner | Product / Kemory |
+
+Both URLs above are submitted to external directories, so they are load-bearing: a rename
+that breaks either one breaks a published listing, not just an internal link.
 
 ---
 
@@ -216,8 +220,6 @@ directory requires.
 
 ## Deliberately not documented
 
-- **The `kemory` CLI.** Installing it needs a private repo and GitHub auth, so it cannot be
-  documented publicly without describing a path a reader cannot take.
 - **The pair-code flow.** It is the internal fast path. A public reader connecting a web AI
   should meet OAuth, and the page must be readable without claiming a code — that was the
   external security feedback that prompted this work.

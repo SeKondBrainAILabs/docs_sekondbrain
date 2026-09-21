@@ -181,13 +181,13 @@
       <table>
         <thead><tr><th>Hook</th><th>Event</th><th>What it does</th><th>Leaves your machine</th><th>Default</th></tr></thead>
         <tbody>
-          <tr><td>context injection</td><td><code>SessionStart</code></td><td>Injects your namespace summaries; warns once if Kemory is not set up yet</td><td>Your credential; reads summaries back</td><td>on</td></tr>
-          <tr><td>prompt recall</td><td><code>UserPromptSubmit</code></td><td>Searches your vault with the prompt you typed and injects what matches</td><td><strong>The text of your prompt</strong></td><td>on</td></tr>
-          <tr><td>recall approval</td><td><code>PreToolUse</code></td><td>Auto-approves Kemory <strong>read-only</strong> tools so memory stops interrupting you. Writes still ask, every time</td><td>Nothing</td><td>on</td></tr>
-          <tr><td>rate reminder</td><td><code>PostToolUse</code></td><td>Prompts the agent to rate the memories it actually used. Fires only when the response is rateable — a <code>recall_id</code> or a non-empty result list</td><td>Nothing</td><td>on</td></tr>
-          <tr><td>consolidate reminder</td><td><code>SessionStart</code> after compaction</td><td>Prompts the agent to store facts that would otherwise survive only as a summary</td><td>Nothing</td><td>on</td></tr>
-          <tr><td>store nudge</td><td><code>Stop</code></td><td>When the turn settled something durable and no Kemory write happened, asks for it before the turn ends</td><td>Nothing</td><td><strong>off</strong></td></tr>
-          <tr><td>session capture</td><td><code>Stop</code>, <code>SessionEnd</code></td><td>Stores a redacted digest of your own prompts: last 12 turns, 8000 characters</td><td>Your prompts, redacted</td><td><strong>off</strong></td></tr>
+          <tr><td>context injection</td><td data-label="Event"><code>SessionStart</code></td><td data-label="What it does">Injects your namespace summaries; warns once if Kemory is not set up yet</td><td data-label="Leaves your machine">Your credential; reads summaries back</td><td data-label="Default">on</td></tr>
+          <tr><td>prompt recall</td><td data-label="Event"><code>UserPromptSubmit</code></td><td data-label="What it does">Searches your vault with the prompt you typed and injects what matches</td><td data-label="Leaves your machine"><strong>The text of your prompt</strong></td><td data-label="Default">on</td></tr>
+          <tr><td>recall approval</td><td data-label="Event"><code>PreToolUse</code></td><td data-label="What it does">Auto-approves Kemory <strong>read-only</strong> tools so memory stops interrupting you. Writes still ask, every time</td><td data-label="Leaves your machine">Nothing</td><td data-label="Default">on</td></tr>
+          <tr><td>rate reminder</td><td data-label="Event"><code>PostToolUse</code></td><td data-label="What it does">Prompts the agent to rate the memories it actually used. Fires only when the response is rateable — a <code>recall_id</code> or a non-empty result list</td><td data-label="Leaves your machine">Nothing</td><td data-label="Default">on</td></tr>
+          <tr><td>consolidate reminder</td><td data-label="Event"><code>SessionStart</code> after compaction</td><td data-label="What it does">Prompts the agent to store facts that would otherwise survive only as a summary</td><td data-label="Leaves your machine">Nothing</td><td data-label="Default">on</td></tr>
+          <tr><td>store nudge</td><td data-label="Event"><code>Stop</code></td><td data-label="What it does">When the turn settled something durable and no Kemory write happened, asks for it before the turn ends</td><td data-label="Leaves your machine">Nothing</td><td data-label="Default"><strong>off</strong></td></tr>
+          <tr><td>session capture</td><td data-label="Event"><code>Stop</code>, <code>SessionEnd</code></td><td data-label="What it does">Stores a redacted digest of your own prompts: last 12 turns, 8000 characters</td><td data-label="Leaves your machine">Your prompts, redacted</td><td data-label="Default"><strong>off</strong></td></tr>
         </tbody>
       </table>
       </div>
@@ -374,15 +374,15 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
       <table>
         <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
         <tbody>
-          <tr><td><code>Unknown command: /kemory:login</code></td><td>The plugin is installed but not loaded yet — not a failed install</td><td>Run <code>/reload-plugins</code></td></tr>
-          <tr><td><code>/plugin</code> "isn't available in this environment"</td><td>You are in the Claude Code Desktop app or an IDE extension</td><td><code>claude plugin install kemory@kemory</code> in a shell, then restart the app fully</td></tr>
-          <tr><td>No <code>kemory_*</code> tools at all</td><td>The bundled server did not start — usually no credential, or it stood down for a duplicate</td><td><code>/kemory:status</code> names which; then <code>/kemory:login</code>, or remove the other entry</td></tr>
-          <tr><td>Tools work, nothing at session start</td><td>The credential is in an MCP config file, which the hooks never read</td><td><code>export KEMORY_API_KEY="..."</code> in your shell, then restart fully</td></tr>
-          <tr><td>Two copies of every tool</td><td>Two servers for the same Kemory</td><td>Disable the bundled entry under <code>/mcp</code>, or remove the config-file entry</td></tr>
-          <tr><td><code>401</code> on every call</td><td>The stored login expired or was revoked, or the key was reissued</td><td><code>/kemory:login</code>, or mint a new key</td></tr>
-          <tr><td>Installed, signed in, still quiet</td><td>Claude Code was not restarted, or this is the session the credential arrived in</td><td>Quit completely and reopen — injection starts with the <em>next</em> session</td></tr>
-          <tr><td>Recall returns nothing useful</td><td>The relevance floor is above what your vault matches</td><td>Lower <code>KEMORY_PROMPT_RECALL_MIN_RELEVANCE</code>, or raise <code>KEMORY_PROMPT_RECALL_LIMIT</code></td></tr>
-          <tr><td><code>Unknown tool</code> on an <code>s9nmem_*</code> name</td><td>A standing instruction or rules file written before the August 2026 rename</td><td>Change those names to <code>kemory_*</code>; reconnecting will not fix it</td></tr>
+          <tr><td><code>Unknown command: /kemory:login</code></td><td data-label="What it means">The plugin is installed but not loaded yet — not a failed install</td><td data-label="What to do">Run <code>/reload-plugins</code></td></tr>
+          <tr><td><code>/plugin</code> "isn't available in this environment"</td><td data-label="What it means">You are in the Claude Code Desktop app or an IDE extension</td><td data-label="What to do"><code>claude plugin install kemory@kemory</code> in a shell, then restart the app fully</td></tr>
+          <tr><td>No <code>kemory_*</code> tools at all</td><td data-label="What it means">The bundled server did not start — usually no credential, or it stood down for a duplicate</td><td data-label="What to do"><code>/kemory:status</code> names which; then <code>/kemory:login</code>, or remove the other entry</td></tr>
+          <tr><td>Tools work, nothing at session start</td><td data-label="What it means">The credential is in an MCP config file, which the hooks never read</td><td data-label="What to do"><code>export KEMORY_API_KEY="..."</code> in your shell, then restart fully</td></tr>
+          <tr><td>Two copies of every tool</td><td data-label="What it means">Two servers for the same Kemory</td><td data-label="What to do">Disable the bundled entry under <code>/mcp</code>, or remove the config-file entry</td></tr>
+          <tr><td><code>401</code> on every call</td><td data-label="What it means">The stored login expired or was revoked, or the key was reissued</td><td data-label="What to do"><code>/kemory:login</code>, or mint a new key</td></tr>
+          <tr><td>Installed, signed in, still quiet</td><td data-label="What it means">Claude Code was not restarted, or this is the session the credential arrived in</td><td data-label="What to do">Quit completely and reopen — injection starts with the <em>next</em> session</td></tr>
+          <tr><td>Recall returns nothing useful</td><td data-label="What it means">The relevance floor is above what your vault matches</td><td data-label="What to do">Lower <code>KEMORY_PROMPT_RECALL_MIN_RELEVANCE</code>, or raise <code>KEMORY_PROMPT_RECALL_LIMIT</code></td></tr>
+          <tr><td><code>Unknown tool</code> on an <code>s9nmem_*</code> name</td><td data-label="What it means">A standing instruction or rules file written before the August 2026 rename</td><td data-label="What to do">Change those names to <code>kemory_*</code>; reconnecting will not fix it</td></tr>
         </tbody>
       </table>
       </div>

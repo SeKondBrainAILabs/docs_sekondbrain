@@ -221,6 +221,38 @@ th,td{overflow-wrap:anywhere}
 .scroll-x th,.scroll-x td{white-space:nowrap;overflow-wrap:normal}
 .scroll-x td:first-child{white-space:normal;min-width:210px}
 
+/* ---------- ...and the same table on a phone ----------
+   `nowrap` buys a readable dense table on a desktop by trading wrapping for a
+   sideways scroll. On a phone that trade stops paying: in a 342px column the
+   seven-hook table renders 1675px wide, so four of its five columns — including
+   what each hook actually does — sit off-screen behind a gesture most readers
+   never make. A table nobody scrolls is a table nobody reads.
+
+   So below 700px these stop being tables and stack: one card per row, each cell
+   labelled with its own column heading from `data-label`. Exactly what the tool
+   tables above already do, for the same reason. A cell with no `data-label`
+   renders bare, so a table that has not been annotated degrades to plain stacked
+   text rather than breaking. */
+@media (max-width:700px){
+  .scroll-x{overflow-x:visible}
+  .scroll-x table,.scroll-x tbody,.scroll-x tr,.scroll-x td{display:block;width:auto}
+  .scroll-x thead{display:none}          /* headings move into the cells */
+  .scroll-x td{
+    white-space:normal;overflow-wrap:anywhere;
+    border-bottom:none;padding:0 0 10px;max-width:none;
+  }
+  .scroll-x td:last-child{padding-bottom:0}
+  .scroll-x tr{padding:14px 0;border-bottom:1px solid var(--hair-2)}
+  .scroll-x tr:first-child{padding-top:0}
+  /* The first cell is the row's subject, so it reads as the card's title. */
+  .scroll-x td:first-child{min-width:0;font-weight:600;font-size:15.5px}
+  .scroll-x td[data-label]::before{
+    content:attr(data-label);display:block;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--grey);margin-bottom:3px;
+  }
+}
+
 /* ---------- the tool tables ----------
    Two columns cannot work here. Tool names run 85px to 250px wide, so a
    content-sized column is as wide as `kemory_rehydrate_session_sources` and

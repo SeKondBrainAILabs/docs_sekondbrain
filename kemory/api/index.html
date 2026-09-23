@@ -13,8 +13,14 @@
 <link rel="stylesheet" href="../../assets/style.css">
 <style>
 :root{ --veil-a:rgba(120,140,255,.16); --veil-b:rgba(95,196,240,.16); }
-table.api td:first-child{width:1%;vertical-align:top}
-table.api td:nth-child(2){vertical-align:top}
+/* `width:1%` is the shrink-to-content trick, and it only means that while the
+   cells are still cells. Below 700px the shared stylesheet stacks them as
+   blocks, where 1% is simply 1% — it collapsed the method chip into a 3px
+   sliver. Scoped to the widths that still lay out as a table. */
+@media (min-width:701px){
+  table.api td:first-child{width:1%}
+}
+table.api td:first-child,table.api td:nth-child(2){vertical-align:top}
 /* A method and a path read better on one line — but only while there is a line
    to read them on. These beat the shared max-width:900px release rule on
    specificity, so they have to lift themselves. */
@@ -889,6 +895,7 @@ table.api code{font-size:.86em}
      so a regeneration keeps this page in step with the site instead of
      quietly dropping the hamburger, as it did before this was added. -->
 <script src="../../assets/nav.js" defer></script>
+<script src="../../assets/tables.js" defer></script>
 <script src="../../assets/consent.js" defer></script>
 </body>
 </html>

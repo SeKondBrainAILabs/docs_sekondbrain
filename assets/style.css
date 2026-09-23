@@ -221,6 +221,59 @@ th,td{overflow-wrap:anywhere}
 .scroll-x th,.scroll-x td{white-space:nowrap;overflow-wrap:normal}
 .scroll-x td:first-child{white-space:normal;min-width:210px}
 
+/* ---------- ...and every table on a phone ----------
+   A table on a 342px column has two ways to fail, and the site had both.
+
+   `.scroll-x` trades wrapping for a sideways scroll. That reads well on a
+   desktop and inverts on a phone: the seven-hook table renders 1675px wide, so
+   four of its five columns sit off-screen behind a gesture most readers never
+   make. A table nobody scrolls is a table nobody reads.
+
+   Every other table fails the opposite way. `overflow-wrap:anywhere` lets a
+   column shrink as far as the layout wants, and what it wants is to give the
+   prose column the room. Measured at 390px across the site: first columns
+   collapsing to 22-80px while the identifier inside them — `kemory_recall`,
+   `GET /api/v1/...`, `KEMORY_CONTEXT_MAX_CHARS` — breaks mid-token down a
+   narrow ribbon. 130 of roughly 160 tables, on 17 pages.
+
+   Both failures are the same mistake: a phone has no room for columns. So below
+   700px — where the side nav already gives up and the grid goes single-column —
+   tables stop being tables and stack. One card per row; the first cell is the
+   row's subject and reads as its title; every other cell carries its own column
+   heading, which `assets/tables.js` copies down from the header row.
+
+   The tool tables have done exactly this since they were written. This is that
+   pattern, generalised. A cell with no `data-label` renders bare, so a
+   headerless key/value table — or any page served without JavaScript — degrades
+   to plain stacked text rather than breaking. */
+@media (max-width:700px){
+  .scroll-x{overflow-x:visible}
+  table:not(.tools),
+  table:not(.tools) tbody,
+  table:not(.tools) tr,
+  table:not(.tools) td{display:block;width:auto}
+  table:not(.tools) thead{display:none}      /* headings move into the cells */
+  table:not(.tools){max-width:none}
+  table:not(.tools) td{
+    white-space:normal;overflow-wrap:anywhere;
+    border-bottom:none;padding:0 0 10px;max-width:none;min-width:0;
+  }
+  table:not(.tools) td:last-child{padding-bottom:0}
+  table:not(.tools) tr{padding:14px 0;border-bottom:1px solid var(--hair-2)}
+  table:not(.tools) tr:first-child{padding-top:0}
+  /* The first cell is the row's subject, so it reads as the card's title. */
+  table:not(.tools) td:first-child{font-weight:600;font-size:15.5px}
+  table:not(.tools) td[data-label]::before{
+    content:attr(data-label);display:block;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--grey);margin-bottom:3px;
+    font-weight:400;
+  }
+  /* A title cell that is only a chip (the API method tables) should not be
+     stretched to heading size — the path in the next cell is the real subject. */
+  table:not(.tools) td:first-child:has(> .m:only-child){font-size:inherit}
+}
+
 /* ---------- the tool tables ----------
    Two columns cannot work here. Tool names run 85px to 250px wide, so a
    content-sized column is as wide as `kemory_rehydrate_session_sources` and

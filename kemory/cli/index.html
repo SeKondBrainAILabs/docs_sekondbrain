@@ -68,8 +68,13 @@
     <section id="install">
       <h2>Install</h2>
       <p><strong>macOS and Linux.</strong> A native binary — no Python, no GitHub account, nothing to authenticate.</p>
-<pre><code>brew install sekondbrainailabs/s9n/kemory</code></pre>
+<pre><code>brew trust --tap sekondbrainailabs/s9n
+brew install sekondbrainailabs/s9n/kemory</code></pre>
       <p>Upgrade later with <code>brew upgrade kemory</code>.</p>
+      <div class="note">
+        <span class="lbl">Why the trust line</span>
+        <p>Recent Homebrew will not load a formula from a tap it has not been told to trust, and stops with <code>Refusing to load formula sekondbrainailabs/s9n/kemory from untrusted tap</code>. That is Homebrew asking for consent before running a third party&rsquo;s install code, not a fault in the tap. Trusting it is a one-off per machine, and the same line covers the <code>s9n</code> CLI from the same tap. Homebrew versions old enough not to ask have no <code>brew trust</code> command &mdash; skip the line if yours reports <code>Unknown command</code>.</p>
+      </div>
       <table class="tight">
         <thead><tr><th>Platform</th><th>How</th></tr></thead>
         <tbody>

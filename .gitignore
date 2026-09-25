@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 *.bak
+llms.txt
+kemory/llms.txt
+kemory/llms-full.txt

@@ -43,6 +43,10 @@ jobs:
       - name: Pre-flight — tag balance, link resolution, no committed credentials
         run: python tools/preflight.py
 
+      # Derived from the HTML at deploy time and gitignored, so they cannot go stale.
+      - name: Generate llms.txt files
+        run: python tools/gen_llms.py
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -50,7 +50,8 @@ that breaks either one breaks a published listing, not just an internal link.
 │   └── index.html
 ├── tools/
 │   ├── gen_tools_table.py  regenerates the tool table from live tools/list
-│   └── preflight.py        tag balance, link resolution, no leaked internal notes
+│   ├── preflight.py        tag balance, link resolution, no leaked internal notes
+│   └── gen_llms.py         builds llms.txt, kemory/llms.txt, kemory/llms-full.txt
 └── .github/workflows/
     ├── pages.yml           deploy
     └── tools-drift.yml     fails if the published tool table has drifted
@@ -68,6 +69,11 @@ variable names come from the scripts themselves, not from prose about them. The 
 Claude Code` section on the Kemory index is a summary of that page and has to move with it;
 it went stale once already, naming a repository that had been renamed and a hook set two
 releases old.
+
+**`llms.txt` is generated at deploy time.** `pages.yml` runs `tools/gen_llms.py`, which
+turns the Kemory pages into Markdown for AI agents ([llmstxt.org](https://llmstxt.org)). The
+outputs are gitignored, so there is nothing to keep in sync. A new Kemory page is added to
+the `KEMORY` list in the script; run it locally to preview the result.
 
 ---
 

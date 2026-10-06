@@ -94,7 +94,7 @@ def text(node):
 class Markdown:
     def __init__(self, url, shift=0):
         self.url, self.shift = url, shift
-        self.seen_pre = set()
+        self.seen_pre = {}  # text of a long <pre> -> where it first appeared
 
     def inline(self, node):
         out = []
@@ -160,12 +160,12 @@ class Markdown:
             level = min(int(tag[1]) + self.shift, 6)
             return ["#" * level + " " + self.inline(c).strip()]
         if tag == "label":  # tab labels on the optimise page name the AI the panel is for
-            return ["#" * min(4 + self.shift, 6) + " " + self.inline(c).strip()]
+            return ["#" * min(3 + self.shift, 6) + " " + self.inline(c).strip()]
         if tag == "pre":
             body = text(c).strip("\n")
             if len(body) > 200 and body in self.seen_pre:
-                return ["*(Same text as the earlier block on this page.)*"]
-            self.seen_pre.add(body)
+                return [f"*(Same text as the block under {self.seen_pre[body]} above.)*"]
+            self.seen_pre.setdefault(body, self.where(c))
             fence = "````" if "```" in body else "```"
             return [f"{fence}\n{body}\n{fence}"]
         if tag in ("ul", "ol"):
@@ -195,6 +195,16 @@ class Markdown:
                 inner[0] = f"**{inner[0]}**"
             return ["\n>\n".join("> " + p.replace("\n", "\n> ") for p in inner)] if inner else []
         return self.blocks(c)
+
+    def where(self, node):
+        """Name the section a node sits in: its heading and anchor link."""
+        while node is not None and "id" not in node.attrs:
+            node = node.parent
+        if node is None:
+            return "an earlier heading"
+        head = find(node, lambda n: n.tag[0] == "h" and n.tag[1:].isdigit())
+        name = f"“{self.inline(head).strip()}”" if head else "the section"
+        return f"{name} ({urljoin(self.url, '#' + node.attrs['id'])})"
 
     def table(self, t):
         rows = []
@@ -229,8 +239,14 @@ def load(path):
     return tree.root
 
 
-def meta(root):
-    title = text(find(root, lambda n: n.tag == "title")).strip()
+def need(node, what, path):
+    if node is None:
+        raise SystemExit(f"gen_llms: {path}index.html has no {what}; update tools/gen_llms.py")
+    return node
+
+
+def meta(root, path):
+    title = text(need(find(root, lambda n: n.tag == "title"), "<title>", path)).strip()
     title = re.split(r"\s+\|\s+", title)[0]
     desc = find(root, lambda n: n.tag == "meta" and n.attrs.get("name") == "description")
     return title, (desc.attrs.get("content", "").strip() if desc else "")
@@ -239,7 +255,7 @@ def meta(root):
 def page_markdown(path):
     root = load(path)
     url = SITE + path
-    title, desc = meta(root)
+    title, desc = meta(root, path)
     md = Markdown(url, shift=1)  # page title is H1, so the page's own H2s become H3s
     parts = [f"## {title}", f"Source: {url}"]
     hero = find(root, lambda n: n.tag == "div" and "hero" in n.classes)
@@ -255,27 +271,40 @@ def page_markdown(path):
             label = find(addr, lambda n: "k" in n.classes)
             code = find(addr, lambda n: n.tag == "code")
             parts.append(f"**{text(label).strip()}:** `{text(code).strip()}`")
-    main = find(root, lambda n: n.tag == "main")
+    main = need(find(root, lambda n: n.tag == "main"), "<main>", path)
     parts += md.blocks(main)
-    return "\n\n".join(parts).replace(" ", " ")
+    return "\n\n".join(parts).replace("\u00a0", " ")
 
 
 def index_line(path):
-    title, desc = meta(load(path))
+    title, desc = meta(load(path), path)
     return f"- [{title}]({SITE}{path}): {desc}"
 
 
+def kemory_links(root):
+    """The MCP address and dashboard URL, read from the Kemory index so they cannot drift."""
+    addr = need(find(root, lambda n: "addr" in n.classes), 'the hero <div class="addr">', "kemory/")
+    mcp = text(need(find(addr, lambda n: n.tag == "code"), "a <code> in the hero address",
+                    "kemory/")).strip()
+    row = need(find(root, lambda n: n.tag == "tr" and any(
+        isinstance(td, Node) and td.tag == "td" and text(td).strip() == "Dashboard"
+        for td in n.children)), "a table row labelled Dashboard", "kemory/")
+    dash = need(find(row, lambda n: n.tag == "a"), "a link in the Dashboard row", "kemory/")
+    return mcp, dash.attrs["href"]
+
+
 def kemory_index():
-    title, desc = meta(load("kemory/"))
+    root = load("kemory/")
+    _, desc = meta(root, "kemory/")
+    mcp, dashboard = kemory_links(root)
     lines = [
         "# Kemory",
         "",
         f"> {desc} Kemory is a remote MCP server (Streamable HTTP) with a REST API, a CLI "
         "and a Claude Code plugin, run by SeKondBrain.",
         "",
-        "- MCP server address: `https://api.kemory.s9n.ai/mcp/v1` (OAuth sign-in, no key "
-        "to copy for web AIs)",
-        "- Dashboard and account: https://kemory.sekondbrain.ai",
+        f"- MCP server address: `{mcp}` (OAuth sign-in, no key to copy for web AIs)",
+        f"- Dashboard and account: {dashboard}",
         f"- Everything below in one file: {SITE}kemory/llms-full.txt",
     ]
     for group in dict.fromkeys(g for _, g in KEMORY):
@@ -295,7 +324,7 @@ def kemory_full():
 
 
 def site_index():
-    _, desc = meta(load("."))
+    _, desc = meta(load("."), "")
     lines = [
         "# SeKondBrain documentation",
         "",

@@ -1,0 +1,25 @@
+name: PR checks
+
+# The same checks pages.yml runs before a deploy, so a page change that breaks them
+# fails here instead of blocking the next deploy from main.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pre-flight — tag balance, link resolution, no committed credentials
+        run: python tools/preflight.py
+
+      - name: Generate llms.txt files
+        run: python tools/gen_llms.py

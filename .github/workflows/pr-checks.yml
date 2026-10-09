@@ -23,3 +23,6 @@ jobs:
 
       - name: Generate llms.txt files
         run: python tools/gen_llms.py
+
+      - name: Generate sitemap.xml and robots.txt
+        run: python tools/gen_sitemap.py

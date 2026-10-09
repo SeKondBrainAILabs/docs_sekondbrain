@@ -24,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # gen_sitemap.py dates each page from its last commit
 
       - name: Guard the required files
         run: |
@@ -46,6 +48,9 @@ jobs:
       # Derived from the HTML at deploy time and gitignored, so they cannot go stale.
       - name: Generate llms.txt files
         run: python tools/gen_llms.py
+
+      - name: Generate sitemap.xml and robots.txt
+        run: python tools/gen_sitemap.py
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

@@ -9,13 +9,27 @@ full history for it, and without history the element is left out rather than gue
 Like llms.txt, both outputs are written at deploy time and gitignored. Standard library only.
 """
 import os
-import re
 import subprocess
+from html.parser import HTMLParser
 from xml.sax.saxutils import escape
 
 SITE = "https://docs.sekondbrain.ai/"
-CANONICAL = re.compile(r'<link rel="canonical" href="([^"]+)"')
-NOINDEX = re.compile(r'<meta name="robots" content="[^"]*noindex', re.I)
+
+
+class Head(HTMLParser):
+    """The canonical URL and the noindex flag, whatever order the attributes are in."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.canonical, self.noindex = None, False
+
+    def handle_starttag(self, tag, attrs):
+        a = {k: (v or "") for k, v in attrs}
+        if tag == "link" and "canonical" in a.get("rel", "").lower().split():
+            self.canonical = self.canonical or a.get("href")
+        elif (tag == "meta" and a.get("name", "").lower() in ("robots", "googlebot")
+              and "noindex" in a.get("content", "").lower()):
+            self.noindex = True
 
 
 def pages():
@@ -44,13 +58,13 @@ def lastmod(path):
 
 def entries():
     for path in pages():
+        head = Head()
         with open(path, encoding="utf-8") as f:
-            html = f.read()
-        m = CANONICAL.search(html)
-        if not m:
+            head.feed(f.read())
+        if not head.canonical:
             raise SystemExit(f"gen_sitemap: {path} has no <link rel=\"canonical\">")
         url = own_url(path)
-        if m.group(1) != url or NOINDEX.search(html):
+        if head.canonical != url or head.noindex:
             continue
         yield url, lastmod(path)
 

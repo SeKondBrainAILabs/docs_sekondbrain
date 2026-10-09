@@ -51,7 +51,8 @@ that breaks either one breaks a published listing, not just an internal link.
 ├── tools/
 │   ├── gen_tools_table.py  regenerates the tool table from live tools/list
 │   ├── preflight.py        tag balance, link resolution, no leaked internal notes
-│   └── gen_llms.py         builds llms.txt, kemory/llms.txt, kemory/llms-full.txt
+│   ├── gen_llms.py         builds llms.txt, kemory/llms.txt, kemory/llms-full.txt
+│   └── gen_sitemap.py      builds sitemap.xml and robots.txt
 └── .github/workflows/
     ├── pages.yml           deploy
     └── tools-drift.yml     fails if the published tool table has drifted
@@ -74,6 +75,10 @@ releases old.
 turns the Kemory pages into Markdown for AI agents ([llmstxt.org](https://llmstxt.org)). The
 outputs are gitignored, so there is nothing to keep in sync. A new Kemory page is added to
 the `KEMORY` list in the script; run it locally to preview the result.
+
+**So are `sitemap.xml` and `robots.txt`.** `tools/gen_sitemap.py` lists every page whose
+canonical URL is its own and that is not `noindex`, so a new page is picked up without an
+edit. A page with no `<link rel="canonical">` fails the build.
 
 ---
 

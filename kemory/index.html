@@ -77,10 +77,12 @@
     <a href="#connect-claude-code">Connect Claude Code</a>
     <a href="plugin/">The plugin</a>
     <a href="#connect-local">Connect a local client</a>
+    <a href="#claude-api">Claude API</a>
     <a href="optimise/">Optimise your AIs</a>
     <a href="#quickstart">Quickstart</a>
     <div class="grp">Reference</div>
     <a href="#tools">The tools</a>
+    <a href="#prompts">Prompts, resources, cards</a>
     <a href="#auth">Authentication</a>
     <a href="#scoping">Scoping and sharing</a>
     <a href="api/">REST API reference</a>
@@ -121,7 +123,7 @@
 
     <section id="connect-claude-code">
       <h2>Connect Claude Code</h2>
-      <p>Claude Code can connect two ways. The <strong>plugin</strong> is the one to reach for: it carries hooks that make memory get used rather than merely be available. The manual entry under <a href="#connect-local">Connect a local client</a> works too, and gives you the same tools with none of the hooks.</p>
+      <p>Claude Code can connect two ways. The <strong>plugin</strong> is the recommended path: it carries hooks that make memory get used rather than merely be available. Connecting the server on its own works too, and gives you the same tools, prompts and resources with none of the hooks — see <a href="#server-only">Server only</a> below.</p>
       <p><strong>1. Install it</strong>, in a Claude Code terminal:</p>
 <pre><code>/plugin marketplace add SeKondBrainAILabs/kemory-plugin
 /plugin install kemory@kemory
@@ -135,20 +137,20 @@
       <p>Two checks have to pass: credentials resolve, and the API accepts them. The same output prints which server will serve the tools and how capture and context injection are configured. <code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. Context injection begins with your <em>next</em> session, because the hook that performs it runs at session start.</p>
 
       <h3>What the plugin adds</h3>
-      <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. Seven hooks, none of which need remembering — five on by default, and the two that could surprise you ship off:</p>
+      <p>Connected is not the same as remembering. Tools sit unused unless something prompts the model to reach for them; that prompting is the whole of what the plugin contributes. It loads your context at session start, recalls under every prompt, and captures the session as it goes. Six hooks, none of which need remembering — five on by default, and the store nudge ships off:</p>
       <table>
         <thead><tr><th>Hook</th><th>When</th><th>What it does</th></tr></thead>
         <tbody>
           <tr><td>context injection</td><td>Session start</td><td>Injects your namespace summaries, so the session begins informed rather than blind</td></tr>
-          <tr><td>prompt recall</td><td>Every prompt you send</td><td>Searches your vault with what you just typed and injects what matches. <strong>On by default</strong>, and the one hook that sends your prompt text — <code>KEMORY_PROMPT_RECALL=0</code> turns it off</td></tr>
-          <tr><td>recall approval</td><td>Before a Kemory tool call</td><td>Auto-approves read-only tools so memory stops interrupting you. Writes still ask, every time</td></tr>
+          <tr><td>prompt recall</td><td>Every prompt you send</td><td>Searches your vault with what you just typed and injects what matches. <code>KEMORY_PROMPT_RECALL=0</code> turns it off</td></tr>
           <tr><td>rate reminder</td><td>After a recall returns something rateable</td><td>Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call</td></tr>
           <tr><td>consolidate reminder</td><td>After compaction</td><td>Prompts the agent to store facts that would otherwise survive only as a summary</td></tr>
           <tr><td>store nudge</td><td>End of a turn</td><td><strong>Opt-in, off by default.</strong> When the turn settled something durable and nothing was written, asks for it before the turn ends</td></tr>
-          <tr><td>session capture</td><td>End of a turn, session end</td><td><strong>Opt-in, off by default.</strong> Stores a bounded, redacted digest of your own prompts</td></tr>
+          <tr><td>session capture</td><td>End of each turn, before <code>/compact</code>, session end</td><td><strong>On by default.</strong> Stores a bounded, redacted digest of your own turns — never file contents or tool output. <code>KEMORY_AUTO_CAPTURE=0</code> turns it off</td></tr>
         </tbody>
       </table>
-      <p>It also ships <code>/kemory:login</code>, <code>/kemory:status</code>, and a skill covering how to recall, rate, store and phrase memories so semantic search can find them again. That skill is the standing instruction from <a href="optimise/">Optimise your AIs</a>, already written and kept current — with the plugin installed you do not need to paste it into <code>CLAUDE.md</code> yourself.</p>
+      <p>It also ships <code>/kemory:login</code>, <code>/kemory:status</code>, and a skill covering how to recall, rate, store and phrase memories so semantic search can find them again. That skill is the standing instruction from <a href="optimise/">Optimise your AIs</a>, already written and kept current — with the plugin installed you do not need to paste it into <code>CLAUDE.md</code> yourself. The server's <a href="#prompts">prompts</a> arrive with the plugin too, under plugin-namespaced names: <code>/mcp__plugin_kemory_kemory__enhance</code> and <code>/mcp__plugin_kemory_kemory__save-session</code>.</p>
+      <p>Auto-approval of read-only Kemory tools, a status line and an in-app panel live in a separate, optional add-on, <code>kemory-panel</code> (<code>/plugin install kemory-panel@kemory</code>). Without it, read-only Kemory tools ask for permission like any other tool.</p>
       <p>Every environment variable, what each hook sends, the surfaces that do and do not have plugins, and what to do when nothing seems to happen: <strong><a href="plugin/">the plugin documentation</a></strong>. Source: <a href="https://github.com/SeKondBrainAILabs/kemory-plugin">SeKondBrainAILabs/kemory-plugin</a>.</p>
 
       <h3>Run one server, not two</h3>
@@ -157,18 +159,23 @@
         <thead><tr><th>Route</th><th>What connects</th><th>Use when</th></tr></thead>
         <tbody>
           <tr><td>The plugin's bundled entry</td><td>A launcher that resolves the same credential the hooks use</td><td>Default. Installed with the plugin, nothing to configure beyond signing in</td></tr>
-          <tr><td><code>kemory connect</code> or <code>kemory mcp install --host claude-code</code></td><td>An entry in <code>~/.claude.json</code></td><td>You want the tools without the plugin</td></tr>
+          <tr><td><code>claude mcp add</code>, <code>kemory connect</code> or <code>kemory mcp install --host claude-code</code></td><td>An entry in <code>~/.claude.json</code></td><td>You want the server without the plugin</td></tr>
           <tr><td><em>Kemory by SeKondBrain</em> in claude.ai connector settings</td><td>OAuth, account-wide</td><td>You want the same tools in the web and desktop apps too</td></tr>
         </tbody>
       </table>
       <p>You do not have to police this yourself: the bundled entry stands down when this machine already has a server for the same Kemory, and says so rather than starting and exposing nothing. The hooks are unaffected either way — they call the API directly. The one case it cannot detect is a claude.ai connector, which lives inside Claude and is invisible from a shell; disable the bundled entry under <code>/mcp</code> if you use it.</p>
 
       <h3>What leaves your machine</h3>
-      <p>Two hooks transmit anything. <strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query — it skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent. <strong>Capture is off</strong> unless you set it, because it uploads your own turns. Context injection sends only your credential, and the approval, rating and store-nudge hooks make no network calls at all. The full per-hook policy, with the redaction rules and the local files the plugin keeps, is in <a href="plugin/#privacy">the plugin documentation</a>.</p>
+      <p>Two hooks transmit anything, and both are on by default. <strong>Prompt recall</strong> sends the redacted text of each prompt to your Kemory instance as a search query — it skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent. <strong>Session capture</strong> sends a bounded, redacted digest of your own turns, never file contents or tool output, and stores it as a private memory; <code>KEMORY_AUTO_CAPTURE=0</code> turns it off. Context injection sends only your credential, and the rating and store-nudge hooks make no network calls at all. The full per-hook policy, with the redaction rules and the local files the plugin keeps, is in <a href="plugin/#privacy">the plugin documentation</a>.</p>
 
       <h3>If nothing seems to happen</h3>
-      <p>The hooks fail quiet by design: with no credentials and no Kemory server they no-op rather than erroring, so a broken setup looks like an idle one. The plugin prints a short setup notice the first time and then stays silent for 24 hours rather than nagging.</p>
+      <p>The hooks fail open by design: with no credentials or no Kemory server they print one short warning and carry on rather than erroring or blocking the session, so a broken setup can look like an idle one. The setup notice then stays silent for 24 hours rather than nagging.</p>
       <p>Run <code>/kemory:status</code> — it names which check failed. <code>Unknown command: /kemory:login</code> means the plugin is installed but not loaded yet; run <code>/reload-plugins</code>. No credential means nothing was exported into the environment Claude Code started from and no browser login is stored. A rejected one means it expired or was revoked. Tools present but no context at session start is the config-file case — a key inside an MCP config file authenticates the tools, and the hooks never read MCP config. <a href="plugin/#trouble">The full troubleshooting table</a> covers the rest.</p>
+
+      <h3 id="server-only">Server only</h3>
+      <p>To connect the server without the plugin:</p>
+<pre><code>claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1</code></pre>
+      <p>Then run <code>/mcp</code>, choose <strong>kemory → Authenticate</strong>, and sign in in the browser. You get the tools, the prompts as <code>/mcp__kemory__enhance</code> and <code>/mcp__kemory__save-session</code>, and the resources under <code>@kemory:</code> — but none of the hooks, so nothing is recalled or captured unless the model decides to call a tool. Do not add this alongside the plugin; see <em>Run one server, not two</em> above.</p>
     </section>
 
     <section id="connect-local">
@@ -217,6 +224,29 @@ working, we make a decision, or we learn something non-obvious about
 this codebase or domain. Tell me what you wrote and to which namespace.
 
 Do not write credentials, keys or passwords into memory unless I ask you to.</code></pre>
+    </section>
+
+    <section id="claude-api">
+      <h2>Use Kemory from<br>the Claude API</h2>
+      <p>The Claude API's MCP connector can call Kemory's tools from a Messages API request, with no MCP client of your own. Pass a Kemory API key as the server's <code>authorization_token</code>:</p>
+<pre><code>curl https://api.anthropic.com/v1/messages \
+  -H "content-type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: mcp-client-2026-09-15" \
+  -d '{
+    "model": "claude-opus-5-5",
+    "max_tokens": 4096,
+    "messages": [{"role": "user", "content": "What did we decide about the release process?"}],
+    "mcp_servers": [{
+      "type": "url",
+      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "name": "kemory",
+      "authorization_token": "&lt;KEMORY_API_KEY&gt;"
+    }],
+    "tools": [{"type": "mcp_toolset", "mcp_server_name": "kemory"}]
+  }'</code></pre>
+      <p>The connector uses tools only, so the prompts, resources and cards described below do not apply on this path. With this beta header a response can begin with an <code>mcp_tool_listing</code> block; send the assistant message back unchanged on the next request. Keep the key on your server, never in client-side code.</p>
     </section>
 
     <section id="quickstart">
@@ -288,6 +318,42 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
         <span class="lbl">On annotations</span>
         <p>MCP clients read these hints when deciding what to auto-approve and what to confirm with you. They are hints: the MCP specification says a client must treat annotations from an untrusted server as untrusted. They are not Kemory's access control. Permissions are enforced server-side on every call, whatever a client decides to do with the hint.</p>
       </div>
+
+      <h3 id="sessions">Saving a session: capture, then consolidate</h3>
+      <p>Two write tools work as a pair.</p>
+      <p><strong><code>kemory_capture_session</code></strong> stores discrete items the user has confirmed — at most 10 per call, each with its content, an existing namespace and a <code>content_type</code>, and the call requires <code>user_confirmed: true</code>. It does not take a conversation window or a transcript: the model picks the items, shows them to you, and sends only those. An optional <code>session_id</code> tags every item so the session can be consolidated later.</p>
+      <p><strong><code>kemory_consolidate_session</code></strong> summarises the memories stored under one session id into one semantic summary memory per namespace, which recall can find. It runs synchronously and reports what it did. Every source memory gets a <code>consolidated</code> provenance event and a link to the summary. Conversation-type sources then expire after 30 days by default; facts, preferences, skills and notes never expire because of consolidation. It is idempotent: the same memories consolidated again return the existing summary, and a session that has gained memories since gets a new summary that replaces the old one.</p>
+      <p>The <code>save-session</code> prompt below runs both in order.</p>
+    </section>
+
+    <section id="prompts">
+      <h2>Prompts, resources<br>and cards</h2>
+      <p>Tools are not the whole surface. Kemory also offers MCP prompts, which hosts surface as slash commands, and resource templates, which hosts surface as @-mentions. These are rolling out server by server; a server that does not offer them yet simply shows none.</p>
+      <h3>Prompts</h3>
+      <table>
+        <thead><tr><th>Prompt</th><th>Arguments</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>enhance</code></td><td><code>request</code> (required), <code>project</code> (optional)</td><td>Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context</td></tr>
+          <tr><td><code>save-session</code></td><td><code>project</code> (optional)</td><td>Run it before <code>/compact</code> or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with <code>kemory_capture_session</code>, then calls <code>kemory_consolidate_session</code> so the session is also summarised as one memory</td></tr>
+        </tbody>
+      </table>
+      <p>In Claude Code: <code>/mcp__kemory__enhance &lt;request&gt;</code> and <code>/mcp__kemory__save-session</code>. With the <a href="#connect-claude-code">plugin</a> the server is plugin-namespaced, so the names are <code>/mcp__plugin_kemory_kemory__enhance</code> and <code>/mcp__plugin_kemory_kemory__save-session</code>.</p>
+      <h3>Resources</h3>
+      <table>
+        <thead><tr><th>Resource</th><th>What it reads</th></tr></thead>
+        <tbody>
+          <tr><td><code>kemory://memory/{id}</code></td><td>One memory, by the id recall returns</td></tr>
+          <tr><td><code>kemory://project/{name}</code></td><td>A project's namespaces and their stored summaries. Project names auto-complete</td></tr>
+        </tbody>
+      </table>
+      <p>A signed-in resource list also shows each of your projects individually. A memory or project you cannot see reads exactly like one that does not exist, so a resource never confirms that something is there. In Claude Code, type <code>@kemory:</code> and pick.</p>
+      <h3>Cards in chat</h3>
+      <p>Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Claude on the web and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as interactive cards instead of plain text.</p>
+      <ul>
+        <li><strong>Recall card.</strong> Ranked memories, each with its namespace, source, date and match percentage, plus <strong>Useful</strong> / <strong>Not useful</strong> rating, <strong>Open in Kemory</strong>, and <strong>Forget</strong>. Forget needs a second click to confirm, and shared memories cannot be forgotten from the card.</li>
+        <li><strong>Saved card.</strong> What was stored and where, plus <strong>Undo</strong>, which also needs a second click. Undo is not offered when the save updated an existing memory.</li>
+      </ul>
+      <p>Cards are self-contained and make no network requests of their own; their buttons act through your host's ordinary tool calls, under the same connection and permissions. Hosts without MCP Apps, Claude Code among them, show the same text results as before.</p>
     </section>
 
     <section id="auth">
@@ -358,7 +424,7 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <div class="note">
         <span class="lbl">Credentials are your call</span>
         <p>Kemory does not stop you storing a password or an API key. An explicit write is stored as you sent it, and no tool refuses one. Two facts should inform that choice rather than a rule: content is encrypted at rest only if you have <a href="api/">turned encryption on</a>, which is opt-in and permanent per account; and memory content is processed by third-party language models for enrichment, compression and embedding, so a stored secret reaches those providers like any other memory.</p>
-        <p>What Kemory will not do is make the decision for you. Automatic capture — <code>kemory_capture_session</code> and the Kora sync behind it — drops credential-shaped text instead of persisting it, even though that text was already in the conversation you had. The asymmetry is deliberate: you can store a secret on purpose, but nothing will store one on your behalf.</p>
+        <p>What Kemory will not do is make the decision for you. Capture — <code>kemory_capture_session</code>, the plugin's session capture and the Kora sync — drops or redacts credential-shaped text instead of persisting it, even though that text was already in the conversation you had. The asymmetry is deliberate: you can store a secret on purpose, but nothing will store one on your behalf.</p>
       </div>
     </section>
 
@@ -371,7 +437,8 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
           <tr><td><code>Permission denied</code></td><td>The credential is valid; that action on that namespace is not allowed.</td></tr>
           <tr><td><code>Validation error</code></td><td>Arguments did not match the tool's schema.</td></tr>
           <tr><td><code>401</code></td><td>No credential, or it expired or was revoked. Web clients re-authenticate automatically; local clients need a new key.</td></tr>
-          <tr><td><code>-32601</code></td><td>An MCP method Kemory does not implement. <code>resources/*</code> returns an empty list by design.</td></tr>
+          <tr><td><code>-32601</code></td><td>An MCP method Kemory does not implement.</td></tr>
+          <tr><td><code>-32002</code></td><td>A <code>kemory://</code> resource that does not exist, or that you cannot see — the two read the same.</td></tr>
           <tr><td><code>429</code></td><td>Rate limited. Back off and retry.</td></tr>
         </tbody>
       </table>

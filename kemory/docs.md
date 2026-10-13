@@ -67,10 +67,10 @@ access to another user's memories, including colleagues in the same organisation
 
 ## Connect Claude Code
 
-Claude Code can connect two ways. The **plugin** is the one to reach for: it carries hooks
-that make memory get used rather than merely be available. The manual entry under
-[Connect a local client](#connect-a-local-client) works too, and gives you the same tools
-with none of the hooks.
+Claude Code can connect two ways. The **plugin** is the recommended path: it carries hooks
+that make memory get used rather than merely be available. Connecting the server on its own
+works too, and gives you the same tools, prompts and resources with none of the hooks — see
+[Server only](#server-only) below.
 
 **1. Install it**, in a Claude Code terminal:
 
@@ -110,24 +110,30 @@ at session start.
 ### What the plugin adds
 
 Connected is not the same as remembering. Tools sit unused unless something prompts the model
-to reach for them; that prompting is the whole of what the plugin contributes. Seven hooks,
-none of which need remembering — five on by default, and the two that could surprise you
-ship off:
+to reach for them; that prompting is the whole of what the plugin contributes. It loads your
+context at session start, recalls under every prompt, and captures the session as it goes.
+Six hooks, none of which need remembering — five on by default, and the store nudge ships
+off:
 
 | Hook | When | What it does |
 |---|---|---|
 | context injection | Session start | Injects your namespace summaries, so the session begins informed rather than blind |
-| prompt recall | Every prompt you send | Searches your vault with what you just typed and injects what matches. **On by default**, and the one hook that sends your prompt text — `KEMORY_PROMPT_RECALL=0` turns it off |
-| recall approval | Before a Kemory tool call | Auto-approves read-only tools so memory stops interrupting you. Writes still ask, every time |
+| prompt recall | Every prompt you send | Searches your vault with what you just typed and injects what matches. `KEMORY_PROMPT_RECALL=0` turns it off |
 | rate reminder | After a recall returns something rateable | Reminds the agent to rate what it used, so retrieval keeps improving. Local only, no network call |
 | consolidate reminder | After compaction | Prompts the agent to store facts that would otherwise survive only as a summary |
 | store nudge | End of a turn | **Opt-in, off by default.** When the turn settled something durable and nothing was written, asks for it before the turn ends |
-| session capture | End of a turn, session end | **Opt-in, off by default.** Stores a bounded, redacted digest of your own prompts |
+| session capture | End of each turn, before `/compact`, session end | **On by default.** Stores a bounded, redacted digest of your own turns — never file contents or tool output. `KEMORY_AUTO_CAPTURE=0` turns it off |
 
 It also ships `/kemory:login`, `/kemory:status`, and a skill covering how to recall, rate,
 store and phrase memories so semantic search can find them again. That skill is the standing
 instruction from [Optimise your AIs](optimise/), already written and kept current — with the
-plugin installed you do not need to paste it into `CLAUDE.md` yourself.
+plugin installed you do not need to paste it into `CLAUDE.md` yourself. The server's
+[prompts](#prompts-resources-and-cards) arrive with the plugin too, under plugin-namespaced
+names: `/mcp__plugin_kemory_kemory__enhance` and `/mcp__plugin_kemory_kemory__save-session`.
+
+Auto-approval of read-only Kemory tools, a status line and an in-app panel live in a separate,
+optional add-on, `kemory-panel` (`/plugin install kemory-panel@kemory`). Without it, read-only
+Kemory tools ask for permission like any other tool.
 
 Every environment variable, what each hook sends, the surfaces that do and do not have
 plugins, and what to do when nothing seems to happen: **[the plugin documentation](plugin/)**.
@@ -142,7 +148,7 @@ tell which lane a result came from. Pick one:
 | Route | What connects | Use when |
 |---|---|---|
 | The plugin's bundled entry | A launcher that resolves the same credential the hooks use | Default. Installed with the plugin, nothing to configure beyond signing in |
-| `kemory connect` or `kemory mcp install --host claude-code` | An entry in `~/.claude.json` | You want the tools without the plugin |
+| `claude mcp add`, `kemory connect` or `kemory mcp install --host claude-code` | An entry in `~/.claude.json` | You want the server without the plugin |
 | *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
 
 You do not have to police this yourself: the bundled entry stands down when this machine
@@ -153,19 +159,20 @@ shell; disable the bundled entry under `/mcp` if you use it.
 
 ### What leaves your machine
 
-Two hooks transmit anything. **Prompt recall is on by default** and sends the text of each
-prompt to your Kemory instance as a search query — it skips prompts under 12 characters and
-anything starting with `/`, `!` or `#`, so slash commands are never sent. **Capture is off**
-unless you set it, because it uploads your own turns. Context injection sends only your
-credential, and the approval, rating and store-nudge hooks make no network calls at all. The
-full per-hook policy, with the redaction rules and the local files the plugin keeps, is in
-[the plugin documentation](plugin/#privacy).
+Two hooks transmit anything, and both are on by default. **Prompt recall** sends the
+redacted text of each prompt to your Kemory instance as a search query — it skips prompts
+under 12 characters and anything starting with `/`, `!` or `#`, so slash commands are never
+sent. **Session capture** sends a bounded, redacted digest of your own turns, never file
+contents or tool output, and stores it as a private memory; `KEMORY_AUTO_CAPTURE=0` turns it
+off. Context injection sends only your credential, and the rating and store-nudge hooks make
+no network calls at all. The full per-hook policy, with the redaction rules and the local
+files the plugin keeps, is in [the plugin documentation](plugin/#privacy).
 
 ### If nothing seems to happen
 
-The hooks fail quiet by design: with no credentials and no Kemory server they no-op rather
-than erroring, so a broken setup looks like an idle one. The plugin prints a short setup
-notice the first time and then stays silent for 24 hours rather than nagging.
+The hooks fail open by design: with no credentials or no Kemory server they print one short
+warning and carry on rather than erroring or blocking the session, so a broken setup can look
+like an idle one. The setup notice then stays silent for 24 hours rather than nagging.
 
 Run `/kemory:status` — it names which check failed. `Unknown command: /kemory:login` means
 the plugin is installed but not loaded yet; run `/reload-plugins`. No credential means
@@ -174,6 +181,20 @@ stored. A rejected one means it expired or was revoked. Tools present but no con
 session start is the config-file case — a key inside an MCP config file authenticates the
 tools, and the hooks never read MCP config.
 [The full troubleshooting table](plugin/#trouble) covers the rest.
+
+### Server only
+
+To connect the server without the plugin:
+
+```
+claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1
+```
+
+Then run `/mcp`, choose **kemory → Authenticate**, and sign in in the browser. You get the
+tools, the prompts as `/mcp__kemory__enhance` and `/mcp__kemory__save-session`, and the
+resources under `@kemory:` — but none of the hooks, so nothing is recalled or captured unless
+the model decides to call a tool. Do not add this alongside the plugin; see
+[Run one server, not two](#run-one-server-not-two).
 
 ---
 
@@ -247,6 +268,38 @@ Do not write credentials, keys or passwords into memory unless I ask you to.
 
 [Optimise your AIs for Kemory](optimise/) has the same instruction sized for every field it
 has to fit in, and names where that field lives in each AI.
+
+---
+
+## Use Kemory from the Claude API
+
+The Claude API's MCP connector can call Kemory's tools from a Messages API request, with no
+MCP client of your own. Pass a Kemory API key as the server's `authorization_token`:
+
+```bash
+curl https://api.anthropic.com/v1/messages \
+  -H "content-type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: mcp-client-2026-09-15" \
+  -d '{
+    "model": "claude-opus-5-5",
+    "max_tokens": 4096,
+    "messages": [{"role": "user", "content": "What did we decide about the release process?"}],
+    "mcp_servers": [{
+      "type": "url",
+      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "name": "kemory",
+      "authorization_token": "<KEMORY_API_KEY>"
+    }],
+    "tools": [{"type": "mcp_toolset", "mcp_server_name": "kemory"}]
+  }'
+```
+
+The connector uses tools only, so the prompts, resources and cards described below do not
+apply on this path. With this beta header a response can begin with an `mcp_tool_listing`
+block; send the assistant message back unchanged on the next request. Keep the key on your
+server, never in client-side code.
 
 ---
 
@@ -329,6 +382,73 @@ to confirm with you. They are hints: the MCP specification says a client must tr
 annotations from an untrusted server as untrusted. They are not Kemory's access control.
 Permissions are enforced server-side on every call, whatever a client decides to do with the
 hint.
+
+### Saving a session: capture, then consolidate
+
+Two write tools work as a pair.
+
+**`kemory_capture_session`** stores discrete items the user has confirmed — at most 10 per
+call, each with its content, an existing namespace and a `content_type`, and the call
+requires `user_confirmed: true`. It does not take a conversation window or a transcript: the
+model picks the items, shows them to you, and sends only those. An optional `session_id` tags
+every item so the session can be consolidated later.
+
+**`kemory_consolidate_session`** summarises the memories stored under one session id into one
+semantic summary memory per namespace, which recall can find. It runs synchronously and
+reports what it did. Every source memory gets a `consolidated` provenance event and a link to
+the summary. Conversation-type sources then expire after 30 days by default; facts,
+preferences, skills and notes never expire because of consolidation. It is idempotent: the
+same memories consolidated again return the existing summary, and a session that has gained
+memories since gets a new summary that replaces the old one.
+
+The `save-session` prompt below runs both in order.
+
+---
+
+## Prompts, resources and cards
+
+Tools are not the whole surface. Kemory also offers MCP prompts, which hosts surface as slash
+commands, and resource templates, which hosts surface as @-mentions. These are rolling out
+server by server; a server that does not offer them yet simply shows none.
+
+### Prompts
+
+| Prompt | Arguments | What it does |
+|---|---|---|
+| `enhance` | `request` (required), `project` (optional) | Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context |
+| `save-session` | `project` (optional) | Run it before `/compact` or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with `kemory_capture_session`, then calls `kemory_consolidate_session` so the session is also summarised as one memory |
+
+In Claude Code: `/mcp__kemory__enhance <request>` and `/mcp__kemory__save-session`. With the
+[plugin](#connect-claude-code) the server is plugin-namespaced, so the names are
+`/mcp__plugin_kemory_kemory__enhance` and `/mcp__plugin_kemory_kemory__save-session`.
+
+### Resources
+
+| Resource | What it reads |
+|---|---|
+| `kemory://memory/{id}` | One memory, by the id recall returns |
+| `kemory://project/{name}` | A project's namespaces and their stored summaries. Project names auto-complete |
+
+A signed-in resource list also shows each of your projects individually. A memory or project
+you cannot see reads exactly like one that does not exist, so a resource never confirms that
+something is there. In Claude Code, type `@kemory:` and pick.
+
+### Cards in chat
+
+Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Claude on the web
+and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as
+interactive cards instead of plain text.
+
+- **Recall card.** Ranked memories, each with its namespace, source, date and match
+  percentage, plus **Useful** / **Not useful** rating, **Open in Kemory**, and **Forget**.
+  Forget needs a second click to confirm, and shared memories cannot be forgotten from the
+  card.
+- **Saved card.** What was stored and where, plus **Undo**, which also needs a second click.
+  Undo is not offered when the save updated an existing memory.
+
+Cards are self-contained and make no network requests of their own; their buttons act
+through your host's ordinary tool calls, under the same connection and permissions. Hosts
+without MCP Apps, Claude Code among them, show the same text results as before.
 
 ---
 
@@ -462,9 +582,9 @@ which is opt-in and permanent per account; and memory content is processed by th
 language models for enrichment, compression and embedding, so a stored secret reaches those
 providers like any other memory.
 
-What Kemory will not do is make the decision for you. Automatic capture —
-`kemory_capture_session` and the Kora sync behind it — drops credential-shaped text instead of
-persisting it, even though that text was already in the conversation you had. The asymmetry is
+What Kemory will not do is make the decision for you. Capture — `kemory_capture_session`,
+the plugin's session capture and the Kora sync — drops or redacts credential-shaped text
+instead of persisting it, even though that text was already in the conversation you had. The asymmetry is
 deliberate: you can store a secret on purpose, but nothing will store one on your behalf.
 
 ---
@@ -479,7 +599,8 @@ typed message, rather than as an HTTP error — an AI can read the message and a
 | `Permission denied` | The credential is valid; that action on that namespace is not allowed. |
 | `Validation error` | Arguments did not match the tool's schema. |
 | `401` with a `WWW-Authenticate` header | No credential, or it expired or was revoked. Web clients re-authenticate automatically; local clients need a new key. |
-| `-32601 Method not found` | An MCP method Kemory does not implement. `resources/*` returns an empty list by design. |
+| `-32601 Method not found` | An MCP method Kemory does not implement. |
+| `-32002 Resource not found` | A `kemory://` resource that does not exist, or that you cannot see — the two read the same. |
 | `429` | Rate limited. Back off and retry. |
 
 Calls using the old `s9nmem_*` tool names return `Unknown tool` — the prefix was

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Kemory plugin — install, hooks, configuration | SeKondBrain</title>
-<meta name="description" content="The Kemory plugin: install and sign in, what each of the seven hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing. Claude Code is the host it ships on today.">
+<meta name="description" content="The Kemory plugin: install and sign in, what each of the six hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing. Claude Code is the host it ships on today.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/plugin/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <meta property="og:title" content="The Kemory plugin">
@@ -87,8 +87,9 @@
         <li><strong>Context injection</strong> — your namespace summaries load at session start, so a session begins informed rather than blind.</li>
         <li><strong>Rate reminder</strong> — the agent rates the memories it actually used, so retrieval keeps improving.</li>
         <li><strong>Store nudge</strong> — <em>opt-in.</em> When a turn reached a decision and stored nothing, the turn does not just end.</li>
-        <li><strong>Session capture</strong> — <em>opt-in.</em> A bounded, redacted digest of what the session was about, stored as it goes.</li>
+        <li><strong>Session capture</strong> — <em>on by default.</em> A bounded, redacted digest of your own turns, stored as the session goes, flushed before each <code>/compact</code> and again at the end. Never file contents or tool output.</li>
         <li><strong><code>/kemory:status</code></strong> — one command that says what is and is not working.</li>
+          <li><strong>The server's slash commands</strong> — <code>enhance</code> and <code>save-session</code>, relayed from the Kemory server. See <a href="#skills">Skills and commands</a>.</li>
       </ul>
       <p>It works against hosted Kemory and against the open-source <a href="../community/">Community Edition</a> — one variable, <code>KEMORY_URL</code>, moves the whole plugin.</p>
     </section>
@@ -176,18 +177,17 @@
 
     <section id="hooks">
       <h2>The hooks</h2>
-      <p>Seven hooks, none of which need remembering. Five are on by default; the two that could surprise you ship off.</p>
+      <p>Six hooks, none of which need remembering. Five are on by default; the store nudge ships off.</p>
       <div class="scroll-x">
       <table>
         <thead><tr><th>Hook</th><th>Event</th><th>What it does</th><th>Leaves your machine</th><th>Default</th></tr></thead>
         <tbody>
           <tr><td>context injection</td><td><code>SessionStart</code></td><td>Injects your namespace summaries; warns once if Kemory is not set up yet</td><td>Your credential; reads summaries back</td><td>on</td></tr>
           <tr><td>prompt recall</td><td><code>UserPromptSubmit</code></td><td>Searches your vault with the prompt you typed and injects what matches</td><td><strong>The text of your prompt</strong></td><td>on</td></tr>
-          <tr><td>recall approval</td><td><code>PreToolUse</code></td><td>Auto-approves Kemory <strong>read-only</strong> tools so memory stops interrupting you. Writes still ask, every time</td><td>Nothing</td><td>on</td></tr>
           <tr><td>rate reminder</td><td><code>PostToolUse</code></td><td>Prompts the agent to rate the memories it actually used. Fires only when the response is rateable — a <code>recall_id</code> or a non-empty result list</td><td>Nothing</td><td>on</td></tr>
           <tr><td>consolidate reminder</td><td><code>SessionStart</code> after compaction</td><td>Prompts the agent to store facts that would otherwise survive only as a summary</td><td>Nothing</td><td>on</td></tr>
           <tr><td>store nudge</td><td><code>Stop</code></td><td>When the turn settled something durable and no Kemory write happened, asks for it before the turn ends</td><td>Nothing</td><td><strong>off</strong></td></tr>
-          <tr><td>session capture</td><td><code>Stop</code>, <code>SessionEnd</code></td><td>Stores a redacted digest of your own prompts: last 12 turns, 8000 characters</td><td>Your prompts, redacted</td><td><strong>off</strong></td></tr>
+          <tr><td>session capture</td><td><code>Stop</code>, <code>PreCompact</code>, <code>SessionEnd</code></td><td>Stores a redacted digest of your own turns: last 12 turns, 8000 characters. On <code>PreCompact</code> it flushes what is not yet stored before the context is compacted</td><td>Your turns, redacted</td><td>on</td></tr>
         </tbody>
       </table>
       </div>
@@ -203,17 +203,20 @@
       <p>It is off by default anyway — a hook that continues a turn is disruptive when it is wrong, so it ships off until the false-positive rate has been measured on real sessions. <code>KEMORY_STORE_NUDGE_SIGNALS</code> adds your own <code>|</code>-separated regexes to the built-in set.</p>
 
       <h3>Session capture</h3>
-      <p>Capture is <strong>off</strong> unless you set it explicitly, because it uploads conversation content to your Kemory instance.</p>
+      <p>Capture is <strong>on by default</strong> — a memory plugin that remembers nothing until you find a flag is not doing its job. <code>KEMORY_AUTO_CAPTURE=0</code> turns it off. Digests land in <code>user:sessions</code> as <code>user-private</code>, so capture does not put your sessions in front of your team; <code>KEMORY_CAPTURE_NAMESPACE</code> and <code>KEMORY_CAPTURE_VISIBILITY</code> move them if that is what you want.</p>
       <p>What is captured: your own turns only — assistant replies and tool output are skipped — capped at the last N turns and 8000 characters, with common secret patterns redacted. Digests are written to <code>POST /api/v1/memories</code> tagged <code>session-capture</code> and carry the <code>session_id</code>, so the server-side Reflector can consolidate them into semantic summaries.</p>
+      <p><code>PreCompact</code> fires before a manual <code>/compact</code> and before auto-compact, and flushes the turns not yet stored, the same way <code>SessionEnd</code> does at the end. It sends the same bounded, redacted digest, not your files or tool output. It runs in the background, prints nothing and always exits <code>0</code>, so it can never block compaction.</p>
       <p><code>SessionEnd</code> fires on exit, <code>/clear</code> and resume, so the same turns can be offered more than once. The hook stores a hash of each digest under <code>~/.kemory/.captured/&lt;session_id&gt;</code> and skips a write whose content it has already stored, so repeats do not accumulate duplicate memories. The hash is recorded only after the write succeeds.</p>
 
-      <h3>Why compaction is handled at <code>SessionStart</code></h3>
-      <p>The consolidate reminder deliberately does not use <code>PreCompact</code>: that event rejects <code>additionalContext</code>, and fires as compaction begins, so the model gets no turn in which to act. <code>SessionStart</code> with <code>source=compact</code> fires on the other side of it, where there is still something to do.</p>
+      <h3>Why the consolidate reminder runs at <code>SessionStart</code></h3>
+      <p>Capture flushes at <code>PreCompact</code> because it needs no model turn. The consolidate reminder deliberately does not: that event rejects <code>additionalContext</code>, and fires as compaction begins, so the model gets no turn in which to act. <code>SessionStart</code> with <code>source=compact</code> fires on the other side of it, where there is still something to do.</p>
+
+      <p>Read-only auto-approval, the status line and the in-app panel are not in this plugin: they ship in the optional <code>kemory-panel</code> add-on from the same marketplace (<code>/plugin install kemory-panel@kemory</code>). Without it, read-only Kemory tools ask for permission like any other tool.</p>
 
       <div class="note">
         <span class="lbl">Every hook is best-effort</span>
-        <p>Missing credentials, an unreachable server, or a malformed transcript all exit cleanly and never block a session. Every network call is capped at 3–6 seconds so a dead network cannot stall a session. The hooks whose output is actually read — <code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code> — run synchronously, because an async hook's stdout is discarded and that would silently kill context injection and read-only auto-approval while still appearing to run. Capture writes and has no output anyone reads, so it runs async.</p>
-        <p>The cost of failing open is that <strong>a broken setup looks like an idle one</strong>. A quiet session is a setup problem, not a healthy one — see <a href="#trouble">Troubleshooting</a>.</p>
+        <p>Missing credentials, an unreachable server, or a malformed transcript all exit cleanly and never block a session. Every network call is capped at 3–6 seconds so a dead network cannot stall a session. The hooks whose output is actually read — <code>SessionStart</code>, <code>UserPromptSubmit</code> — run synchronously, because an async hook's stdout is discarded and that would silently kill context injection while still appearing to run. Capture writes and has no output anyone reads, so it runs async on <code>Stop</code>, <code>PreCompact</code> and <code>SessionEnd</code>.</p>
+        <p>With no credential the session-start hook prints one short warning, then stays quiet for 24 hours. The cost of failing open is that <strong>a broken setup can look like an idle one</strong>. A quiet session is a setup problem, not a healthy one — see <a href="#trouble">Troubleshooting</a>.</p>
       </div>
     </section>
 
@@ -226,8 +229,11 @@
           <tr><td><code>/kemory:status</code></td><td>Whether credentials resolve, whether the API accepts them, which server will serve the tools, and how capture and injection are configured.</td></tr>
           <tr><td><code>kemory</code> skill</td><td>How to recall, rate, store and phrase memories so semantic search can find them again.</td></tr>
           <tr><td><code>kemory-setup</code> skill</td><td>Walks the agent through connecting Kemory when something is not working.</td></tr>
+          <tr><td><code>/mcp__plugin_kemory_kemory__enhance &lt;request&gt;</code></td><td>From the Kemory server. Returns your request with the related memories cited by id; when nothing matches, the request comes back unchanged.</td></tr>
+          <tr><td><code>/mcp__plugin_kemory_kemory__save-session</code></td><td>From the Kemory server. Run before <code>/compact</code> or at the end of a session: captures the session's decisions and durable facts, then consolidates them.</td></tr>
         </tbody>
       </table>
+      <p>The last two are MCP prompts the bundled server relays unchanged, so they are plugin-namespaced; Claude Code may also list them as <code>/plugin:kemory:kemory:&lt;name&gt; (MCP)</code>. A Kemory server too old to offer them shows none. What they do is in <a href="../#prompts">Prompts, resources and cards</a>.</p>
       <p>The <code>kemory</code> skill is the standing instruction from <a href="../optimise/">Optimise your AIs</a>, already written and kept current — with the plugin installed you do not need to paste it into <code>CLAUDE.md</code> yourself.</p>
       <p>If you pasted that instruction into <code>CLAUDE.md</code> before the plugin shipped one, you can delete it; the plugin says so once a week until you do. Keeping both is not harmful, but the pasted copy asks the agent to open each session with <code>kemory_list_namespaces</code> and a recall, which the prompt-recall hook has already done by then.</p>
       <p>The bundled instruction is injected on every session, including a brand-new vault and a session whose context call failed. It is short on purpose: recall and the write prompt are hooks now, so it says only what no hook can — what Kemory is, and the standard for writing to it.</p>
@@ -279,6 +285,8 @@
           <tr><td><code>KEMORY_URL</code></td><td><code>https://api.kemory.s9n.ai</code></td><td>Override only for a self-hosted or <a href="../community/">Community Edition</a> instance. No trailing slash, no path</td></tr>
           <tr><td><code>KEMORY_ENV</code></td><td><code>prod</code></td><td>Which credentials file to read</td></tr>
           <tr><td><code>KEMORY_ALLOW_DUPLICATE</code></td><td><code>0</code></td><td><code>1</code> starts the bundled server even when another one already serves the same Kemory</td></tr>
+          <tr><td><code>KEMORY_MCP_TIMEOUT</code></td><td><code>120</code></td><td>Seconds the bundled MCP bridge waits for the API</td></tr>
+          <tr><td><code>KEMORY_CLIENT_ID</code></td><td><code>kemory-cli</code></td><td>OAuth client id <code>/kemory:login</code> signs in with</td></tr>
         </tbody>
       </table>
 
@@ -315,10 +323,11 @@
         <tbody>
           <tr><td><code>KEMORY_STORE_NUDGE</code></td><td><code>0</code></td><td><code>1</code> asks for a write when a turn settled something and stored nothing</td></tr>
           <tr><td><code>KEMORY_STORE_NUDGE_SIGNALS</code></td><td>—</td><td>Extra <code>|</code>-separated regexes that mark a turn as worth storing, added to the built-in set</td></tr>
-          <tr><td><code>KEMORY_AUTO_CAPTURE</code></td><td><code>0</code></td><td><code>1</code> enables the redacted session digest</td></tr>
-          <tr><td><code>KEMORY_CAPTURE_NAMESPACE</code></td><td><code>shared</code></td><td>Namespace digests are written to</td></tr>
+          <tr><td><code>KEMORY_AUTO_CAPTURE</code></td><td><code>1</code></td><td><code>0</code> disables the redacted session digest</td></tr>
+          <tr><td><code>KEMORY_CAPTURE_NAMESPACE</code></td><td><code>user:sessions</code></td><td>Namespace digests are written to</td></tr>
+          <tr><td><code>KEMORY_CAPTURE_VISIBILITY</code></td><td><code>user-private</code></td><td>Visibility of stored digests: <code>user-private</code>, <code>agent-private</code>, <code>team</code>, <code>org-public</code></td></tr>
           <tr><td><code>KEMORY_CAPTURE_MAX_TURNS</code></td><td><code>12</code></td><td>Maximum user turns in a single stored memory</td></tr>
-          <tr><td><code>KEMORY_CAPTURE_MIN_NEW_TURNS</code></td><td><code>3</code></td><td>New turns required before a mid-session <code>Stop</code> stores anything; <code>SessionEnd</code> flushes any remainder</td></tr>
+          <tr><td><code>KEMORY_CAPTURE_MIN_NEW_TURNS</code></td><td><code>3</code></td><td>New turns required before a mid-session <code>Stop</code> stores anything; <code>PreCompact</code> and <code>SessionEnd</code> flush any remainder</td></tr>
           <tr><td><code>KEMORY_CAPTURE_SOURCE</code></td><td><code>claude-code</code></td><td>Value recorded in the memory's <code>metadata.source</code></td></tr>
         </tbody>
       </table>
@@ -326,19 +335,19 @@
 
     <section id="privacy">
       <h2>What leaves<br>your machine</h2>
-      <p>Two hooks transmit anything at all.</p>
+      <p>Two hooks transmit anything at all, and both are on by default.</p>
       <ul>
         <li><strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query. It skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent.</li>
-        <li><strong>Session capture is off</strong> unless you set it, because it uploads your own turns.</li>
+        <li><strong>Session capture</strong> sends a bounded, redacted digest of your own turns — never file contents or tool output — at the end of each turn, before <code>/compact</code> and at session end. It is stored as a <code>user-private</code> memory.</li>
       </ul>
-      <p>Context injection sends only your credential. The recall-approval, rate-reminder and store-nudge hooks make no network calls at all. Separately, when a stored login has expired the hooks refresh it against the identity provider named in the credential file.</p>
+      <p>Context injection sends only your credential. The rate-reminder and store-nudge hooks make no network calls at all. Separately, when a stored login has expired the hooks refresh it against the identity provider named in the credential file.</p>
 <pre><code>export KEMORY_PROMPT_RECALL=0   # stop sending prompt text
-export KEMORY_AUTO_CAPTURE=1    # turn capture on (off by default)
+export KEMORY_AUTO_CAPTURE=0    # turn capture off (on by default)
 export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code></pre>
 
       <h3>Redaction</h3>
       <p>One set of rules, shared by both hooks that send text. It strips credential shapes — bearer tokens, <code>api_key=</code> and <code>password=</code> style assignments, <code>sk-</code>, <code>gh*_</code>, AWS access key ids, Slack <code>xox*</code> tokens, JWTs and PEM private-key headers — replacing each with <code>[REDACTED]</code>. A keyword only triggers when it is followed by an actual assignment and a value long enough to be a credential, so ordinary prose about tokens and secrets survives intact.</p>
-      <p><strong>This is pattern-matching, not a guarantee.</strong> A novel or unusual secret format can pass through. Treat it as a safety net; if you work with sensitive material, leave capture off.</p>
+      <p><strong>This is pattern-matching, not a guarantee.</strong> A novel or unusual secret format can pass through. Treat it as a safety net; if you work with sensitive material, turn capture off.</p>
 
       <h3>Local files</h3>
       <p><code>~/.kemory/.captured/</code> and <code>~/.kemory/.nudged/</code> hold per-session hashes used to avoid storing or asking twice; <code>~/.kemory/.setup-hint</code> and <code>~/.kemory/.paste-hint</code> hold timestamps that throttle one-off notices. None contains conversation content.</p>
@@ -351,7 +360,7 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
 
     <section id="data">
       <h2>Storage and deletion</h2>
-      <p>What you send is stored as memories in your own vault, scoped to your organisation and user. Encryption at rest is <strong>opt-in per account</strong> and off until you enable it. Memories persist until you remove them — there is no automatic expiry unless you set a TTL when storing.</p>
+      <p>What you send is stored as memories in your own vault, scoped to your organisation and user. Encryption at rest is <strong>opt-in per account</strong> and off until you enable it. Memories persist until you remove them — there is no automatic expiry unless you set a TTL when storing, or a session is consolidated: conversation-type sources of a consolidated session then expire after 30 days by default, while its summary remains.</p>
       <p>Removal comes at two levels, and the difference matters:</p>
       <table class="tight">
         <thead><tr><th>Action</th><th>What it does</th></tr></thead>
@@ -400,9 +409,9 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
 ├── commands/                     /kemory:login, /kemory:status
 ├── skills/                       kemory, kemory-setup
 └── scripts/                      one script per hook, plus lib and redact</code></pre>
-      <p>Three ground rules govern a change: a hook must never block or fail a session and exits <code>0</code> on every error path; the plugin must no-op safely with no credential and no server; and anything that sends data anywhere must be opt-in and documented. One deliberate exception to the second — the MCP launcher exits non-zero with a reason when it finds no credential, because a silent no-op there produces a server that looks connected and serves nothing.</p>
+      <p>Three ground rules govern a change: a hook must never block or fail a session and exits <code>0</code> on every error path; the plugin must no-op safely with no credential and no server; and anything that sends data anywhere must be opt-in and documented — with two exceptions, prompt recall and session capture, which are on by default and documented here with the variable that turns each off. One deliberate exception to the second — the MCP launcher exits non-zero with a reason when it finds no credential, because a silent no-op there produces a server that looks connected and serves nothing.</p>
 <pre><code>./scripts/check.sh</code></pre>
-      <p>Validates every manifest, shell syntax, executable bits, plugin source paths, hook script references, that the two host manifests have not drifted, and that capture stays off by default. CI runs the same script plus shellcheck.</p>
+      <p>Validates every manifest, shell syntax, executable bits, plugin source paths, hook script references, and that the two host manifests have not drifted. CI runs the same script plus shellcheck.</p>
       <table class="tight">
         <tbody>
           <tr><td>Repository</td><td><a href="https://github.com/SeKondBrainAILabs/kemory-plugin">SeKondBrainAILabs/kemory-plugin</a></td></tr>

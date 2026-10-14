@@ -194,12 +194,13 @@ Two write tools are easy to confuse:
 - **`kemory_capture_session`** stores *many* discrete items the user has confirmed — at
   most 10 per call, with `user_confirmed: true`. It does not take a conversation window or a
   transcript. An optional `session_id` tags every item.
-- **`kemory_consolidate_session`** summarises the memories stored under one session id into
-  *one* semantic summary per namespace, which recall can find.
+- **`kemory_consolidate_session`** refreshes the *one* summary Kemory already keeps for a
+  session, and returns it. It stores nothing new and changes no memory.
 
 Use capture when the conversation contained several things worth remembering separately;
-use consolidate when you want a single durable record of what a session was about. They
-compose: capture with a `session_id`, then consolidate that session. The `save-session`
+use consolidate when you want the session's summary current right now; Kemory keeps it up to
+date on its own as memories arrive, and Ask and Enhance read it. They compose: capture with a
+`session_id`, then consolidate that session. The `save-session`
 prompt does both.
 
 ## Scoping and isolation

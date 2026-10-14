@@ -328,7 +328,7 @@ That is the whole product. Everything below is detail.
 ## The tools
 
 <!-- TOOLS:BEGIN -->
-Kemory exposes **28 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
+Kemory exposes **29 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
 behaviour annotations, so your client can tell reading from writing from deleting before it
 runs anything.
 
@@ -336,22 +336,23 @@ runs anything.
 
 | Tool | What it does |
 |---|---|
-| `kemory_ask` | SURFACES: memories, chat turns AND files — the ONLY search tool that reads all three; every kemory_recall* tool reads memories alone. If a conversation might hold the answer, this is the tool (S9N-7495). |
+| `kemory_ask` | SURFACES: memories, chats, supported text files and namespace summaries where enabled. Check unsupported_types and retrieval_status for incomplete coverage. If a conversation might hold the answer, this is the tool. |
 | `kemory_check_access` | Check if the current agent has permission to perform an action. Returns the Gatekeeper evaluation result without performing the action. |
-| `kemory_find_similar` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three (S9N-7495). |
+| `kemory_find_similar` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three. |
 | `kemory_get_compressed` | Tiered namespace compression. mode='aaak' returns the L2 lossless dialect encoding for byte-oriented storage/export diagnostics; do not inject AAAK into prompts as a token-saving context format. mode='concept' returns L3.1 LLM-synthesized concepts via core-ai-backend. merge_mode='current' picks the latest position in directional sequences; 'aggregate' synthesises all positions. mode='raw' is deprecated — use kemory_get_raw, which pages and reports has_more; raw calls here may serve one bounded page (check has_more/note in the result). Requires memory:read permission. |
-| `kemory_get_context` | Get contextual memories relevant to a conversation or topic. Searches across all accessible namespaces (or a specific namespace) and returns the most relevant memories, optionally synthesised by the AI backend. Requires memory:read permission. |
+| `kemory_get_context` | Get contextual memories relevant to a conversation or topic. Searches across all accessible namespaces (or a specific namespace) and returns the most relevant memories, optionally synthesised by the AI backend. Use it for background before reasoning about a topic; use kemory_recall to find specific records you will cite or edit, and kemory_get_user_context for a whole-vault overview at session start. Requires memory:read permission. |
 | `kemory_get_history` | Return the full provenance history of a memory — every state change with actor, reason, and before/after snapshots. Requires memory:read permission. |
 | `kemory_get_namespace_summary` | Get one namespace's consolidated cross-session summary: its human-readable description, the rolling L3.1 summary (falling back to the latest L3.0 concept memory when L3.1 has not been synthesised yet), the summary tier and when it was last updated, plus any related namespaces the matcher flagged as near-duplicates. Use this to orient on a single namespace before recalling from it. Requires memory:read permission on the namespace. |
-| `kemory_get_profile` | Return the user's PERSISTED profile — 'static' (stable preferences) and 'dynamic' (recent activity) halves, served from a stored row in one lookup with no LLM call; the row rebuilds lazily when stale. Use section to fetch one half, refresh=true to force a rebuild. Requires memory:read permission. |
-| `kemory_get_raw` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three (S9N-7495). |
-| `kemory_get_session_context` | Get an optimized, prompt-ready context block for one namespace session. This keeps the latest raw user/assistant exchanges readable and folds older exchanges into a rolling token-budgeted digest. Namespace and session summaries are included as long-term background orientation; the digest itself is grounded only in prior digest + source exchanges. AAAK is never returned here because AAAK is byte-oriented storage/export compression, not the default LLM-context representation. Append the current user message after this tool output. |
-| `kemory_get_user_context` | Get a cross-namespace memory overview for the user. Ideal for session-start context injection — gives the agent a single block covering all of the user's memory namespaces. |
-| `kemory_list_namespaces` | List all namespaces in the user's S9N Memory Vault with memory counts and existing second-tier tags. Use this before store_memory so a new write reuses an established tag instead of fragmenting the namespace. |
+| `kemory_get_profile` | Return the user's profile — 'static' (stable preferences) and 'dynamic' (recent activity) halves. Read-only: no write and no LLM call. A fresh stored profile is served from one lookup (source 'stored'); otherwise it is computed from the memories this caller can read and returned without being saved (source 'live'). Use section to fetch one half. Requires memory:read permission. |
+| `kemory_get_raw` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three. |
+| `kemory_get_session_context` | Get an optimized, prompt-ready context block for one namespace session. For a topic across namespaces use kemory_get_context; for a whole-vault overview use kemory_get_user_context. This keeps the latest raw user/assistant exchanges readable and folds older exchanges into a rolling token-budgeted digest. Namespace and session summaries are included as long-term background orientation; the digest itself is grounded only in prior digest + source exchanges. AAAK is never returned here because AAAK is byte-oriented storage/export compression, not the default LLM-context representation. Append the current user message after this tool output. |
+| `kemory_get_user_context` | Get a cross-namespace memory overview for the user. Ideal for session-start context injection — gives the agent a single block covering all of the user's memory namespaces. For one topic use kemory_get_context; for specific records use kemory_recall. |
+| `kemory_list_namespaces` | List all namespaces in the user's Kemory vault with memory counts and existing second-tier tags. Use this before store_memory so a new write reuses an established tag instead of fragmenting the namespace. |
 | `kemory_list_projects` | List the user's projects with their namespace mapping and memory counts. Explicit projects (created aliases spanning 1+ namespaces) merge with implicit ones (bare project:* namespaces). Pass a returned project name to kemory_memory / kemory_recall via their 'project' argument for project-scoped writes and reads. |
 | `kemory_list_skills` | List all stored agent skills — learned procedures with name, trigger, and steps. Requires memory:read permission. |
-| `kemory_recall` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three (S9N-7495). |
-| `kemory_recall_memory` | Search and retrieve memories from the user's S9N Memory Vault. Supports text search, namespace filtering, content type filtering, and pagination. Requires memory:read permission. |
+| `kemory_plan_usage` | Report the caller's Kemory plan and how much of it has been used: memories stored against the plan's cap, connected AIs against the plan's cap, and Fair-Use position where the plan defines one. Read-only, takes no arguments. Use it to answer questions like 'how much room do I have left?' — and to mention headroom before a write is refused rather than after. A null limit means the plan has no cap on that axis; when the plan cannot be read every meter reports 'unavailable' and nothing is capped. Reads the same resolved snapshot the dashboard shows, so the two cannot disagree. |
+| `kemory_recall` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three. |
+| `kemory_recall_memory` | Search and retrieve memories from the user's Kemory vault. Supports text search, namespace filtering, content type filtering, and pagination. kemory_recall returns identical results; either name works. Use this to find specific records you will cite, rate or edit; for background on a topic use kemory_get_context. Requires memory:read permission. |
 | `kemory_rehydrate_session_sources` | Expand selected rolling-digest source IDs back to exact raw L1 memories or chat turns. This is read-only and token-budgeted: whole source items are included or omitted with a reason, never sliced, stop-word stripped, entity-coded, or returned as AAAK. Use this after kemory_get_session_context returns expansion hooks or when a query needs full-fidelity detail. |
 | `kemory_whoami` | Return the calling identity as Kemory sees it: user id, agent registry entry (when agent-authenticated), and organisation scope. Use to verify which tenant and agent a session is bound to before writing. |
 
@@ -359,21 +360,21 @@ runs anything.
 
 | Tool | What it does |
 |---|---|
-| `kemory_capture_session` | Extract durable memories from a conversation window in one call — the server pulls out stable facts, preferences and decisions, dedupes them, and stores each through the normal write path (enrichment, provenance, &lt;private&gt; redaction). Call at the end of a significant turn with the recent window; re-sending overlapping windows is safe (dedup absorbs it). Transient state, secret-shaped content, and unknown namespace destinations are skipped and counted; shared is used as a bootstrap only for an empty vault. For a single narrative summary of the session, use kemory_consolidate_session instead. Requires memory:write permission. |
-| `kemory_consolidate_session` | Trigger consolidation on a session — runs the Reflector agent over its episodic memories and produces ONE semantic summary stored as a new memory. Idempotent. For extracting many discrete durable facts from a conversation window, use kemory_capture_session instead; the two compose. |
-| `kemory_memory` | Save one memory. Friendly alias of kemory_store_memory: same storage path and dedup/enrichment. Pass namespace/project explicitly. If omitted in a non-empty vault, this call returns existing destinations and an advisory suggestion without writing; retry with your choice. Only a brand-new vault falls back to 'shared'. Reserve shared for durable cross-project profile/preferences; use project namespaces for project facts, plans, decisions, and releases. Requires memory:write permission. |
+| `kemory_consolidate_session` | Bring a session's summaries up to date now and return them. Kemory already summarises every session automatically as memories arrive (the per-session rollup) and compacts older exchanges into a rolling digest; this refreshes both on demand, for example before /compact or when a session ends, and returns the session summary for each namespace the session wrote to. It writes no memory and never changes or deletes the session's memories, which keep ageing through normal decay to the archive. Pair with kemory_capture_session, passing the same session_id to both. Requires memory:write permission. |
 | `kemory_promote_memory` | Promote a transient chunk (E09 multi-modal pipeline) so the CogOS retire pass leaves it alive. Use BEFORE referencing a transient memory from a skill or memory that won't carry a cited_memory_id, or as an explicit pin when you know an artifact is load-bearing. Idempotent — promoting an already-promoted memory is a no-op. |
-| `kemory_rate_memory` | Report whether a memory returned by kemory_recall_memory (or another read tool) was actually useful, so kemory's own recall metrics reflect usage rather than just fetch counts (S9N-7207 Phase B). Not idempotent — each call inserts a new append-only rating row, so re-rating the same memory records a separate event rather than overwriting the last one. |
-| `kemory_store_memory` | Store a new memory in the user's S9N Memory Vault. The memory needs an explicit destination — a namespace, or a project (from kemory_list_projects) routed to that project's primary namespace — and can include metadata, content type, and an optional TTL. Use 'shared' only for durable cross-project profile/preferences; file project facts, plans, decisions, and releases in their project namespace. Call kemory_list_namespaces or kemory_list_projects when the destination is unknown. Requires memory:write permission. |
-| `kemory_store_skill` | Store a learned skill (procedural memory) with name, trigger, and ordered steps. Requires memory:write permission. |
+| `kemory_rate_memory` | Report whether an item returned by a read tool was actually useful, so kemory's own recall metrics reflect usage rather than just fetch counts. Works for anything search returns: pass the item's `id` as target_id and its `type` (memory, chat or file) as target_type — kemory_ask returns all three, and a chat id rated as a memory is rejected. Pass the recall response's retrieval.recall_id when you have it — it ties the rating to the exact recall event. Not idempotent — each call inserts a new append-only rating row, so re-rating the same item records a separate event rather than overwriting the last one; metrics read the latest per item. |
 
 ### Destructive — `destructiveHint: true`
 
 | Tool | What it does |
 |---|---|
-| `kemory_delete_memory` | Soft-delete a memory from the user's S9N Memory Vault by its ID. Requires memory:delete permission. |
+| `kemory_capture_session` | Store several memories the user has already agreed to keep, in one call. Each item carries its content, an existing namespace and a content_type, and the call requires user_confirmed=true: the user has seen these exact items in this conversation and agreed to store them. It takes discrete items only, never conversation history or a transcript, and accepts at most 10 items of up to 2000 characters each. Each item goes through the normal write path (&lt;private&gt; redaction, enrichment, provenance). A near-duplicate of an existing memory in the same namespace and content type updates that memory in place with the new text; the earlier text is normally kept as a revision readable through kemory_get_history, but that copy is not guaranteed. Content under 20 characters, credential-shaped content and items whose namespace is not in the caller's inventory are skipped and counted; an empty vault accepts user:preferences and project:general. For one narrative summary of a session use kemory_consolidate_session. Requires memory:write permission. |
+| `kemory_delete_memory` | Soft-delete a memory from the user's Kemory vault by its ID. Same action as kemory_forget. To mark a fact outdated by a newer one rather than remove it, use kemory_resolve_conflict. Requires memory:delete permission. |
 | `kemory_forget` | Forget (soft-delete) one memory by its ID. Friendly alias of kemory_delete_memory — same soft-delete path, recoverable by an administrator. Requires memory:delete permission. |
+| `kemory_memory` | Save one memory. Friendly alias of kemory_store_memory: same storage path and dedup/enrichment. Stores content the user has already agreed to keep. Usually a call adds a memory, but a near-duplicate in the same namespace and content type updates the existing memory in place with the new text, metadata and expiry. The earlier text is normally kept as a revision readable through kemory_get_history, but that copy is not guaranteed. Pass namespace/project explicitly. If omitted in a non-empty vault, this call returns existing destinations and an advisory suggestion without writing; retry with your choice. Only a brand-new vault files it itself: 'user:preferences' for content_type='preference', otherwise 'project:general'. Use user:preferences for how the user likes to work and project:&lt;topic&gt; (e.g. project:acme) for project facts, plans, decisions, and releases. Requires memory:write permission. |
 | `kemory_resolve_conflict` | Resolve a contradiction between two memories: the loser is soft-superseded (bi-temporal invalid_at + superseded_by marker, same mechanics as the automatic contradiction judge), a conflict_resolved provenance event is recorded, and a 'supersedes' relation edge is written. Idempotent — resolving an already-resolved pair changes nothing. Requires memory:delete permission. |
+| `kemory_store_memory` | Store a new memory in the user's Kemory vault. Stores content the user has already agreed to keep. The memory needs an explicit destination — a namespace, or a project (from kemory_list_projects) routed to that project's primary namespace — and can include metadata, content type, and an optional TTL. Use 'user:preferences' for how the user likes to work; file project facts, plans, decisions, and releases in their project namespace (e.g. 'project:acme'). Call kemory_list_namespaces or kemory_list_projects when the destination is unknown. kemory_memory is the same write with a friendlier name; to store several user-confirmed items in one call, use kemory_capture_session. Requires memory:write permission. |
+| `kemory_store_skill` | Store a learned skill (procedural memory) with name, trigger, and ordered steps, in the caller's authenticated Kemory vault. The skill is private to the user, kept only in that vault and never sent to a third-party destination. A near-duplicate of an existing skill is updated in place with the new steps; the earlier version is normally kept as a revision readable through kemory_get_history, but that copy is not guaranteed. Requires memory:write permission. |
 
 <!-- TOOLS:END -->
 
@@ -383,7 +384,7 @@ annotations from an untrusted server as untrusted. They are not Kemory's access 
 Permissions are enforced server-side on every call, whatever a client decides to do with the
 hint.
 
-### Saving a session: capture, then consolidate
+### Saving a session: capture, then refresh the summary
 
 Two write tools work as a pair.
 
@@ -391,15 +392,18 @@ Two write tools work as a pair.
 call, each with its content, an existing namespace and a `content_type`, and the call
 requires `user_confirmed: true`. It does not take a conversation window or a transcript: the
 model picks the items, shows them to you, and sends only those. An optional `session_id` tags
-every item so the session can be consolidated later.
+every item so it counts towards that session's summary.
 
-**`kemory_consolidate_session`** summarises the memories stored under one session id into one
-semantic summary memory per namespace, which recall can find. It runs synchronously and
-reports what it did. Every source memory gets a `consolidated` provenance event and a link to
-the summary. Conversation-type sources then expire after 30 days by default; facts,
-preferences, skills and notes never expire because of consolidation. It is idempotent: the
-same memories consolidated again return the existing summary, and a session that has gained
-memories since gets a new summary that replaces the old one.
+**`kemory_consolidate_session`** brings a session's summary up to date and returns it. Kemory
+already keeps a summary of every session automatically: it is rebuilt as memories carrying the
+session id arrive, and older exchanges are folded into a rolling digest. Consolidate refreshes
+both on demand (before `/compact`, say) and returns the summary for each namespace the session
+wrote to. It stores no new memory and never changes or deletes the session's memories; they age
+through normal decay into the archive, where search can still find them. Run it twice and the
+second call reports `already_current`.
+
+Ask and Enhance use these session summaries: when a result comes from a session, its summary
+is added to the background the answer is grounded in.
 
 The `save-session` prompt below runs both in order.
 
@@ -416,7 +420,7 @@ server by server; a server that does not offer them yet simply shows none.
 | Prompt | Arguments | What it does |
 |---|---|---|
 | `enhance` | `request` (required), `project` (optional) | Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context |
-| `save-session` | `project` (optional) | Run it before `/compact` or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with `kemory_capture_session`, then calls `kemory_consolidate_session` so the session is also summarised as one memory |
+| `save-session` | `project` (optional) | Run it before `/compact` or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with `kemory_capture_session`, then calls `kemory_consolidate_session` so the session's summary includes them |
 
 In Claude Code: `/mcp__kemory__enhance <request>` and `/mcp__kemory__save-session`. With the
 [plugin](#connect-claude-code) the server is plugin-namespaced, so the names are

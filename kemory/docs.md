@@ -328,7 +328,7 @@ That is the whole product. Everything below is detail.
 ## The tools
 
 <!-- TOOLS:BEGIN -->
-Kemory exposes **29 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
+Kemory exposes **30 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
 behaviour annotations, so your client can tell reading from writing from deleting before it
 runs anything.
 
@@ -363,6 +363,7 @@ runs anything.
 | `kemory_consolidate_session` | Bring a session's summaries up to date now and return them. Kemory already summarises every session automatically as memories arrive (the per-session rollup) and compacts older exchanges into a rolling digest; this refreshes both on demand, for example before /compact or when a session ends, and returns the session summary for each namespace the session wrote to. It writes no memory and never changes or deletes the session's memories, which keep ageing through normal decay to the archive. Pair with kemory_capture_session, passing the same session_id to both. Requires memory:write permission. |
 | `kemory_promote_memory` | Promote a transient chunk (E09 multi-modal pipeline) so the CogOS retire pass leaves it alive. Use BEFORE referencing a transient memory from a skill or memory that won't carry a cited_memory_id, or as an explicit pin when you know an artifact is load-bearing. Idempotent — promoting an already-promoted memory is a no-op. |
 | `kemory_rate_memory` | Report whether an item returned by a read tool was actually useful, so kemory's own recall metrics reflect usage rather than just fetch counts. Works for anything search returns: pass the item's `id` as target_id and its `type` (memory, chat or file) as target_type — kemory_ask returns all three, and a chat id rated as a memory is rejected. Pass the recall response's retrieval.recall_id when you have it — it ties the rating to the exact recall event. Not idempotent — each call inserts a new append-only rating row, so re-rating the same item records a separate event rather than overwriting the last one; metrics read the latest per item. |
+| `kemory_restore_version` | Put a memory's earlier wording back. When a save was absorbed as a near-duplicate, the memory was refreshed to the newer text and the earlier text kept as a revision (kemory_get_history lists them in displaced_revisions; a store response names it as dedup.previous_version_id). This restores that revision and keeps the current wording as a revision in its place, so nothing is lost and the returned previous_version_id undoes it. Use it only when the user says the merge was wrong. Requires memory:write permission. |
 
 ### Destructive — `destructiveHint: true`
 

@@ -328,7 +328,7 @@ That is the whole product. Everything below is detail.
 ## The tools
 
 <!-- TOOLS:BEGIN -->
-Kemory exposes **30 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
+Kemory exposes **31 tools**, all prefixed `kemory_`. Every one carries a `title` and MCP
 behaviour annotations, so your client can tell reading from writing from deleting before it
 runs anything.
 
@@ -347,7 +347,7 @@ runs anything.
 | `kemory_get_raw` | SURFACES: memories only — chats and files are separate stores this tool never reads; kemory_ask searches all three. |
 | `kemory_get_session_context` | Get an optimized, prompt-ready context block for one namespace session. For a topic across namespaces use kemory_get_context; for a whole-vault overview use kemory_get_user_context. This keeps the latest raw user/assistant exchanges readable and folds older exchanges into a rolling token-budgeted digest. Namespace and session summaries are included as long-term background orientation; the digest itself is grounded only in prior digest + source exchanges. AAAK is never returned here because AAAK is byte-oriented storage/export compression, not the default LLM-context representation. Append the current user message after this tool output. |
 | `kemory_get_user_context` | Get a cross-namespace memory overview for the user. Ideal for session-start context injection — gives the agent a single block covering all of the user's memory namespaces. For one topic use kemory_get_context; for specific records use kemory_recall. |
-| `kemory_list_namespaces` | List all namespaces in the user's Kemory vault with memory counts and existing second-tier tags. Use this before store_memory so a new write reuses an established tag instead of fragmenting the namespace. |
+| `kemory_list_namespaces` | List all namespaces in the user's Kemory vault with memory counts and their tag tree (tag1, and the tag2s under it, written tag1:tag2). Use this before store_memory so a new write reuses an established tag instead of fragmenting the namespace. |
 | `kemory_list_projects` | List the user's projects with their namespace mapping and memory counts. Explicit projects (created aliases spanning 1+ namespaces) merge with implicit ones (bare project:* namespaces). Pass a returned project name to kemory_memory / kemory_recall via their 'project' argument for project-scoped writes and reads. |
 | `kemory_list_skills` | List all stored agent skills — learned procedures with name, trigger, and steps. Requires memory:read permission. |
 | `kemory_plan_usage` | Report the caller's Kemory plan and how much of it has been used: memories stored against the plan's cap, connected AIs against the plan's cap, and Fair-Use position where the plan defines one. Read-only, takes no arguments. Use it to answer questions like 'how much room do I have left?' — and to mention headroom before a write is refused rather than after. A null limit means the plan has no cap on that axis; when the plan cannot be read every meter reports 'unavailable' and nothing is capped. Reads the same resolved snapshot the dashboard shows, so the two cannot disagree. |
@@ -373,6 +373,7 @@ runs anything.
 | `kemory_delete_memory` | Soft-delete a memory from the user's Kemory vault by its ID. Same action as kemory_forget. To mark a fact outdated by a newer one rather than remove it, use kemory_resolve_conflict. Requires memory:delete permission. |
 | `kemory_forget` | Forget (soft-delete) one memory by its ID. Friendly alias of kemory_delete_memory — same soft-delete path, recoverable by an administrator. Requires memory:delete permission. |
 | `kemory_memory` | Save one memory. Friendly alias of kemory_store_memory: same storage path and dedup/enrichment. Stores content the user has already agreed to keep. Usually a call adds a memory, but a near-duplicate in the same namespace and content type updates the existing memory in place with the new text, metadata and expiry. The earlier text is normally kept as a revision readable through kemory_get_history, but that copy is not guaranteed. Pass namespace/project explicitly. If omitted in a non-empty vault, this call returns existing destinations and an advisory suggestion without writing; retry with your choice. Only a brand-new vault files it itself: 'user:preferences' for content_type='preference', otherwise 'project:general'. Use user:preferences for how the user likes to work and project:&lt;topic&gt; (e.g. project:acme) for project facts, plans, decisions, and releases. Requires memory:write permission. |
+| `kemory_reinstate_memory` | Bring back a memory that kemory_resolve_conflict superseded. By default both memories are then current (keep both). With supersede_winner=true the memory that had replaced it is superseded instead (keep the other one), in the same step. Only memories a conflict resolution superseded qualify: deleted memories and earlier versions are refused. Nothing is deleted either way. Use it only when the user says a resolution was wrong. Requires memory:write (and memory:delete with supersede_winner). |
 | `kemory_resolve_conflict` | Resolve a contradiction between two memories: the loser is soft-superseded (bi-temporal invalid_at + superseded_by marker, same mechanics as the automatic contradiction judge), a conflict_resolved provenance event is recorded, and a 'supersedes' relation edge is written. Idempotent — resolving an already-resolved pair changes nothing. Requires memory:delete permission. |
 | `kemory_store_memory` | Store a new memory in the user's Kemory vault. Stores content the user has already agreed to keep. The memory needs an explicit destination — a namespace, or a project (from kemory_list_projects) routed to that project's primary namespace — and can include metadata, content type, and an optional TTL. Use 'user:preferences' for how the user likes to work; file project facts, plans, decisions, and releases in their project namespace (e.g. 'project:acme'). Call kemory_list_namespaces or kemory_list_projects when the destination is unknown. kemory_memory is the same write with a friendlier name; to store several user-confirmed items in one call, use kemory_capture_session. Requires memory:write permission. |
 | `kemory_store_skill` | Store a learned skill (procedural memory) with name, trigger, and ordered steps, in the caller's authenticated Kemory vault. The skill is private to the user, kept only in that vault and never sent to a third-party destination. A near-duplicate of an existing skill is updated in place with the new steps; the earlier version is normally kept as a revision readable through kemory_get_history, but that copy is not guaranteed. Requires memory:write permission. |
@@ -468,6 +469,14 @@ interactive cards instead of plain text.
   confirm). An update shows the earlier and the new wording side by side, with
   **Restore previous**, which [`kemory_restore_version`](#restore) carries out and which can
   itself be undone.
+- **Conflict card.** After `kemory_resolve_conflict`, what was kept and what was replaced,
+  side by side. **Keep both** or **Keep the other one instead** undo the decision through
+  `kemory_reinstate_memory`; each needs a second click, and nothing is deleted.
+- **Answer card.** A `kemory_ask` answer with how well it is grounded in your Kemory, and the
+  sources it used, each opening in its own Kemory.
+- **Overview card.** For `kemory_list_projects`, `kemory_plan_usage` and
+  `kemory_get_namespace_summary`: your Kemories at a glance (totals, recently active,
+  largest), your plan usage, or one Kemory's summary.
 
 Cards are self-contained and make no network requests of their own; their buttons act
 through your host's ordinary tool calls, under the same connection and permissions. Hosts

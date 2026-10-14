@@ -407,6 +407,19 @@ is added to the background the answer is grounded in.
 
 The `save-session` prompt below runs both in order.
 
+### When a save updates a memory you already had
+
+If you save something very close to a memory you already have, Kemory updates that memory
+instead of keeping two near-copies, and the save reports it. The earlier wording is not
+thrown away: it is kept in the memory's history, and `kemory_get_history` returns it under
+`displaced_revisions`.
+
+**`kemory_restore_version`** puts that earlier wording back. It takes the memory id and the
+revision id (the save names it as `dedup.previous_version_id`). The wording it replaces is
+kept in history in the same step, so nothing is lost, and the response's
+`previous_version_id` undoes the restore. Use it when the two were meant to stay
+different. It needs write access to the memory.
+
 ---
 
 ## Prompts, resources and cards
@@ -443,12 +456,17 @@ Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Cla
 and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as
 interactive cards instead of plain text.
 
-- **Recall card.** Ranked memories, each with its namespace, source, date and match
-  percentage, plus **Useful** / **Not useful** rating, **Open in Kemory**, and **Forget**.
-  Forget needs a second click to confirm, and shared memories cannot be forgotten from the
-  card.
-- **Saved card.** What was stored and where, plus **Undo**, which also needs a second click.
-  Undo is not offered when the save updated an existing memory.
+- **Recall card.** Results grouped by conversation: each chat's title, Kemory, AI and date
+  once, the best passage first and the rest a click away, with the best overall marked
+  **Best match**. Thumbs up or down tells Kemory whether a result helped; thumbs down asks
+  why (not relevant, out of date, duplicate). **Open chat** and **Open in Kemory** open the
+  item inside its own Kemory, and the Kemory label opens the Kemory itself. **Forget** sits
+  behind the ⋯ menu, needs a second click, and is not offered on memories shared with you.
+- **Saved card.** Says plainly what happened: saved, updated a memory you already had,
+  already in your Kemory, or not saved. A brand-new memory offers **Undo** (second click to
+  confirm). An update shows the earlier and the new wording side by side, with
+  **Restore previous**, which [`kemory_restore_version`](#restore) carries out and which can
+  itself be undone.
 
 Cards are self-contained and make no network requests of their own; their buttons act
 through your host's ordinary tool calls, under the same connection and permissions. Hosts

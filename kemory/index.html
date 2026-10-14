@@ -326,6 +326,9 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <p><strong><code>kemory_consolidate_session</code></strong> brings a session's summary up to date and returns it. Kemory already keeps a summary of every session automatically: it is rebuilt as memories carrying the session id arrive, and older exchanges are folded into a rolling digest. Consolidate refreshes both on demand (before <code>/compact</code>, say) and returns the summary for each namespace the session wrote to. It stores no new memory and never changes or deletes the session's memories; they age through normal decay into the archive, where search can still find them. Run it twice and the second call reports <code>already_current</code>.</p>
       <p>Ask and Enhance use these session summaries: when a result comes from a session, its summary is added to the background the answer is grounded in.</p>
       <p>The <code>save-session</code> prompt below runs both in order.</p>
+      <h3 id="restore">When a save updates a memory you already had</h3>
+      <p>If you save something very close to a memory you already have, Kemory updates that memory instead of keeping two near-copies, and the save reports it. The earlier wording is not thrown away: it is kept in the memory's history, and <code>kemory_get_history</code> returns it under <code>displaced_revisions</code>.</p>
+      <p><strong><code>kemory_restore_version</code></strong> puts that earlier wording back. It takes the memory id and the revision id (the save names it as <code>dedup.previous_version_id</code>). The wording it replaces is kept in history in the same step, so nothing is lost, and the response's <code>previous_version_id</code> undoes the restore. Use it when the two were meant to stay different. It needs write access to the memory.</p>
     </section>
 
     <section id="prompts">
@@ -352,8 +355,8 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <h3>Cards in chat</h3>
       <p>Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Claude on the web and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as interactive cards instead of plain text.</p>
       <ul>
-        <li><strong>Recall card.</strong> Ranked memories, each with its namespace, source, date and match percentage, plus <strong>Useful</strong> / <strong>Not useful</strong> rating, <strong>Open in Kemory</strong>, and <strong>Forget</strong>. Forget needs a second click to confirm, and shared memories cannot be forgotten from the card.</li>
-        <li><strong>Saved card.</strong> What was stored and where, plus <strong>Undo</strong>, which also needs a second click. Undo is not offered when the save updated an existing memory.</li>
+        <li><strong>Recall card.</strong> Results grouped by conversation: each chat's title, Kemory, AI and date once, the best passage first and the rest a click away, with the best overall marked <strong>Best match</strong>. Thumbs up or down tells Kemory whether a result helped; thumbs down asks why (not relevant, out of date, duplicate). <strong>Open chat</strong> and <strong>Open in Kemory</strong> open the item inside its own Kemory, and the Kemory label opens the Kemory itself. <strong>Forget</strong> sits behind the ⋯ menu, needs a second click, and is not offered on memories shared with you.</li>
+        <li><strong>Saved card.</strong> Says plainly what happened: saved, updated a memory you already had, already in your Kemory, or not saved. A brand-new memory offers <strong>Undo</strong> (second click to confirm). An update shows the earlier and the new wording side by side, with <strong>Restore previous</strong>, which <a href="#restore"><code>kemory_restore_version</code></a> carries out and which can itself be undone.</li>
       </ul>
       <p>Cards are self-contained and make no network requests of their own; their buttons act through your host's ordinary tool calls, under the same connection and permissions. Hosts without MCP Apps, Claude Code among them, show the same text results as before.</p>
     </section>

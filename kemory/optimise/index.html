@@ -545,7 +545,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the namespace table in.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.claude/CLAUDE.md</code> applies to every project on the machine. A <code>CLAUDE.md</code> at a repository root applies to that repository and is read on top of the global one — put the project namespace there.</span></li>
             <li><span class="k">Shortcut</span><span>Typing <code>/memory</code> in a session opens these files for editing without leaving the terminal.</span></li>
-            <li><span class="k">Connecting</span><span><code>claude mcp add</code>, or the <a href="#mcp-local">config file route</a>.</span></li>
+            <li><span class="k">Connecting</span><span>The <a href="../#connect-claude-code">Kemory plugin</a>, which ships this instruction as a skill. For the server alone, <code>claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1</code>, then <code>/mcp</code> → Authenticate.</span></li>
           </ul>
         </div>
 
@@ -997,7 +997,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
       <h3>Name a namespace per body of work</h3>
       <p>Add one line to each project's instructions naming where its memories go. Recall stays fast and stops returning last quarter's project when you ask about this one. The conventions that work are on the <a href="../#scoping">Kemory overview</a>.</p>
       <h3>Ask for a session summary, and mean it</h3>
-      <p>At the end of a substantial conversation: <em>"Consolidate this session into Kemory."</em> One durable record of what a session was about is worth more later than forty fragments, and the difference between capturing and consolidating is explained on the <a href="../retrieval/#capture">retrieval page</a>.</p>
+      <p>At the end of a substantial conversation: <em>"Save this session to Kemory."</em> The assistant stores the decisions and facts worth keeping, and Kemory keeps a summary of the session that later answers draw on. The difference between capturing and consolidating is explained on the <a href="../retrieval/#capture">retrieval page</a>.</p>
       <h3>Prune deliberately</h3>
       <p>A memory that was true in March and is wrong now is worse than no memory, because it will be recalled with the same confidence as a correct one. When something changes, say so — <em>"that is no longer true, update Kemory"</em> — rather than leaving both versions to compete.</p>
       <h3>Capture the conversations you are already having</h3>

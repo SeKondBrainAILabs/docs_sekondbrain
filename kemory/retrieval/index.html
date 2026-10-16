@@ -169,10 +169,10 @@
       <h2>Capture versus consolidate</h2>
       <p>Two write tools are easy to confuse:</p>
       <ul>
-        <li><code>kemory_capture_session</code> extracts <em>many</em> discrete durable facts from a conversation and stores each one.</li>
-        <li><code>kemory_consolidate_session</code> produces <em>one</em> semantic summary of a session.</li>
+        <li><code>kemory_capture_session</code> stores <em>many</em> discrete items the user has confirmed — at most 10 per call, with <code>user_confirmed: true</code>. It does not take a conversation window or a transcript. An optional <code>session_id</code> tags every item.</li>
+        <li><code>kemory_consolidate_session</code> refreshes the <em>one</em> summary Kemory already keeps for a session, and returns it. It stores nothing new and changes no memory.</li>
       </ul>
-      <p>Use capture when the conversation contained several things worth remembering separately; use consolidate when you want a single durable record of what a session was about.</p>
+      <p>Use capture when the conversation contained several things worth remembering separately; use consolidate when you want the session's summary current right now; Kemory keeps it up to date on its own as memories arrive, and Ask and Enhance read it. They compose: capture with a <code>session_id</code>, then consolidate that session. The <a href="../#prompts"><code>save-session</code> prompt</a> does both.</p>
     </section>
 
     <section id="scoping">

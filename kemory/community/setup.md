@@ -31,9 +31,40 @@ The API will be available at `http://127.0.0.1:8111` and the dashboard at
 
 The bundle command prints the exact components used by the selected profile.
 The standalone profile includes the API, dashboard, PostgreSQL with pgvector,
-Redis, in-process FastEmbed, and local artifact storage. Groq synthesis is an
-optional direct user-key integration; leaving its key empty keeps that path
-offline.
+Redis, in-process FastEmbed, direct Community LLM adapters, and local artifact
+storage. Leaving cloud provider keys empty keeps those paths offline.
+
+## Language Model Setup
+
+Open `http://127.0.0.1:5175/settings`, then use **Runtime > Language model**
+to select Groq, llama.cpp, or Vertex AI. Enter the provider settings, run
+**Test connection**, and save. Credentials are stored in the mode-`0600`
+Community configuration file on the API data volume and are never returned by
+the settings API.
+
+| Provider | Required settings | Default endpoint |
+| --- | --- | --- |
+| llama.cpp | Model and an endpoint reachable from the API container; bearer token is optional | `http://host.docker.internal:8080` |
+| Groq | Model and Groq API key | `https://api.groq.com/openai` |
+| Vertex AI | Gemini model and Vertex AI Express API key | Managed by the Google Gen AI SDK |
+
+The supplied Compose files map `host.docker.internal` on Linux and Docker
+Desktop. For llama.cpp running as another container on the same network, use
+its service URL, such as `http://llama-cpp:8080`. This endpoint is user-managed
+and is not a Kemory-published host port, so it adds no Kemory port-registry
+allocation.
+
+Headless deployments can set the same values before startup:
+
+```bash
+KEMORY_LLM_PROVIDER=llama_cpp
+KEMORY_LLM_MODEL=local-model
+KEMORY_LLM_BASE_URL=http://host.docker.internal:8080
+KEMORY_LLM_API_KEY=
+```
+
+Provider-specific `GROQ_API_KEY`, `GROQ_BASE_URL`, `GOOGLE_API_KEY`, and
+`LLAMA_CPP_API_KEY` variables remain supported.
 
 ## SeKondBrain Shared Infrastructure
 

@@ -34,8 +34,8 @@ never advances the baseline or merges hosted code. See
 - Community release baseline: `v0.1.0` at `d97ff32fe`.
 - Hosted baseline accepted into the Community ledger: `2aa9da45db`
   (post-`v3.11.1`).
-- Latest automated observation: `f7145717fd` on 18 October 2026. The intake
-  found 1,002 first-parent commits since the accepted baseline: 938 adapt,
+- Latest automated observation: `b366a39121` on 18 October 2026. The intake
+  found 1,003 first-parent commits since the accepted baseline: 939 adapt,
   21 mixed-boundary, 41 manual-review, and two excluded-only. These
   counts are pending review, not a parity claim.
 - Backend subtree anchor: `5b70a8a884` (equivalent hosted tree at `305adba0e8:backend`).

@@ -23,20 +23,28 @@ This avoids reintroducing hosted authentication, billing, telemetry, storage,
 analytics, or organisation workflows while keeping compatible memory behavior
 and wire contracts current.
 
+Intake is automated; integration remains reviewed. A scheduled Community
+workflow compares hosted `main` with the accepted baseline, produces a redacted
+classification summary, and fails visibly while candidates need review. It
+never advances the baseline or merges hosted code. See
+[`upstream-intake.md`](upstream-intake.md).
+
 ## Baseline
 
 - Community release baseline: `v0.1.0` at `d97ff32fe`.
-- Hosted baseline inspected: `60390acd5f` (`v1.8.2`); previous audit baseline
-  was `dcaa931ae8` (`v1.7.6`).
+- Hosted baseline accepted into the Community ledger: `2aa9da45db`
+  (post-`v3.11.1`).
+- Latest automated observation: `f7145717fd` on 18 October 2026. The intake
+  found 1,002 first-parent commits since the accepted baseline: 938 adapt,
+  21 mixed-boundary, 41 manual-review, and two excluded-only. These
+  counts are pending review, not a parity claim.
 - Backend subtree anchor: `5b70a8a884` (equivalent hosted tree at `305adba0e8:backend`).
 - Python SDK anchor: `ea2c494530`.
 - CLI anchor: `6fb85a6d4b`.
 - Dashboard anchor: `c82bebf5cd`.
 
-The initial backend delta contained 374 effective commits and the dashboard
-contained 186. The follow-up audit from hosted `v1.7.6` through `v1.8.2`
-classified five more commits. Changes are ported by feature cohort, with
-community adapters and Docker runtime constraints applied at each boundary.
+Changes are ported by feature cohort, with Community adapters, public licensing,
+and Docker runtime constraints applied at each boundary.
 
 ## Classification
 

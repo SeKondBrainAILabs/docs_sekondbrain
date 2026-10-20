@@ -436,8 +436,10 @@ server by server; a server that does not offer them yet simply shows none.
 |---|---|---|
 | `enhance` | `request` (required), `project` (optional) | Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context |
 | `save-session` | `project` (optional) | Run it before `/compact` or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with `kemory_capture_session`, then calls `kemory_consolidate_session` so the session's summary includes them |
+| `cards` | `mode` (`open`, `collapsed` or `off`; optional), `app` (`this` or `all`; optional) | Sets how Kemory's cards show up, through `kemory_settings`: for the AI app you are in, or for every app. With no mode it tells you the current setting |
 
-In Claude Code: `/mcp__kemory__enhance <request>` and `/mcp__kemory__save-session`. With the
+In Claude Code: `/mcp__kemory__enhance <request>`, `/mcp__kemory__save-session` and
+`/mcp__kemory__cards off`. With the
 [plugin](#connect-claude-code) the server is plugin-namespaced, so the names are
 `/mcp__plugin_kemory_kemory__enhance` and `/mcp__plugin_kemory_kemory__save-session`.
 
@@ -457,6 +459,27 @@ something is there. In Claude Code, type `@kemory:` and pick.
 Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Claude on the web
 and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as
 interactive cards instead of plain text.
+
+Cards stay out of the way of the conversation:
+
+- **One line until you open it.** Every card starts as a single line, such as "Used 5
+  memories · from Claude, ChatGPT" or "Saved · project:kemory" with **Undo**. Open it to see
+  the detail; lists (memories, sources, the two sides of a conflict) page one at a time as a
+  carousel.
+- **No more than two per turn.** A third card in the same turn takes no space; its result
+  still reaches the assistant as text. The saved card, which carries Undo, always shows.
+- **Nothing to show, no card.** A recall that found nothing shows no card. Each result says
+  **Why this:** — how strong the match is, which AI's chat it came from, and how many passages
+  agree.
+- **First card, a short welcome.** The first card you ever get, in any AI, opens with a
+  five-slide introduction to Kemory, the Chrome extension and the web app, and ends with a
+  choice of how cards should show up.
+
+**Choose how cards show up:** open, collapsed to one line (the default) or hidden, for every AI
+or for one app — for example open in claude.ai and hidden in Claude Code. Set it in Kemory's
+**Settings → Kemory cards in your AI chats**, with the `cards` prompt above, or by asking your AI
+("turn off Kemory cards"), which calls `kemory_settings`. A change applies from the next card;
+reconnect Kemory or refresh its tools if an empty space still shows where a hidden card was.
 
 - **Recall card.** Results grouped by conversation: each chat's title, Kemory, AI and date
   once, the best passage first and the rest a click away, with the best overall marked

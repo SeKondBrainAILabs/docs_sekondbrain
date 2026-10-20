@@ -10,7 +10,7 @@ Included:
 
 - L1 memory CRUD (full text/fact/preference/conversation/structured/embedding types)
 - L2 AAAK lossless encoding
-- L3 per-namespace narrative summaries (via user's Groq key)
+- L3 per-namespace narrative summaries via Groq, llama.cpp, or Vertex AI
 - L3.1 concept synthesis + `supersedes` directional graph
 - `quality_score` enrichment scoring
 - Namespace matcher (0.85 / 0.90 thresholds, 409 conflict, silent redirect)
@@ -23,7 +23,7 @@ Included:
 - Artifacts with local filesystem blob storage
 - Export endpoint (JSONL bundle) + import endpoint
 - Dashboard pages: memories, namespaces, chats, artifacts, settings, doctor
-- Settings UI: Groq key, embedding provider, Groq model, artifact limits, log level
+- Settings UI: LLM provider/model/endpoint/key and connection test, embedding provider, artifact limits, log level
 
 Not included (stays in hosted Kemory):
 
@@ -42,7 +42,7 @@ Not included (stays in hosted Kemory):
 - **Backend:** Python 3.11 + FastAPI, shipped as a Docker image.
 - **Database default:** Postgres + pgvector in the Docker runtime.
 - **Database opt-in:** host Postgres via generated compose overrides.
-- **LLM:** Groq, user-supplied key. Default model `llama-3.3-70b-versatile`.
+- **LLM:** User-selected Groq, llama.cpp, or Vertex AI provider. Cloud keys and local endpoints are user-supplied.
 - **Embeddings:** local `fastembed` with `BAAI/bge-small-en-v1.5`. Configurable to OpenAI/Voyage/Cohere.
 - **Auth:** single-user, X-API-Key only. No Keycloak, no JWT.
 - **Dashboard:** Vite + React (stripped fork of hosted dashboard, no Keycloak).

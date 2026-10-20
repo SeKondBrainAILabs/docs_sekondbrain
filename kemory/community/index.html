@@ -59,6 +59,9 @@
 <pre><code>npx kemory-community@latest init --runtime docker
 npx kemory-community@latest up</code></pre>
       <p>The launcher creates local configuration and starts the pinned Compose stack. API access is protected by <code>X-API-Key</code>.</p>
+<pre><code>npx kemory-community@latest doctor
+npx kemory-community@latest bundle</code></pre>
+      <p>The bundle command lists the exact required components and the admission gates for optional integrations.</p>
     </section>
 
     <section id="runtime">
@@ -90,6 +93,7 @@ npx kemory-community@latest up</code></pre>
       <h2>Edition boundaries</h2>
       <p>Community Edition is an independent downstream repository, not a GitHub fork. Compatible hosted behaviour is selectively ported by feature cohort and tested against the local adapters.</p>
       <p>Hosted Keycloak/OIDC, billing, teams and organisations, Gatekeeper evaluation, managed KMS, PostHog, MinIO, Weaviate, FalkorDB, executive analytics and CogOS/L5 runtime paths are not part of Community Edition.</p>
+      <p>The default bundle does not require Core AI Backend, Core Backend or Keycloak. Scheduled upstream intake detects hosted changes daily, but integration remains reviewed and never automatically crosses the Community boundary.</p>
     </section>
 
     <section id="privacy">
@@ -108,6 +112,7 @@ npx kemory-community@latest up</code></pre>
         <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/port-registry.md">Port registry</a></li>
         <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/privacy.md">Community privacy</a></li>
         <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/hosted-delta-ledger.md">Hosted-to-community delta ledger</a></li>
+        <li><a href="https://github.com/SeKondBrainAILabs/docs_sekondbrain/blob/main/kemory/community/upstream-intake.md">Hosted upstream intake</a></li>
       </ul>
     </section>
 

@@ -23,20 +23,28 @@ This avoids reintroducing hosted authentication, billing, telemetry, storage,
 analytics, or organisation workflows while keeping compatible memory behavior
 and wire contracts current.
 
+Intake is automated; integration remains reviewed. A scheduled Community
+workflow compares hosted `main` with the accepted baseline, produces a redacted
+classification summary, and fails visibly while candidates need review. It
+never advances the baseline or merges hosted code. See
+[`upstream-intake.md`](upstream-intake.md).
+
 ## Baseline
 
 - Community release baseline: `v0.1.0` at `d97ff32fe`.
-- Hosted baseline inspected: `60390acd5f` (`v1.8.2`); previous audit baseline
-  was `dcaa931ae8` (`v1.7.6`).
+- Hosted baseline accepted into the Community ledger: `2aa9da45db`
+  (post-`v3.11.1`).
+- Latest automated observation: `b366a39121` on 18 October 2026. The intake
+  found 1,003 first-parent commits since the accepted baseline: 939 adapt,
+  21 mixed-boundary, 41 manual-review, and two excluded-only. These
+  counts are pending review, not a parity claim.
 - Backend subtree anchor: `5b70a8a884` (equivalent hosted tree at `305adba0e8:backend`).
 - Python SDK anchor: `ea2c494530`.
 - CLI anchor: `6fb85a6d4b`.
 - Dashboard anchor: `c82bebf5cd`.
 
-The initial backend delta contained 374 effective commits and the dashboard
-contained 186. The follow-up audit from hosted `v1.7.6` through `v1.8.2`
-classified five more commits. Changes are ported by feature cohort, with
-community adapters and Docker runtime constraints applied at each boundary.
+Changes are ported by feature cohort, with Community adapters, public licensing,
+and Docker runtime constraints applied at each boundary.
 
 ## Classification
 
@@ -49,7 +57,7 @@ community adapters and Docker runtime constraints applied at each boundary.
 | Memory timeline | Ported and adapted | Unified chat/memory source chronology with local-user keyset pagination and provenance; no Gatekeeper, hosted telemetry, or organisation analytics. Adapted from hosted `f4aad73` and `8325d9f`, with `occurred_at` support from the later chronology cohort. |
 | Namespace tags | Ported and adapted | Migration `020`; local-user profiles, direct user-key Groq naming, deterministic entity/embedding/era matching, dry-run Docker backfill and promotion tools, and dashboard chips. No hosted Gatekeeper, audit, provenance, or organisation workflows. Adapted from hosted `554a427`, `50052ce`, `0086767`, `8bf0fc4`, `eeed4c6`, and `01b6883`. |
 | Memory and namespace dashboard UX | Ported selectively | Improved explorer, detail/history, URL pagination, responsive navigation, and container runtime; uses X-API-Key only and exposes community workflows; excluded private design-system packages. |
-| Community release surfaces and model configuration | Ported and adapted | Dedicated artifacts and doctor pages; persisted Groq, embedding, artifact-limit, and log settings; direct user-key Groq calls replace the hosted AI proxy. |
+| Community release surfaces and model configuration | Ported and adapted | Dedicated artifacts and doctor pages; persisted Groq, llama.cpp, Vertex AI, embedding, artifact-limit, and log settings; provider connection testing and direct user-key/provider calls replace the hosted AI proxy. |
 | Python CLI and stdio bridge | Ported and adapted | Local endpoint plus API-key configuration only; OAuth device flow, Bearer forwarding, hosted environments, org/team commands, telemetry, and hosted release upgrades are removed. |
 | Post-`v1.7.6` build security (`63b8035`, `60390ac`) | Ported and adapted | Raise the Vite floor to `^6.4.3`, refresh safe transitive dependency pins, and build the dashboard plus Node-based CI/release jobs on Node 24. Community retains npm/package-lock instead of hosted pnpm/private design-system dependencies. |
 | Post-`v1.7.6` exec analytics, pooled value mode, and agent-admin auth (`14ff2f2`, `fa0ad02`, `fb2da18`) | Excluded | These commits operate on hosted executive analytics, cross-org pooling, and agent/account-admin authorization. None of those routes or identity modes execute in local single-user Community. |

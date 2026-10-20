@@ -341,10 +341,11 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
         <thead><tr><th>Prompt</th><th>Arguments</th><th>What it does</th></tr></thead>
         <tbody>
           <tr><td><code>enhance</code></td><td><code>request</code> (required), <code>project</code> (optional)</td><td>Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context</td></tr>
+          <tr><td><code>cards</code></td><td><code>mode</code> (<code>open</code>, <code>collapsed</code> or <code>off</code>; optional), <code>app</code> (<code>this</code> or <code>all</code>; optional)</td><td>Sets how Kemory's cards show up, through <code>kemory_settings</code>: for the AI app you are in, or for every app. With no mode it tells you the current setting</td></tr>
           <tr><td><code>save-session</code></td><td><code>project</code> (optional)</td><td>Run it before <code>/compact</code> or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with <code>kemory_capture_session</code>, then calls <code>kemory_consolidate_session</code> so the session's summary includes them</td></tr>
         </tbody>
       </table>
-      <p>In Claude Code: <code>/mcp__kemory__enhance &lt;request&gt;</code> and <code>/mcp__kemory__save-session</code>. With the <a href="#connect-claude-code">plugin</a> the server is plugin-namespaced, so the names are <code>/mcp__plugin_kemory_kemory__enhance</code> and <code>/mcp__plugin_kemory_kemory__save-session</code>.</p>
+      <p>In Claude Code: <code>/mcp__kemory__enhance &lt;request&gt;</code>, <code>/mcp__kemory__save-session</code> and <code>/mcp__kemory__cards off</code>. With the <a href="#connect-claude-code">plugin</a> the server is plugin-namespaced, so the names are <code>/mcp__plugin_kemory_kemory__enhance</code> and <code>/mcp__plugin_kemory_kemory__save-session</code>.</p>
       <h3>Resources</h3>
       <table>
         <thead><tr><th>Resource</th><th>What it reads</th></tr></thead>
@@ -356,6 +357,14 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <p>A signed-in resource list also shows each of your projects individually. A memory or project you cannot see reads exactly like one that does not exist, so a resource never confirms that something is there. In Claude Code, type <code>@kemory:</code> and pick.</p>
       <h3>Cards in chat</h3>
       <p>Cards are rolling out behind a feature flag. Hosts that support MCP Apps — Claude on the web and desktop, ChatGPT, VS Code — render recall results and "memory saved" confirmations as interactive cards instead of plain text.</p>
+      <p>Cards stay out of the way of the conversation:</p>
+      <ul>
+        <li><strong>One line until you open it.</strong> Every card starts as a single line, such as "Used 5 memories · from Claude, ChatGPT" or "Saved · project:kemory" with <strong>Undo</strong>. Open it to see the detail; lists (memories, sources, the two sides of a conflict) page one at a time as a carousel.</li>
+        <li><strong>No more than two per turn.</strong> A third card in the same turn takes no space; its result still reaches the assistant as text. The saved card, which carries Undo, always shows.</li>
+        <li><strong>Nothing to show, no card.</strong> A recall that found nothing shows no card. Each result says <strong>Why this:</strong> — how strong the match is, which AI's chat it came from, and how many passages agree.</li>
+        <li><strong>First card, a short welcome.</strong> The first card you ever get, in any AI, opens with a five-slide introduction to Kemory, the Chrome extension and the web app, and ends with a choice of how cards should show up.</li>
+      </ul>
+      <p><strong>Choose how cards show up:</strong> open, collapsed to one line (the default) or hidden, for every AI or for one app — for example open in claude.ai and hidden in Claude Code. Set it in Kemory's <strong>Settings → Kemory cards in your AI chats</strong>, with the <code>cards</code> prompt above, or by asking your AI ("turn off Kemory cards"), which calls <code>kemory_settings</code>. A change applies from the next card; reconnect Kemory or refresh its tools if an empty space still shows where a hidden card was.</p>
       <ul>
         <li><strong>Recall card.</strong> Results grouped by conversation: each chat's title, Kemory, AI and date once, the best passage first and the rest a click away, with the best overall marked <strong>Best match</strong>. Thumbs up or down tells Kemory whether a result helped; thumbs down asks why (not relevant, out of date, duplicate). <strong>Open chat</strong> and <strong>Open in Kemory</strong> open the item inside its own Kemory, and the Kemory label opens the Kemory itself. <strong>Forget</strong> sits behind the ⋯ menu, needs a second click, and is not offered on memories shared with you.</li>
         <li><strong>Saved card.</strong> Says plainly what happened: saved, updated a memory you already had, already in your Kemory, or not saved. A brand-new memory offers <strong>Undo</strong> (second click to confirm). An update shows the earlier and the new wording side by side, with <strong>Restore previous</strong>, which <a href="#restore"><code>kemory_restore_version</code></a> carries out and which can itself be undone.</li>

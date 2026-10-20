@@ -556,6 +556,13 @@ when comparing it are all set out in full — along with how to reproduce it.
 
 **Full method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/
 
+A second benchmark measures cost rather than accuracy. Replayed over 1,314 real sessions, Kemory's
+tiered context sends **72.2% fewer reader tokens** than re-sending the full conversation on every
+turn — and more than full history on sessions of five exchanges or fewer. The saving lives in long
+sessions, and the sample is dominated by one account; both are set out in full.
+
+**Context-compaction method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/
+
 ---
 
 ## Capture with Kora's Chrome extension

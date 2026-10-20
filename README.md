@@ -39,6 +39,7 @@ that breaks either one breaks a published listing, not just an internal link.
 │   ├── cli/                the kemory command
 │   ├── api/                REST API reference
 │   ├── benchmarks/         LongMemEval-S method and results
+│   │   └── context-compaction/  tiered context vs full history: tokens, cost, caveats
 │   └── community/          Community Edition guide and versioned sources
 ├── legal/                  the four legal documents — see below
 │   ├── index.html

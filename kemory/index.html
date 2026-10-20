@@ -408,6 +408,8 @@ Do not write credentials, keys or passwords into memory unless I ask you to.</co
       <p>Kemory scores <strong>89.6%</strong> — 448 of 500 — on the LongMemEval-S oracle benchmark, run against the live production deployment. That is <em>end-to-end answer accuracy</em>: retrieve, generate, then judge the answer against the reference. It is not a retrieval-recall figure, which is the number most memory systems publish and is not the same thing.</p>
       <p>The method, the per-category breakdown, the run-to-run variance and the four caveats that matter when comparing it are all set out in full — along with how to reproduce it.</p>
       <p><a href="benchmarks/">Read the benchmark method and results →</a></p>
+      <p>A second benchmark measures cost rather than accuracy. Replayed over 1,314 real sessions, Kemory's tiered context sends <strong>72.2% fewer reader tokens</strong> than re-sending the full conversation on every turn — and more than full history on sessions of five exchanges or fewer. The saving lives in long sessions, and the sample is dominated by one account; both are set out in full.</p>
+      <p><a href="benchmarks/context-compaction/">Read the context-compaction method and results →</a></p>
     </section>
 
     <section id="kora">

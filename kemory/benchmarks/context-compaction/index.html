@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory benchmarks — context compaction | SeKondBrain</title>
+<meta name="description" content="A deterministic replay of 1,314 real Kemory sessions: tiered context sends 72.2% fewer reader tokens than re-sending the full history, and costs more than it saves below about six exchanges. Method, results by session length, costs, caveats, and how to reproduce it.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
+<link rel="icon" href="../../../assets/mark.png" type="image/png">
+<meta property="og:title" content="Kemory benchmarks — context compaction">
+<meta property="og:description" content="72.2% fewer reader tokens than full-history replay, measured over 1,314 real sessions — and where it doesn't pay. Method, results and caveats.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/style.css">
+<style>
+  /* Page mood: blue — the Kemory surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+  table.tight td{padding:8px 14px 8px 0}
+  /* headline figure — same block as the LongMemEval page */
+  .score{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+         padding:22px 24px;background:#fff;border:1px solid var(--hair);
+         border-radius:var(--r-lg);max-width:640px;margin:var(--sp-6) 0 var(--sp-5)}
+  .score .big{font-size:52px;line-height:1;letter-spacing:-.04em;font-weight:600}
+  .score .of{font-family:var(--mono);font-size:13px;color:var(--grey)}
+  .score .what{font-size:14px;color:var(--fg-2);max-width:30ch}
+  /* result bars. A bin where tiered context costs more than it saves gets an
+     empty track and a red number: a bar sized to −193% would be a lie. */
+  .bar{display:grid;grid-template-columns:190px 1fr 74px;align-items:center;gap:12px;margin:0 0 9px;max-width:760px}
+  @media (max-width:560px){
+    .bar{grid-template-columns:1fr auto;gap:4px 10px;margin:0 0 14px}
+    .bar .lbl{grid-column:1/-1}
+    .bar .num{text-align:left}
+  }
+  .bar .lbl{font-size:13.5px}
+  .bar .track{display:block;height:7px;background:rgba(0,0,0,.06);border-radius:999px;overflow:hidden}
+  .bar .fill{display:block;height:100%;border-radius:999px;background:var(--c-blue)}
+  .bar .fill.hi{background:var(--c-mint)}
+  .bar .num{font-family:var(--mono);font-size:12.5px;color:var(--fg-2);text-align:right}
+  .bar .num.neg{color:var(--danger)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <img class="mark" src="../../../assets/mark.png" alt="">
+    <a class="brandline" href="../../">Kemory <span>· benchmarks</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
+    <div class="top-links">
+      <a class="nav-back" href="../../">Kemory docs</a>
+      <a href="../">LongMemEval</a>
+      <a href="#by-length">Results</a>
+      <a href="#caveats">Caveats</a>
+      <a href="#reproduce">Reproduce</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Benchmark · Context compaction</span>
+  <h1>72% fewer reader tokens,<br><em>once a session runs long.</em></h1>
+  <p class="lede">We replayed 1,314 real Kemory sessions two ways — re-sending the whole conversation on every turn, and sending the tiered context Kemory assembles instead — and counted the tokens each would hand a model. Tiered context sends 72.2% fewer. It also sends <em>more</em> than full history on short sessions, and almost all of the saving comes from the longest ones.</p>
+  <p>This page sets out what was measured, the result by session length, what the compaction itself costs, what it is worth in money at published prices, and the caveats — the first of which is that one account dominates the sample. It measures tokens and price. It does not measure answer quality; for that, see the <a href="../">LongMemEval benchmark</a>.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Result</div>
+    <a href="#headline">Headline</a>
+    <a href="#summary">Four answers</a>
+    <a href="#by-length">By session length</a>
+    <a href="#components">Where the tokens go</a>
+    <a href="#cost">What it is worth</a>
+    <div class="grp">Method</div>
+    <a href="#method">What we compared</a>
+    <a href="#replay">How the replay works</a>
+    <a href="#evidence">Evidence classes</a>
+    <div class="grp">Honesty</div>
+    <a href="#caveats">Caveats</a>
+    <a href="#not-measured">What we have not measured</a>
+    <a href="#reproduce">Reproduce it</a>
+    <div class="grp">Benchmarks</div>
+    <a href="../">LongMemEval</a>
+  </nav>
+
+  <main>
+
+    <section id="headline">
+      <h2>The headline</h2>
+      <div class="score">
+        <span class="big">72.2%</span>
+        <span class="of">52.9M / 73.3M</span>
+        <span class="what">Reader input tokens avoided against full-history replay, summed over 8,369 decision steps.</span>
+      </div>
+      <table class="tight">
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Sample</td><td>1,314 real Kemory chat sessions; 8,369 decision steps (one per user → assistant exchange)</td></tr>
+          <tr><td>Excluded</td><td>12 chats with no complete exchange</td></tr>
+          <tr><td>Compared</td><td><strong>Full-history replay</strong> against Kemory's <strong>tiered context</strong>, at every step of every session</td></tr>
+          <tr><td>Metric</td><td>Reader input tokens, summed across steps — each turn re-sends its context to a stateless API</td></tr>
+          <tr><td>Tokenizer</td><td><code>tiktoken</code> <code>o200k_base</code>, as a documented proxy (see <a href="#caveats">caveats</a>)</td></tr>
+          <tr><td>Compactor</td><td>Kemory's configured route, Groq <code>openai/gpt-oss-120b</code>; the digest itself comes from Kemory's deterministic extractive path</td></tr>
+          <tr><td>Price reference</td><td>Frontier reader at <code>claude-opus-4-8</code> published input price</td></tr>
+          <tr><td>Evidence</td><td>Deterministic replay for tokens; published-rate scenario for money. <strong>No figure here is observed billing.</strong></td></tr>
+          <tr><td>Snapshot</td><td>All persisted chats in the Kemory database, July 2026; measurement package dated 22 July 2026</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2>Four answers</h2>
+      <p>The study answers four questions, each labelled with the kind of evidence behind it.</p>
+      <table class="tight">
+        <thead><tr><th>Question</th><th>Answer</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A.</strong> What does routing the compactor to an open-weight model save?</td><td>The same workload — 6,196,796 input and 1,739,864 output tokens across 2,026 compactor calls — costs <strong>$1.97</strong> on Groq <code>gpt-oss-120b</code> and <strong>$74.48</strong> at <code>claude-opus-4-8</code> prices. A <strong>97.4%</strong> unit-price saving.</td><td>Replay workload × published rates</td></tr>
+          <tr><td><strong>B.</strong> How many reader tokens does tiered context avoid?</td><td>73,346,915 → 20,414,684: <strong>52,932,231 avoided (72.2%)</strong>. Producing the digests costs 7,936,660 tokens — 28.0% of the strategy's tokens — so the reduction in total tokens is <strong>61.3%</strong>.</td><td>Deterministic replay</td></tr>
+          <tr><td><strong>C.</strong> What is the net saving in money?</td><td>Full history at a frontier reader's input price: <strong>$366.73</strong>. Tiered reader plus open-weight compactor: <strong>$104.05</strong>. Net saving <strong>$262.69 (71.6%)</strong>, without prompt caching.</td><td>Replay tokens × published rates</td></tr>
+          <tr><td><strong>D.</strong> Does anything that shouldn't reach the prompt reach it?</td><td>AAAK payloads in the default context: <strong>0</strong>. Every digest carries the ids of the exchanges, turns and memories it was built from.</td><td>Audit of the assembly path</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">Two numbers, two denominators</span>
+        <p><strong>72.2%</strong> is reader tokens avoided — what a premium model no longer has to read. <strong>61.3%</strong> is total tokens, after adding back what the compactor reads and writes to produce the digests. The first matters because reader tokens are the expensive ones; the second is the honest count of work done. They answer different questions and should not be quoted as one another.</p>
+      </div>
+    </section>
+
+    <section id="by-length">
+      <h2>By session length</h2>
+      <p>The aggregate is real, but it rests on the long sessions. Change in reader input tokens, tiered context against full history, by the number of exchanges in the session:</p>
+
+      <div class="bar"><span class="lbl">1 exchange · 396 sessions</span><span class="track"></span><span class="num neg">−193.3%</span></div>
+      <div class="bar"><span class="lbl">2 · 254 sessions</span><span class="track"></span><span class="num neg">−19.2%</span></div>
+      <div class="bar"><span class="lbl">3–5 · 278 sessions</span><span class="track"></span><span class="num neg">−4.8%</span></div>
+      <div class="bar"><span class="lbl">6–9 · 159 sessions</span><span class="track"><span class="fill" style="width:17.2%"></span></span><span class="num">17.2%</span></div>
+      <div class="bar"><span class="lbl">10–19 · 130 sessions</span><span class="track"><span class="fill" style="width:48.9%"></span></span><span class="num">48.9%</span></div>
+      <div class="bar"><span class="lbl">20+ · 97 sessions</span><span class="track"><span class="fill hi" style="width:81.5%"></span></span><span class="num">81.5%</span></div>
+
+      <table class="tight">
+        <thead><tr><th>Exchanges</th><th>Sessions</th><th>Full history</th><th>Tiered</th><th>Reader tokens saved</th><th>Compaction tax</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>396</td><td>31,991</td><td>93,829</td><td>−193.3%</td><td>0</td></tr>
+          <tr><td>2</td><td>254</td><td>167,423</td><td>199,589</td><td>−19.2%</td><td>0</td></tr>
+          <tr><td>3–5</td><td>278</td><td>1,605,794</td><td>1,682,475</td><td>−4.8%</td><td>382,226</td></tr>
+          <tr><td>6–9</td><td>159</td><td>3,240,596</td><td>2,682,124</td><td>17.2%</td><td>930,906</td></tr>
+          <tr><td>10–19</td><td>130</td><td>9,538,651</td><td>4,873,152</td><td>48.9%</td><td>1,960,288</td></tr>
+          <tr><td>20+</td><td>97</td><td>58,762,460</td><td>10,883,515</td><td>81.5%</td><td>4,663,240</td></tr>
+          <tr><td><strong>All</strong></td><td><strong>1,314</strong></td><td><strong>73,346,915</strong></td><td><strong>20,414,684</strong></td><td><strong>72.2%</strong></td><td><strong>7,936,660</strong></td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <span class="lbl">Where it doesn't pay</span>
+        <p>On sessions of five exchanges or fewer, tiered context sends <strong>more</strong> than full history. The namespace background summary and the digest wrapper cost more than simply re-sending a handful of short exchanges. It crosses over at six to nine exchanges, and the 97 sessions of twenty or more exchanges account for <strong>90%</strong> of every token avoided — 58.8M down to 10.9M.</p>
+        <p>Add the compaction tax back in and, counted in raw tokens, the crossover moves out: the 6–9 bin uses 11.5% <em>more</em> tokens in total, and only from ten exchanges up does the total fall (−28.4% at 10–19, −73.5% at 20+). Counted in money it does not move, because the tax is paid at open-weight prices and the saving at frontier ones: the 6–9 bin still costs 15.8% less.</p>
+      </div>
+    </section>
+
+    <section id="components">
+      <h2>Where the tokens go</h2>
+      <p>Mean composition of the tiered context at the <strong>last</strong> step of a session, in tokens:</p>
+      <table class="tight">
+        <thead><tr><th>Exchanges</th><th>Background (L3)</th><th>Digest (L2.1)</th><th>Raw tail</th><th>Current message</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>156</td><td>0</td><td>0</td><td>81</td><td>237</td></tr>
+          <tr><td>2</td><td>63</td><td>0</td><td>573</td><td>26</td><td>662</td></tr>
+          <tr><td>3–5</td><td>84</td><td>171</td><td>2,175</td><td>60</td><td>2,490</td></tr>
+          <tr><td>6–9</td><td>73</td><td>810</td><td>2,395</td><td>49</td><td>3,327</td></tr>
+          <tr><td>10–19</td><td>108</td><td>890</td><td>2,268</td><td>35</td><td>3,301</td></tr>
+          <tr><td>20+</td><td>104</td><td>900</td><td>2,043</td><td>23</td><td>3,070</td></tr>
+        </tbody>
+      </table>
+      <p>From six exchanges up, the tiered context is roughly flat at three thousand tokens however long the session grows. The digest is capped by its token budget at around nine hundred, the raw tail is always the latest three exchanges, and the background summary is bounded. Full history has no such ceiling: it grows with every exchange and is re-sent on every step. That is the whole mechanism, and why the saving concentrates where it does.</p>
+      <p>Two components are zero by construction. <strong>AAAK</strong>, Kemory's storage and export dialect, is never part of the default context — it is not a compression scheme for prompts, and no AAAK byte ratio is used as a token count anywhere in this study. <strong>Recalled memories</strong> are zero because a replay has no query to recall against; see the <a href="#caveats">caveats</a> for which way that cuts.</p>
+    </section>
+
+    <section id="cost">
+      <h2>What it is worth</h2>
+      <p>Every dollar figure here is a <strong>published-rate scenario</strong>: replayed token counts multiplied by list prices from a versioned rate card dated 22 July 2026. None of it is observed spend.</p>
+      <h3>The compactor route</h3>
+      <p>The identical compactor workload — 6.2M input and 1.7M output tokens — priced under each route:</p>
+      <table class="tight">
+        <thead><tr><th>Route</th><th>Input / output per MTok</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Groq <code>openai/gpt-oss-120b</code> — Kemory's configured route</td><td>$0.15 / $0.60</td><td><strong>$1.97</strong></td></tr>
+          <tr><td>Groq <code>llama-3.3-70b-versatile</code></td><td>$0.59 / $0.79</td><td>$5.03</td></tr>
+          <tr><td>OpenAI <code>gpt-4o</code> class</td><td>$2.50 / $10.00</td><td>$32.89</td></tr>
+          <tr><td>Anthropic <code>claude-sonnet-5</code></td><td>$3.00 / $15.00</td><td>$44.69</td></tr>
+          <tr><td>Anthropic <code>claude-opus-4-8</code> — frontier reference</td><td>$5.00 / $25.00</td><td>$74.48</td></tr>
+        </tbody>
+      </table>
+      <p>This is a pricing comparison on a fixed workload. It claims nothing about whether the digests each model would write are equally good.</p>
+      <h3>The net position</h3>
+      <table class="tight">
+        <thead><tr><th>Policy</th><th>Tokens</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Full-history replay, frontier reader</td><td>73.3M reader</td><td>$366.73</td></tr>
+          <tr><td>Tiered context, frontier reader</td><td>20.4M reader</td><td>$102.07</td></tr>
+          <tr><td>Compactor, open-weight route</td><td>7.9M compactor</td><td>$1.97</td></tr>
+          <tr><td><strong>Tiered total</strong></td><td><strong>28.4M</strong></td><td><strong>$104.05</strong></td></tr>
+          <tr><td><strong>Net saving</strong></td><td><strong>45.0M (61.3%)</strong></td><td><strong>$262.69 (71.6%)</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Two things move this in opposite directions. The tokenizer proxy <strong>undercounts</strong> Anthropic tokens, so the frontier costs are a floor. And <strong>prompt caching is not modelled</strong>; real full-history spend with prefix caching is lower, so the net saving is a no-caching upper bound. Quote it as one.</p>
+    </section>
+
+    <section id="method">
+      <h2>What we compared</h2>
+      <p>For every real session, both policies are replayed at every decision step — once per exchange — and the reader input each would send to a stateless API is summed across the session.</p>
+      <table class="tight">
+        <thead><tr><th>Policy</th><th>What the reader receives at each step</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Full-history replay</strong></td><td>The system prompt, every prior exchange, and the current user message.</td></tr>
+          <tr><td><strong>Tiered context</strong> — what Kemory sends today</td><td>The namespace and session background summary (L3), the <strong>rolling digest</strong> (L2.1) of every exchange older than the raw tail, the latest three exchanges verbatim, and the current user message.</td></tr>
+        </tbody>
+      </table>
+      <p>Summing across steps is the point. A stateless API is sent the whole context again on every turn, so full history costs grow roughly with the square of session length, and that is where compaction earns its keep.</p>
+    </section>
+
+    <section id="replay">
+      <h2>How the replay works</h2>
+      <p>The replay mirrors the service's own functions rather than approximating them. Exchanges are reconstructed with the same turn-pairing the backend uses; the tiered context is assembled as the session-context service formats it; and the rolling digest is folded in batches of three exchanges, exactly as the service refreshes it.</p>
+      <p>The digest is produced by Kemory's <strong>deterministic extractive path</strong> — the code the service runs when no AI backend is configured. That makes the replay reproducible and free of external calls. An LLM-written digest would differ in wording but is bounded by the same token budget, so the reader-side accounting is representative.</p>
+      <p>The compactor <strong>workload</strong> is the token count of the prompt the digest generator would be fed, plus the digest it produces, per batch. That workload is what section A prices under each route.</p>
+      <p>Token counts use <code>tiktoken</code>'s <code>o200k_base</code> encoding as a documented proxy: the open-weight models Kemory routes to have no tiktoken mapping. No byte count is used as a token count anywhere.</p>
+    </section>
+
+    <section id="evidence">
+      <h2>Evidence classes</h2>
+      <p>Three kinds of evidence are used, and they are never merged without a label.</p>
+      <table class="tight">
+        <thead><tr><th>Class</th><th>What it covers</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Observed</strong></td><td>Only the counts of real sessions and turns. Kemory does not yet record compactor token usage, so nothing else here is observed.</td></tr>
+          <tr><td><strong>Deterministic replay</strong></td><td>Reader-input and compactor-workload token counts, recomputed from the real sessions with the real assembly policy. The strongest evidence on the page.</td></tr>
+          <tr><td><strong>Published-rate scenario</strong></td><td>Every dollar figure. Replayed tokens multiplied by list prices from a versioned, source-cited rate card.</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">Privacy: the measurement reads conversation text into memory only to count it. Nothing it writes contains conversation text, personal data or credentials — only counts and salted pseudonyms — and it never writes to the database.</p>
+    </section>
+
+    <section id="caveats">
+      <h2>Caveats</h2>
+      <p>Five things a careful reader should know before quoting any number on this page.</p>
+
+      <h3>1. One account dominates the sample</h3>
+      <p>This is the most important one. <strong>1,227 of the 1,314 sessions belong to a single account</strong>, and so does every session longer than two exchanges. The other 23 accounts contribute 87 short sessions and about two thousand tokens between them. Since the saving lives in the long sessions, the headline describes one heavy user's working pattern, not a population of users.</p>
+      <p>The method does not depend on whose sessions they are, and the mechanism behind the result — a bounded context against an unbounded one — is general. But a different mix of session lengths gives a different aggregate, and a user whose sessions are mostly short would see tiered context cost them tokens. A multi-account re-run is the obvious next measurement.</p>
+
+      <h3>2. Replay, not billing</h3>
+      <p>Kemory does not currently persist what the compactor actually reads and writes: the provider's usage figures are discarded after each call, and no session digests were stored in the measured database. So the compactor numbers are a replayed workload, and every dollar figure is that workload at list price. The measurement package includes an analysis of the instrumentation that would turn the replay into an observation.</p>
+
+      <h3>3. Bounds that cut both ways</h3>
+      <table class="tight">
+        <thead><tr><th>Limitation</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>The tokenizer is an OpenAI encoding; it undercounts Anthropic tokens by roughly 15–20% on prose, more on code</td><td>Frontier-reader costs are a <strong>floor</strong></td></tr>
+          <tr><td>Prompt caching is not modelled; real full-history spend with prefix caching is lower</td><td>The net saving is an <strong>upper bound</strong></td></tr>
+          <tr><td>Recalled memories are absent from the replay, which has no query to recall against</td><td>Tiered totals are a floor, so the token saving is an <strong>upper bound</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>4. Tokens, not answers</h3>
+      <p>This measures what is sent to the model. It does not measure whether the model answers as well from a digest as from the full transcript. A saving that degraded answers would not be a saving, and this study cannot rule that out. The routing comparison is likewise a pricing comparison only.</p>
+
+      <h3>5. A live snapshot</h3>
+      <p>The figures are a snapshot of all persisted chats. The code is deterministic over a fixed database — two back-to-back runs produce byte-identical outputs — but a background worker refreshes namespace summaries, so re-running against a live database moves the tiered and compactor totals by around 0.2%. Full-history counts do not move. For an exactly citable sample, pin a date window and run against a quiesced snapshot.</p>
+    </section>
+
+    <section id="not-measured">
+      <h2>What we have not measured</h2>
+      <table class="tight">
+        <tbody>
+          <tr><td>Answer quality</td><td>Not measured here — see caveat 4.</td></tr>
+          <tr><td>Observed compactor usage and latency</td><td>Not recorded by Kemory today; replayed instead.</td></tr>
+          <tr><td>Drill-down to raw sources</td><td>Rehydration is read-only and not instrumented, so how often the reader pulls raw exchanges back in, and how many tokens that adds, is unknown.</td></tr>
+          <tr><td>Prompt-cached pricing</td><td>The rate card records cache-read prices, but no cache-adjusted scenario has been run.</td></tr>
+          <tr><td>LLM-written digests</td><td>Replayed with the extractive digest; same budget, different wording.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="reproduce">
+      <h2>Reproduce it</h2>
+      <p>The measurement package — the replay code, its unit tests, the rate card, the data dictionary, the instrumentation-gap analysis and the aggregate outputs behind every table on this page — is published in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">Kemory Community Edition repository</a>.</p>
+      <p>It reads the same chat tables Community Edition creates, so you can run it against your own local install and see what tiered context does with <em>your</em> sessions — which is a better answer to caveat 1 than anything we could publish.</p>
+<pre><code>cd benchmarks/context_compaction_empirical
+pip install -r requirements.txt
+export KEMORY_ANALYSIS_SALT="&lt;any stable secret&gt;"
+
+# 1) unit tests — rate arithmetic, zero denominators, batching, the AAAK audit
+python -m unittest discover -s tests -p 'test_*.py'
+
+# 2) the measurement — writes out/*.csv and out/headline.json
+python -m src.run_analysis --limit 0 --out out --tokenizer proxy
+
+# 3) charts, then one self-contained HTML report
+python charts/make_charts.py --out out
+python build_report.py --out out --report kemory_compaction_report.html</code></pre>
+      <p>The loader is strictly read-only and streams from Postgres through <code>docker exec</code>, so it needs no exposed port and no password; the package README has the exact invocation for a Community Edition stack. Content is held in memory only long enough to count it.</p>
+      <p class="muted">We publish the aggregate outputs. The per-session and per-step files stay private: they hold nothing but counts and salted pseudonyms, but together they would still show how one account uses the product. Run the package yourself and you get your own.</p>
+      <div class="note">
+        <span class="lbl">Want to verify it yourself?</span>
+        <p>If you want this run on hosted Kemory against your own sessions, email <a href="mailto:hello@sekondbrain.ai?subject=Kemory%20context-compaction%20benchmark">hello@sekondbrain.ai</a>. A measurement over your own work is worth more than one over ours.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../../">Kemory documentation</a>
+      <a href="../../../">All documentation</a>
+      <a href="../../../legal/privacy/">Privacy</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+<script src="../../../assets/nav.js" defer></script>
+<script src="../../../assets/tables.js" defer></script>
+<script src="../../../assets/consent.js" defer></script>
+</body>
+</html>

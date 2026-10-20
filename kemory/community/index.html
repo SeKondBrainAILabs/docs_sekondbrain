@@ -43,6 +43,7 @@
     <a href="#install">Install</a>
     <a href="#runtime">Docker runtime</a>
     <a href="#connect">Connect an agent</a>
+    <a href="#benchmark">Measure your own sessions</a>
     <div class="grp">Reference</div>
     <a href="#boundaries">Edition boundaries</a>
     <a href="#privacy">Privacy</a>
@@ -80,6 +81,12 @@ npx kemory-community@latest bundle</code></pre>
     <section id="connect">
       <h2>Connect an agent</h2>
       <p>Point any MCP client at <code>http://127.0.0.1:8111/mcp/v1</code> and send the configured key in the <code>X-API-Key</code> header. Tool discovery advertises canonical <code>kemory_*</code> names; legacy <code>s9nmem_*</code> and <code>kora_*</code> names remain dispatch aliases.</p>
+    </section>
+
+    <section id="benchmark">
+      <h2>Measure your own sessions</h2>
+      <p>Community Edition stores captured chats in the same tables as hosted Kemory, so the <a href="../benchmarks/context-compaction/">context-compaction benchmark</a> runs against a local install. It replays every stored session two ways — the full history re-sent on each turn, and the tiered context Kemory assembles — and reports how many reader tokens the tiered context saves, by session length, with what the compaction itself costs.</p>
+      <p>The measurement package lives in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">Community Edition repository</a>, under <code>benchmarks/context_compaction_empirical/</code>. It is read-only against your database and writes only counts and salted pseudonyms.</p>
     </section>
 
     <section id="boundaries">

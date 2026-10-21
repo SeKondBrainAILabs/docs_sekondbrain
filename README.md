@@ -37,6 +37,7 @@ that breaks either one breaks a published listing, not just an internal link.
 │   ├── retrieval/          how search works, which read tool to use
 │   ├── plugin/             the Kemory plugin — hooks, config, what it sends
 │   ├── cli/                the kemory command
+│   ├── updates/            updates and known issues; updates.json feeds Kemory's Update Cards
 │   ├── api/                REST API reference
 │   ├── benchmarks/         LongMemEval-S method and results
 │   │   └── context-compaction/  tiered context vs full history: tokens, cost, caveats

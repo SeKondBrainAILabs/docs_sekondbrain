@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemory updates and known issues | SeKondBrain</title>
+<meta name="description" content="What changed in Kemory recently, and the known issues we are working on. Kemory shows new items once, as a card in your AI.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/updates/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<meta property="og:title" content="Kemory updates and known issues">
+<meta property="og:description" content="What changed in Kemory, and what we are fixing.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/updates/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+  .upd{border-top:1px solid var(--line, rgba(0,0,0,.08));padding:16px 0}
+  .upd:first-child{border-top:0}
+  .upd .meta{font-size:13px;opacity:.7;margin-bottom:4px}
+  .upd h3{margin:0 0 6px}
+  .upd .st{font-size:12px;font-weight:500;padding:1px 8px;border-radius:999px;border:1px solid currentColor;margin-left:6px}
+  .empty{opacity:.7}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· updates</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
+    <div class="top-links">
+      <a class="nav-back" href="../">Kemory docs</a>
+      <a href="#updates">Updates</a>
+      <a href="#known-issues">Known issues</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Updates and known issues</span>
+  <h1>What changed,<br><em>and what we are fixing.</em></h1>
+  <p class="lede">New items here also appear once in your AI, as a Kemory card on the next question you ask, in whichever app you use first. You can turn cards off any time with the <code>cards</code> command or in Kemory Settings.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <a href="#updates">Updates</a>
+    <a href="#known-issues">Known issues</a>
+  </nav>
+
+  <main>
+    <section id="updates">
+      <h2>Updates</h2>
+      <div id="updates-list"><p class="empty">No updates yet.</p></div>
+    </section>
+
+    <section id="known-issues">
+      <h2>Known issues</h2>
+      <div id="issues-list"><p class="empty">No known issues.</p></div>
+    </section>
+
+    <section id="source">
+      <p class="empty">This page and the cards read the same feed: <a href="updates.json">updates.json</a>.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Kemory documentation</a>
+      <a href="../../">All documentation</a>
+      <a href="../../legal/privacy/">Privacy</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+<script>
+// One feed for this page and for Kemory's Update Cards. Text only: item fields
+// are set with textContent, never parsed as HTML.
+(function () {
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text) n.textContent = text;
+    return n;
+  }
+  function render(list, items, kind) {
+    var box = document.getElementById(list);
+    var mine = items.filter(function (i) { return (i.kind || "update") === kind; });
+    if (!mine.length) return;
+    box.textContent = "";
+    mine.sort(function (a, b) { return (b.date || "").localeCompare(a.date || ""); });
+    mine.forEach(function (i) {
+      var row = el("article", "upd");
+      row.id = i.id || "";
+      row.appendChild(el("div", "meta", i.date || ""));
+      var h = el("h3", null, i.title || "");
+      if (kind === "known_issue") h.appendChild(el("span", "st", i.status === "resolved" ? "Resolved" : "Open"));
+      row.appendChild(h);
+      if (i.body) row.appendChild(el("p", null, i.body));
+      if (i.link && /^https:\/\//.test(i.link)) {
+        var a = el("a", null, "Read more");
+        a.href = i.link;
+        var p = el("p");
+        p.appendChild(a);
+        row.appendChild(p);
+      }
+      box.appendChild(row);
+    });
+  }
+  fetch("updates.json", { cache: "no-cache" })
+    .then(function (r) { return r.json(); })
+    .then(function (feed) {
+      var items = (feed && feed.items) || [];
+      render("updates-list", items, "update");
+      render("issues-list", items, "known_issue");
+    })
+    .catch(function () {});
+})();
+</script>
+<script src="../../assets/nav.js" defer></script>
+<script src="../../assets/consent.js" defer></script>
+</body>
+</html>

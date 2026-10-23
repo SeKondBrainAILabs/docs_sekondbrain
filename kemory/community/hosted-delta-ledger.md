@@ -15,7 +15,8 @@ Updates are intentionally replayed by feature cohort rather than merged as a
 whole upstream tree. For each hosted baseline:
 
 1. List every hosted commit after the last inspected hash.
-2. Classify it as port, adapt, or exclude against the community boundaries.
+2. Classify it as port, adapt, exclude, mixed, or review against the Community
+   boundaries.
 3. Replay compatible behavior in a `community/` pull request with Docker tests.
 4. Record source commits, adaptations, exclusions, and the new baseline here.
 
@@ -25,8 +26,10 @@ and wire contracts current.
 
 Intake is automated; integration remains reviewed. A scheduled Community
 workflow compares hosted `main` with the accepted baseline, produces a redacted
-classification summary, and fails visibly while candidates need review. It
-never advances the baseline or merges hosted code. See
+classification summary, and opens or refreshes one pull request from the fixed
+`automation/upstream-intake` branch. It fails visibly while candidates need
+review and never imports hosted code, advances the baseline, or merges itself.
+See
 [`upstream-intake.md`](upstream-intake.md).
 
 ## Baseline
@@ -34,10 +37,10 @@ never advances the baseline or merges hosted code. See
 - Community release baseline: `v0.1.0` at `d97ff32fe`.
 - Hosted baseline accepted into the Community ledger: `2aa9da45db`
   (post-`v3.11.1`).
-- Latest automated observation: `b366a39121` on 18 October 2026. The intake
-  found 1,003 first-parent commits since the accepted baseline: 939 adapt,
-  21 mixed-boundary, 41 manual-review, and two excluded-only. These
-  counts are pending review, not a parity claim.
+- Latest automated observation: `1b0bddd450` (`v4.266.1`) on 24 October 2026.
+  The intake inspected 1,159 first-parent changes since the accepted baseline:
+  1,075 adapt, 36 mixed-boundary, 46 manual-review, and two excluded-only. The
+  1,157 non-excluded changes are pending review, not a parity claim.
 - Backend subtree anchor: `5b70a8a884` (equivalent hosted tree at `305adba0e8:backend`).
 - Python SDK anchor: `ea2c494530`.
 - CLI anchor: `6fb85a6d4b`.
@@ -97,3 +100,9 @@ and Docker runtime constraints applied at each boundary.
 
 Future cohorts must update this ledger with source commit or PR, classification,
 adaptation notes, migrations, tests, and documentation before merge.
+
+The canonical Kemory Product features database in Notion is the release-facing
+view of this ledger. Each feature must carry a `Community Edition` decision
+(`Shipped`, `Adapted`, `Planned`, `Excluded`, or `Review`) and supporting
+`Community evidence`. Intake metadata alone is never sufficient evidence for
+`Shipped`.

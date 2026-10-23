@@ -52,9 +52,12 @@ human review still gate `main`.
 
 ## Notion feature decisions
 
-The canonical Kemory Product features database records the release decision in
-`Community Edition` and the implementation or exclusion rationale in
-`Community evidence`. Use one of these statuses for every Kemory feature:
+The canonical Product x Features database uses `Community Edition` as the hard
+inclusion gate for Kemory and Chrome Extension features. Only a checked feature
+may enter a Community porting cohort. An unchecked feature remains outside the
+cohort even when automated intake detects related hosted changes.
+
+`Community status` records the lifecycle behind the gate:
 
 - `Shipped` - verified in a tagged Community release.
 - `Adapted` - implemented with Community-specific runtime or security changes.
@@ -62,5 +65,10 @@ The canonical Kemory Product features database records the release decision in
 - `Excluded` - intentionally outside the Community product boundary.
 - `Review` - not yet classified.
 
-Do not mark a hosted feature `Shipped` from intake evidence alone. Link its
-Community pull request, tests, and release tag in `Community evidence` first.
+`Community evidence` records the implementation or exclusion rationale. Do not
+mark a hosted feature `Shipped` from intake evidence alone. Link its Community
+pull request, tests, and release tag first.
+
+The `Community Edition intake` view is the allowed feature set. The
+`Community Edition review` view is the decision queue. Chrome Extension
+features start unchecked and in `Review`; each requires explicit approval.

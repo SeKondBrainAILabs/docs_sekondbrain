@@ -94,7 +94,7 @@ npx kemory-community@latest bundle</code></pre>
       <p>Community Edition is an independent downstream repository, not a GitHub fork. Compatible hosted behaviour is selectively ported by feature cohort and tested against the local adapters.</p>
       <p>Hosted Keycloak/OIDC, billing, teams and organisations, Gatekeeper evaluation, managed KMS, PostHog, MinIO, Weaviate, FalkorDB, executive analytics and CogOS/L5 runtime paths are not part of Community Edition.</p>
       <p>The default bundle does not require Core AI Backend, Core Backend or Keycloak. Scheduled upstream intake detects hosted changes daily and refreshes one redacted review pull request. It never imports hosted source, advances the accepted baseline, merges itself or automatically crosses the Community boundary.</p>
-      <p>The Kemory Product features database records each release decision as Shipped, Adapted, Planned, Excluded or Review, with implementation evidence. A hosted feature is not marked Shipped until its Community pull request, tests and release tag are recorded.</p>
+      <p>The Product x Features database uses Community Edition as a hard checkbox gate: only checked Kemory or Chrome Extension features may enter a porting cohort. Community status then records Shipped, Adapted, Planned, Excluded or Review, with implementation evidence. A hosted feature is not marked Shipped until its Community pull request, tests and release tag are recorded.</p>
     </section>
 
     <section id="privacy">

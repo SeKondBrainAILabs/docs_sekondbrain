@@ -101,8 +101,8 @@ and Docker runtime constraints applied at each boundary.
 Future cohorts must update this ledger with source commit or PR, classification,
 adaptation notes, migrations, tests, and documentation before merge.
 
-The canonical Kemory Product features database in Notion is the release-facing
-view of this ledger. Each feature must carry a `Community Edition` decision
-(`Shipped`, `Adapted`, `Planned`, `Excluded`, or `Review`) and supporting
-`Community evidence`. Intake metadata alone is never sufficient evidence for
-`Shipped`.
+The canonical Product x Features database in Notion is the release-facing view
+of this ledger. `Community Edition` is the hard checkbox gate: only checked
+features may enter a porting cohort. `Community status` records `Shipped`,
+`Adapted`, `Planned`, `Excluded`, or `Review`, and `Community evidence` records
+the proof. Intake metadata alone is never sufficient evidence for `Shipped`.

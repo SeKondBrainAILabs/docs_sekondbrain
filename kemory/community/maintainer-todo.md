@@ -108,12 +108,16 @@ this repository aligned when runtime providers or data paths change.
 
 ## 8. Community feature decisions in Notion
 
-Use the canonical Kemory Product features database in the SeKondBrain Notion
-workspace. Set `Community Edition` to `Shipped`, `Adapted`, `Planned`,
-`Excluded`, or `Review`, and put the decision rationale plus pull request,
-tests, and release tag in `Community evidence`.
+Use the canonical Product x Features database in the SeKondBrain Notion
+workspace. `Community Edition` is the hard checkbox gate: only checked Kemory
+or Chrome Extension features may enter a porting cohort. Set `Community status`
+to `Shipped`, `Adapted`, `Planned`, `Excluded`, or `Review`, and put the
+decision rationale plus pull request, tests, and release tag in
+`Community evidence`.
 
 `Shipped` means verified in a tagged Community release. An upstream intake
 classification is only triage evidence and must not be used as a shipment
-claim. Keep the Upstream Parity epic current with the observed hosted head,
-queue counts, Community pull request, and remaining human-review gate.
+claim. Use the `Community Edition intake` view as the allowed set and the
+`Community Edition review` view as the decision queue. Keep the Upstream Parity
+epic current with the observed hosted head, queue counts, Community pull
+request, and remaining human-review gate.

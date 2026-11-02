@@ -72,7 +72,9 @@ only from the origins in `CORS_ORIGINS` (the dashboard on `127.0.0.1:5175` and
 `localhost:5175`, plus browser extensions) and only requests whose `Host`
 header is listed in `ALLOWED_HOSTS` (`localhost,127.0.0.1` by default). Any
 other host gets `400`. If you put Kemory behind a reverse proxy, add its
-hostname to `ALLOWED_HOSTS` and the dashboard origin to `CORS_ORIGINS`.
+hostname to `ALLOWED_HOSTS` and the dashboard origin to `CORS_ORIGINS` in
+`.env` (source installs) or `.kemory-community/kemory.env` (launcher installs),
+then start Kemory again.
 
 ## Upgrading from 0.1.0
 

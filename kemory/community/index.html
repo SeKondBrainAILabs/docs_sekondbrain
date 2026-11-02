@@ -85,7 +85,7 @@ docker compose -f docker-compose.community.yml up -d --build</code></pre>
         </tbody>
       </table>
       <p>Artifacts use local filesystem storage and telemetry uses the no-op adapter. Runtime data stays in Docker volumes and the local Kemory configuration directory.</p>
-      <p>Every published port binds to <code>127.0.0.1</code>. The API answers browser requests only from the dashboard origins in <code>CORS_ORIGINS</code>, and only requests whose <code>Host</code> header is listed in <code>ALLOWED_HOSTS</code> (<code>localhost,127.0.0.1</code> by default); anything else gets <code>400</code>. Add your hostname to <code>ALLOWED_HOSTS</code> if you put Kemory behind a reverse proxy.</p>
+      <p>Every published port binds to <code>127.0.0.1</code>. The API answers browser requests only from the dashboard origins in <code>CORS_ORIGINS</code>, and only requests whose <code>Host</code> header is listed in <code>ALLOWED_HOSTS</code> (<code>localhost,127.0.0.1</code> by default); anything else gets <code>400</code>. If you put Kemory behind a reverse proxy or another hostname, add it to <code>ALLOWED_HOSTS</code> (and the dashboard address to <code>CORS_ORIGINS</code>) in your <code>.env</code> or <code>kemory.env</code>, then start Kemory again.</p>
     </section>
 
     <section id="connect">

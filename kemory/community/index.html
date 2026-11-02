@@ -43,7 +43,6 @@
     <a href="#install">Install</a>
     <a href="#runtime">Docker runtime</a>
     <a href="#connect">Connect an agent</a>
-    <a href="#benchmark">Measure your own sessions</a>
     <div class="grp">Reference</div>
     <a href="#boundaries">Edition boundaries</a>
     <a href="#privacy">Privacy</a>
@@ -55,13 +54,23 @@
   <main>
     <section id="install">
       <h2>Install</h2>
-      <p>Node.js installs the launcher; Docker runs every application service. No host Python, Postgres or Redis installation is required.</p>
+      <p>Node.js installs the launcher; Docker runs every application service. No host Python, Postgres or Redis installation is required. The launcher needs Kemory Community 0.1.1 or later.</p>
 <pre><code>npx kemory-community@latest init --runtime docker
 npx kemory-community@latest up</code></pre>
-      <p>The launcher creates local configuration and starts the pinned Compose stack. API access is protected by <code>X-API-Key</code>.</p>
+      <p>The launcher writes a <code>.kemory-community</code> folder in the current directory, generates a random API key, pulls the published images and starts the pinned Compose stack. Your key is the <code>KEMORY_LOCAL_API_KEY</code> line in <code>.kemory-community/kemory.env</code>. Open the dashboard at <code>http://127.0.0.1:5175</code> and paste it when asked; the dashboard keeps it in that browser only.</p>
 <pre><code>npx kemory-community@latest doctor
 npx kemory-community@latest bundle</code></pre>
-      <p>The bundle command lists the exact required components and the admission gates for optional integrations.</p>
+      <p><code>doctor</code> checks a running install. The bundle command lists the exact required components and the admission gates for optional integrations.</p>
+      <h3>From source</h3>
+      <p>To build the same stack from the repository instead, create the per-install keys first. Compose refuses to start without them; there is no built-in default key.</p>
+<pre><code>git clone https://github.com/SeKondBrainAILabs/kemory-community.git
+cd kemory-community
+printf 'KEMORY_LOCAL_API_KEY=%s\nKEMORY_LOCAL_BLOB_SIGNING_KEY=%s\n' \
+  "$(openssl rand -hex 24)" "$(openssl rand -hex 32)" &gt; .env
+docker compose -f docker-compose.community.yml up -d --build</code></pre>
+      <p>Your key is the <code>KEMORY_LOCAL_API_KEY</code> line in <code>.env</code>. Keep that file private: anyone with the key can read and change your memories.</p>
+      <h3>Upgrading from 0.1.0</h3>
+      <p>0.1.0 shipped a published default key. For a source install, create <code>.env</code> as above before the next start, then enter the new key in the dashboard and in your MCP clients. Existing memories are kept; artifact links issued before the upgrade stop working because the signing key changes.</p>
     </section>
 
     <section id="runtime">
@@ -76,17 +85,12 @@ npx kemory-community@latest bundle</code></pre>
         </tbody>
       </table>
       <p>Artifacts use local filesystem storage and telemetry uses the no-op adapter. Runtime data stays in Docker volumes and the local Kemory configuration directory.</p>
+      <p>Every published port binds to <code>127.0.0.1</code>. The API answers browser requests only from the dashboard origins in <code>CORS_ORIGINS</code>, and only requests whose <code>Host</code> header is listed in <code>ALLOWED_HOSTS</code> (<code>localhost,127.0.0.1</code> by default); anything else gets <code>400</code>. Add your hostname to <code>ALLOWED_HOSTS</code> if you put Kemory behind a reverse proxy.</p>
     </section>
 
     <section id="connect">
       <h2>Connect an agent</h2>
-      <p>Point any MCP client at <code>http://127.0.0.1:8111/mcp/v1</code> and send the configured key in the <code>X-API-Key</code> header. Tool discovery advertises canonical <code>kemory_*</code> names; legacy <code>s9nmem_*</code> and <code>kora_*</code> names remain dispatch aliases.</p>
-    </section>
-
-    <section id="benchmark">
-      <h2>Measure your own sessions</h2>
-      <p>Community Edition stores captured chats in the same tables as hosted Kemory, so the <a href="../benchmarks/context-compaction/">context-compaction benchmark</a> runs against a local install. It replays every stored session two ways — the full history re-sent on each turn, and the tiered context Kemory assembles — and reports how many reader tokens the tiered context saves, by session length, with what the compaction itself costs.</p>
-      <p>The measurement package lives in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">Community Edition repository</a>, under <code>benchmarks/context_compaction_empirical/</code>. It is read-only against your database and writes only counts and salted pseudonyms.</p>
+      <p>Point any MCP client at <code>http://127.0.0.1:8111/mcp/v1</code> and send your API key in the <code>X-API-Key</code> header. Launcher installs also write a ready-made <code>mcp.json</code> in <code>.kemory-community</code>. Tool discovery advertises canonical <code>kemory_*</code> names; legacy <code>s9nmem_*</code> and <code>kora_*</code> names remain dispatch aliases.</p>
     </section>
 
     <section id="boundaries">
@@ -119,7 +123,7 @@ npx kemory-community@latest bundle</code></pre>
     <section id="support">
       <h2>Discussions and issues</h2>
       <p>Use <a href="https://github.com/SeKondBrainAILabs/kemory-community/discussions">GitHub Discussions</a> for questions, ideas and community help. Use the <a href="https://github.com/SeKondBrainAILabs/kemory-community/issues">issue tracker</a> for reproducible bugs and scoped feature requests.</p>
-      <p>Report security vulnerabilities privately to <code>security@kemory.s9n.ai</code>.</p>
+      <p>Report security vulnerabilities privately through <a href="https://github.com/SeKondBrainAILabs/kemory-community/security/advisories/new">GitHub private vulnerability reporting</a> or to <code>security@sekondbrain.ai</code>. Do not open a public issue.</p>
     </section>
   </main>
 </div>

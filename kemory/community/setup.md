@@ -29,6 +29,59 @@ The Docker runtime uses the local port registry allocation:
 The API will be available at `http://127.0.0.1:8111` and the dashboard at
 `http://127.0.0.1:5175`.
 
+`init` writes a `.kemory-community` folder in the current directory and
+generates a random API key: the `KEMORY_LOCAL_API_KEY` line in
+`.kemory-community/kemory.env`. The dashboard asks for that key on first visit
+and keeps it in that browser only. MCP clients send it in the `X-API-Key`
+header; `init` also writes a ready-made `mcp.json`. The launcher needs Kemory
+Community 0.1.1 or later.
+
+## Run from source
+
+Builds the API and dashboard images locally, with only Docker required. The
+Compose file has no built-in default key and refuses to start until `.env`
+holds per-install keys:
+
+```bash
+git clone https://github.com/SeKondBrainAILabs/kemory-community.git
+cd kemory-community
+printf 'KEMORY_LOCAL_API_KEY=%s\nKEMORY_LOCAL_BLOB_SIGNING_KEY=%s\n' \
+  "$(openssl rand -hex 24)" "$(openssl rand -hex 32)" > .env
+docker compose -f docker-compose.community.yml up -d --build
+```
+
+Your API key is the `KEMORY_LOCAL_API_KEY` line in `.env`. Keep the file
+private: anyone with the key can read and change your memories.
+
+Verify the install:
+
+```bash
+curl -fsS http://127.0.0.1:8111/health/ready
+KEMORY_LOCAL_API_KEY="$(sed -n 's/^KEMORY_LOCAL_API_KEY=//p' .env)"
+curl -fsS -H "X-API-Key: ${KEMORY_LOCAL_API_KEY}" \
+  http://127.0.0.1:8111/api/v1/namespaces
+```
+
+Stop with `docker compose -f docker-compose.community.yml down`. Adding `-v`
+deletes the data volumes and every stored memory.
+
+## Network exposure
+
+Every published port binds to `127.0.0.1`. The API answers browser requests
+only from the origins in `CORS_ORIGINS` (the dashboard on `127.0.0.1:5175` and
+`localhost:5175`, plus browser extensions) and only requests whose `Host`
+header is listed in `ALLOWED_HOSTS` (`localhost,127.0.0.1` by default). Any
+other host gets `400`. If you put Kemory behind a reverse proxy, add its
+hostname to `ALLOWED_HOSTS` and the dashboard origin to `CORS_ORIGINS`.
+
+## Upgrading from 0.1.0
+
+0.1.0 shipped a published default API key. For a source install, create `.env`
+as shown above before the next start, then enter the new key in the dashboard
+and in your MCP clients. Existing memories are kept, because the local user's
+identity lives in the data volume, not in the key. Artifact links issued before
+the upgrade stop working because the signing key changes.
+
 The bundle command prints the exact components used by the selected profile.
 The standalone profile includes the API, dashboard, PostgreSQL with pgvector,
 Redis, in-process FastEmbed, direct Community LLM adapters, and local artifact

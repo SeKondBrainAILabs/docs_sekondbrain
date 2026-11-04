@@ -253,21 +253,44 @@ Most clients treat a tool as something to reach for when asked. Put this in your
 instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
 [Kemory plugin](plugin/) ships this as a skill, so plugin users can skip it:
 
-```markdown
-You have Kemory memory tools available.
+```text
+You have Kemory memory tools. Kemory is my long-term memory, shared
+across all my AIs. Use it in every session, without being asked.
 
-At the start of each session: call kemory_list_namespaces, then
-kemory_recall_memory on the current topic.
+Read before answering. At the start of each session: call
+kemory_list_kemories, then kemory_recall_memory on the current
+topic. Do this before answering, not after. Recall again when the
+topic shifts or I refer to past work. If you catch yourself answering
+from guesswork when a memory could have answered, check now and
+correct yourself.
 
-Write a memory immediately when: I state a preference or a way of working,
-we make a decision, or we learn something non-obvious about this codebase
-or domain. Tell me what you wrote and to which namespace.
+Write at the moment, not at the end. A session can stop at any time,
+so a memory you were saving for later is a memory lost. Write
+immediately when: I state a preference or a way of working, we make a
+decision, or we learn something non-obvious about this codebase or
+domain. Do not ask whether to save — save it.
 
-Do not write credentials, keys or passwords into memory unless I ask you to.
+Where to file it. A Kemory name is root:topic, such as
+project:legal-contracts. A sub-topic is a tag, not another part.
+  project:<topic>   the default home for work and topics
+  user:<topic>      preferences, profile and feedback; private
+  skill:<name>      a reusable how-to
+Write under these three roots only. Kemory and its apps fill inbox,
+shared:, archive: and app:. Never put an AI's name or a date in a
+Kemory name. Not sure where it goes? Leave the Kemory out and Kemory
+suggests one.
+Tell me in one line what you wrote and to which Kemory.
+
+Keep the store sharp. Prefer one specific memory over one long one.
+Write in the vocabulary we actually used — identifiers, error strings,
+config keys — because that is what recall matches against later.
+Before writing, check whether a memory on the same fact already
+exists; update or supersede it rather than adding a duplicate. Skip
+transient state — anything that stops being true by tomorrow.
 ```
 
-[Optimise your AIs for Kemory](optimise/) has the same instruction sized for every field it
-has to fit in, and names where that field lives in each AI.
+[Optimise your AIs for Kemory](optimise/) has the same instruction, with a shorter version for
+the fields this one does not fit, and names where that field lives in each AI.
 
 ---
 
@@ -543,15 +566,20 @@ read across organisations, and no tool, transport or client setting changes that
 **Within an organisation, you are the default boundary.** Memories you write are yours.
 Colleagues in the same organisation do not see them by default, and neither do their agents.
 
-**Namespaces are how you organise memory, and they are free-form.** A namespace is a label
-you choose. Conventions that work well:
+**Namespaces are how you organise memory.** A namespace is `root:topic`, such as
+`project:legal-contracts`. A sub-topic is a tag on the memory, not another part of the name.
+An AI writes under three roots only:
 
-| Namespace | For |
-|---|---|
-| `user:preferences` | How you like to work — style, tools, formats |
-| `project:<name>` | Facts and decisions about one project |
-| `decisions:<period>` | A decision log with reasoning, in dated buckets |
-| `tribal:<area>` | Operational knowledge that is nobody's and everybody's |
+| Namespace | For | Example |
+|---|---|---|
+| `project:<topic>` | The default home: anything you work on or think about. Sub-topics are tags | `project:acme` |
+| `user:<topic>` | Preferences, profile and feedback. Private, never shared automatically | `user:preferences` |
+| `skill:<name>` | A reusable how-to | `skill:release-checklist` |
+
+Kemory and its apps fill the rest, and an AI does not write there: `inbox` holds chats not yet
+filed, `shared:` shows what others have shared with you, `archive:` keeps a copy when a share
+ends, and `app:` holds memory for apps such as Kora. Never put an AI's name or a date in a
+namespace. Not sure where something goes? Leave the namespace out and Kemory suggests one.
 
 **Sharing is explicit.** A memory becomes visible beyond you when it is written to, or
 promoted into, a namespace that your team can read. Nothing is promoted automatically.

@@ -420,16 +420,16 @@ transient state — anything that stops being true by tomorrow.</code></pre>
       <h3>Within an organisation, you are the default boundary</h3>
       <p>Memories you write are yours. Colleagues in the same organisation do not see them by default, and neither do their agents.</p>
       <h3>Namespaces are how you organise memory</h3>
-      <p>A namespace is a label you choose — they are free-form. Conventions that work well:</p>
+      <p>A namespace is <code>root:topic</code>, such as <code>project:legal-contracts</code>. A sub-topic is a tag on the memory, not another part of the name. An AI writes under three roots only:</p>
       <table>
-        <thead><tr><th>Namespace</th><th>For</th></tr></thead>
+        <thead><tr><th>Namespace</th><th>For</th><th>Example</th></tr></thead>
         <tbody>
-          <tr><td><code>user:preferences</code></td><td>How you like to work — style, tools, formats</td></tr>
-          <tr><td><code>project:&lt;name&gt;</code></td><td>Facts and decisions about one project</td></tr>
-          <tr><td><code>decisions:&lt;period&gt;</code></td><td>A decision log with reasoning, in dated buckets</td></tr>
-          <tr><td><code>tribal:&lt;area&gt;</code></td><td>Operational knowledge that is nobody's and everybody's</td></tr>
+          <tr><td><code>project:&lt;topic&gt;</code></td><td>The default home: anything you work on or think about. Sub-topics are tags</td><td><code>project:acme</code></td></tr>
+          <tr><td><code>user:&lt;topic&gt;</code></td><td>Preferences, profile and feedback. Private, never shared automatically</td><td><code>user:preferences</code></td></tr>
+          <tr><td><code>skill:&lt;name&gt;</code></td><td>A reusable how-to</td><td><code>skill:release-checklist</code></td></tr>
         </tbody>
       </table>
+      <p>Kemory and its apps fill the rest, and an AI does not write there: <code>inbox</code> holds chats not yet filed, <code>shared:</code> shows what others have shared with you, <code>archive:</code> keeps a copy when a share ends, and <code>app:</code> holds memory for apps such as Kora. Never put an AI's name or a date in a namespace. Not sure where something goes? Leave the namespace out and Kemory suggests one.</p>
       <h3>Sharing is explicit</h3>
       <p>A memory becomes visible beyond you when it is written to, or promoted into, a namespace your team can read. Nothing is promoted automatically. <code>kemory_promote_memory</code> is the tool that does it, and it is a write — so a client that asks before writing will ask before sharing.</p>
       <p>If you are unsure whether something would be visible to a colleague, <code>kemory_check_access</code> answers the question without changing anything.</p>

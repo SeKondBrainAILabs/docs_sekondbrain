@@ -566,15 +566,20 @@ read across organisations, and no tool, transport or client setting changes that
 **Within an organisation, you are the default boundary.** Memories you write are yours.
 Colleagues in the same organisation do not see them by default, and neither do their agents.
 
-**Namespaces are how you organise memory, and they are free-form.** A namespace is a label
-you choose. Conventions that work well:
+**Namespaces are how you organise memory.** A namespace is `root:topic`, such as
+`project:legal-contracts`. A sub-topic is a tag on the memory, not another part of the name.
+An AI writes under three roots only:
 
-| Namespace | For |
-|---|---|
-| `user:preferences` | How you like to work — style, tools, formats |
-| `project:<name>` | Facts and decisions about one project |
-| `decisions:<period>` | A decision log with reasoning, in dated buckets |
-| `tribal:<area>` | Operational knowledge that is nobody's and everybody's |
+| Namespace | For | Example |
+|---|---|---|
+| `project:<topic>` | The default home: anything you work on or think about. Sub-topics are tags | `project:acme` |
+| `user:<topic>` | Preferences, profile and feedback. Private, never shared automatically | `user:preferences` |
+| `skill:<name>` | A reusable how-to | `skill:release-checklist` |
+
+Kemory and its apps fill the rest, and an AI does not write there: `inbox` holds chats not yet
+filed, `shared:` shows what others have shared with you, `archive:` keeps a copy when a share
+ends, and `app:` holds memory for apps such as Kora. Never put an AI's name or a date in a
+namespace. Not sure where something goes? Leave the namespace out and Kemory suggests one.
 
 **Sharing is explicit.** A memory becomes visible beyond you when it is written to, or
 promoted into, a namespace that your team can read. Nothing is promoted automatically.

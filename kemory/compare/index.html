@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Kemory compares — Living Brain and Supermemory | SeKondBrain</title>
+<meta name="description" content="Kemory set against Living Brain and Supermemory, capability by capability: capturing your chats, continuing in another AI, who can see what, audit, residency, deployment, price, and why the published benchmark numbers do not line up. Checked against each product's public pages on 5 November 2026.">
+<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/compare/">
+<link rel="icon" href="../../assets/mark.png" type="image/png">
+<meta property="og:title" content="How Kemory compares — Living Brain and Supermemory">
+<meta property="og:description" content="Capability by capability, from each product's public pages, with where the others are better.">
+<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/compare/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<style>
+  /* Page mood: blue — the Kemory surface. One veil, per Brand Book v6. */
+  :root{ --veil-a:rgba(95,196,240,.20); --veil-b:rgba(216,171,254,.16); }
+  table.tight td{padding:8px 14px 8px 0;vertical-align:top}
+  table.tight td:first-child{min-width:150px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <img class="mark" src="../../assets/mark.png" alt="">
+    <a class="brandline" href="../">Kemory <span>· how it compares</span></a>
+    <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
+    <div class="top-links">
+      <a class="nav-back" href="../">Kemory docs</a>
+      <a href="#motions">Motions</a>
+      <a href="#access">Who sees what</a>
+      <a href="#benchmarks">Benchmarks</a>
+      <a href="#choose">Choosing</a>
+      <a href="../benchmarks/">Benchmarks method</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="pill"><i></i>Comparison · checked 5 November 2026</span>
+  <h1>How Kemory compares,<br><em>including where it doesn't win.</em></h1>
+  <p class="lede">Living Brain, Supermemory and Kemory all promise one memory that works across your AIs. They get there in different ways, and the differences show up in the first ten minutes: whether your chats arrive on their own, whether you can pick up a conversation in another AI, and who else can read what you have stored.</p>
+  <p>Everything said here about another product comes from that product's own public site, documentation or pricing page, as they stood on 5 November 2026, and each claim links to its source at the foot of the page. Products change quickly. If something here is out of date or wrong, email <a href="mailto:hello@sekondbrain.ai?subject=Correction%20to%20the%20Kemory%20comparison">hello@sekondbrain.ai</a> and we will correct it.</p>
+</div>
+
+<div class="wrap cols">
+
+  <nav class="side" aria-label="On this page">
+    <div class="grp">Compare</div>
+    <a href="#short">The short version</a>
+    <a href="#motions">Capturing and continuing</a>
+    <a href="#access">Who can see what</a>
+    <a href="#deploy">Deployment and price</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#choose">Choosing between them</a>
+    <div class="grp">Context</div>
+    <a href="#field">The wider field</a>
+    <a href="#sources">Sources</a>
+  </nav>
+
+  <main>
+
+    <section id="short">
+      <h2>The short version</h2>
+      <p><strong>Living Brain</strong> is a memory API that compiles what your AIs send it into tidy, versioned pages, and it marks a page as contested when a new fact contradicts an old one. It is built for developers: memory is saved when a model decides to call its capture tool, or when your own code sends it chat turns.</p>
+      <p><strong>Supermemory</strong> is a fast, open-source memory API with MCP and plugins. In September 2026 it discontinued its consumer app, its browser extension and its company-brain product to concentrate on the API, so it is now a choice for developers rather than for people capturing their own chats.</p>
+      <p><strong>Kemory</strong> gathers your chats on its own through Kora for Chrome, lets you continue a conversation in another AI, asks several models one question with Counsel, and lets you share memory with other people, including people in other organisations, with every cross-organisation read recorded in an audit log. Access is deny-by-default at every tier.</p>
+    </section>
+
+    <section id="motions">
+      <h2>Capturing and continuing</h2>
+      <p>These are the things a person notices first. A dash means the product does not document the capability.</p>
+      <table class="tight">
+        <thead><tr><th>Capability</th><th>Kemory</th><th>Living Brain</th><th>Supermemory</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Pull in chats automatically</strong></td><td>Yes. Kora for Chrome captures in the background on ChatGPT, Claude, Gemini, Perplexity and Manus</td><td>No. Saved when a model calls the capture tool, or when a developer posts chat turns</td><td>No. The browser extension was discontinued in September 2026</td></tr>
+          <tr><td><strong>Import past chat history</strong></td><td>Yes. History import from each supported AI</td><td>Partial. The import guide asks the AI to write out its own memory to save; Obsidian import</td><td>No consumer import; API ingest only</td></tr>
+          <tr><td><strong>Recall in any AI over MCP</strong></td><td>Yes. <a href="../#connect-web">Connect guide</a></td><td>Yes</td><td>Yes, with plugins</td></tr>
+          <tr><td><strong>Improve a prompt where you type it</strong></td><td>Yes. Enhance, in any supported AI's prompt box</td><td>—</td><td>—</td></tr>
+          <tr><td><strong>Ask a question over everything you have stored</strong></td><td>Yes. Ask Kora, with sources</td><td>Partial. Search and page reads</td><td>Partial. Search and retrieval API</td></tr>
+          <tr><td><strong>Several models, one answer</strong></td><td>Yes. Counsel</td><td>—</td><td>—</td></tr>
+          <tr><td><strong>Continue a conversation in another AI</strong></td><td>Yes. Continue with Kora</td><td>No. The same brain is reachable from each tool, but there is no handoff</td><td>—</td></tr>
+          <tr><td><strong>Contradictions and history</strong></td><td>Yes. Conflict resolution, version history and restore</td><td>Yes, and better presented: a contested page keeps both claims side by side until resolved</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="access">
+      <h2>Who can see what</h2>
+      <p>This is where the three differ most for a team. Kemory's model is set out in full under <a href="../#scoping">Scoping and sharing</a>.</p>
+      <table class="tight">
+        <thead><tr><th></th><th>Kemory</th><th>Living Brain</th><th>Supermemory</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Default access</strong></td><td>Deny by default; an AI sees only what the person who connected it can see</td><td>One brain per subject; the API key is an organisation-wide credential</td><td>Per-tag access on the Scale plan</td></tr>
+          <tr><td><strong>Sharing between people</strong></td><td>Share a namespace or chosen memories, across organisations; the recipient accepts before anything arrives, and contributions are credited to their author</td><td>Not documented; roles apply to the organisation, not to what a person or agent may read</td><td>Unlimited seats with per-tag access on Scale</td></tr>
+          <tr><td><strong>Audit</strong></td><td>Hash-chained, tamper-evident audit log; every cross-organisation read recorded</td><td>Page version history</td><td>Not documented below Enterprise</td></tr>
+          <tr><td><strong>Where data is held</strong></td><td>Google Cloud Switzerland, or India for customers in India, on every plan (<a href="../../legal/privacy/">Privacy Policy</a>)</td><td>By agreement on the Business plan</td><td>By contract on Enterprise</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="deploy">
+      <h2>Deployment and price</h2>
+      <table class="tight">
+        <thead><tr><th></th><th>Kemory</th><th>Living Brain</th><th>Supermemory</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Open source and self-hosting</strong></td><td>Community Edition under Apache 2.0, coming (<a href="../community/">Community</a>); self-hosted, own-cloud and air-gapped deployment for enterprises</td><td>Closed; customer cloud, on-premises or air-gapped on Business after an architecture assessment</td><td>Open source; self-hosting on Scale and Enterprise</td></tr>
+          <tr><td><strong>Start</strong></td><td>Free: 2,000 memories and two AIs. Pro: $19.99 a month</td><td>API pay as you go from a $5 prepaid balance ($8 per million input tokens, $0.50 per million output)</td><td>Free; Pro $19 a month</td></tr>
+          <tr><td><strong>Teams</strong></td><td>Team: $30 per seat. Business: $55 per seat, 10-seat minimum</td><td>Workspace: $99 a month for three seats. Business: custom</td><td>Max $100 and Scale $399 a month; Enterprise custom</td></tr>
+        </tbody>
+      </table>
+      <p>Prices are list prices in US dollars as published on each product's pricing page on 5 November 2026, before tax. Supermemory's plans draw on usage credits.</p>
+    </section>
+
+    <section id="benchmarks">
+      <h2>Why the benchmark numbers do not line up</h2>
+      <p>All three publish a headline score, and all three are in the high 80s or 90s. They measure different things on different datasets, so putting them side by side tells you very little.</p>
+      <table class="tight">
+        <thead><tr><th>Product</th><th>Published figure</th><th>What it measures</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kemory</strong></td><td>89.6% on LongMemEval-S, oracle set</td><td>End-to-end answer accuracy: retrieve, answer with an open-weight model (Llama-3.3-70B), judge against the reference. Six runs published with their spread</td></tr>
+          <tr><td><strong>Living Brain</strong></td><td>92.2% on LoCoMo (home page); 90.5% in its documentation</td><td>Answer accuracy on LoCoMo, a different and smaller conversational benchmark; the documented run answers with GPT-5</td></tr>
+          <tr><td><strong>Supermemory</strong></td><td>97% on LongMemEval-S</td><td>Recall@20: whether the evidence appeared in the top 20 results, not whether the final answer was right</td></tr>
+        </tbody>
+      </table>
+      <p>Our figure is on the harder axis, end-to-end accuracy with an open model, but it is on the oracle set, which contains only the sessions that hold the evidence. We have not run either product on an identical harness, so no ranking between the three is proven, including one that would flatter us. The <a href="../benchmarks/#comparison">benchmark method page</a> explains the difference between retrieval and end-to-end figures in full.</p>
+    </section>
+
+    <section id="choose">
+      <h2>Choosing between them</h2>
+      <h3>Choose Living Brain if</h3>
+      <p>You are a developer who wants a readable, self-organising wiki behind your own agents, you are happy to decide in code when to save, and you value seeing contradictions laid out as contested pages.</p>
+      <h3>Choose Supermemory if</h3>
+      <p>You want a fast, open-source memory API to wire into your own product today, and team access and compliance on its Scale plan suit your budget.</p>
+      <h3>Choose Kemory if</h3>
+      <p>You want your chats gathered without remembering to save them, to pick up a conversation in another AI, several models answering one question, or memory shared with other people, with a door between you, an audit trail, and data held in Switzerland or India on every plan.</p>
+    </section>
+
+    <section id="field">
+      <h2>The wider field</h2>
+      <p>This page covers the two products we are asked about most often. The Kemory product page sets Kemory alongside Mem0, Honcho, Zep, Nessie and ChatGPT's built-in memory as well.</p>
+      <p><a href="https://sekondbrain.ai/products/kemory">See the full comparison on the Kemory product page →</a></p>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <p>All checked on 5 November 2026.</p>
+      <ul>
+        <li><a href="https://livingbrain.com/">Living Brain home page</a> and <a href="https://livingbrain.com/pricing">pricing</a></li>
+        <li><a href="https://docs.livingbrain.com/docs/concepts">Living Brain: how a brain works</a></li>
+        <li><a href="https://docs.livingbrain.com/docs/authentication">Living Brain: authentication and roles</a></li>
+        <li><a href="https://docs.livingbrain.com/docs/importing">Living Brain: importing knowledge</a></li>
+        <li><a href="https://docs.livingbrain.com/docs/benchmarks">Living Brain: benchmarks</a></li>
+        <li><a href="https://supermemory.ai/blog/an-update-to-supermemory/">Supermemory: an update to Supermemory</a> (the September 2026 discontinuations)</li>
+        <li><a href="https://supermemory.ai/pricing">Supermemory pricing</a></li>
+        <li><a href="https://supermemory.ai/research">Supermemory research and benchmarks</a></li>
+        <li><a href="../benchmarks/">Kemory benchmarks: method and results</a></li>
+        <li><a href="../../legal/privacy/">SeKondBrain Privacy Policy</a>, section 9, for where Kemory data is held</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://sekondbrain.ai">SeKondBrain</a>
+      <a href="../">Kemory documentation</a>
+      <a href="../../">All documentation</a>
+      <a href="../../legal/privacy/">Privacy</a>
+    </div>
+    <div>© SeKondBrain AI Labs. Understanding, unshackled.</div>
+  </div>
+</footer>
+
+<script src="../../assets/nav.js" defer></script>
+<script src="../../assets/tables.js" defer></script>
+<script src="../../assets/consent.js" defer></script>
+</body>
+</html>

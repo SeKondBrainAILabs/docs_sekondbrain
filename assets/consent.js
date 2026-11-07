@@ -34,7 +34,9 @@
   // credential — it can only write events — and this one is already committed
   // across the platform's Helm values. It is not a secret.
   var POSTHOG_KEY = 'phc_z4mKFoFrkpiUtN7qSpCnUE5ns8nLHhpW9rVf6B5MGwwe';
-  var POSTHOG_HOST = 'https://eu.i.posthog.com';
+  // PostHog managed reverse proxy on our own domain, so ad blockers do not
+  // drop events. Listed with PostHog on /subprocessors (Cloudflare).
+  var POSTHOG_HOST = 'https://e.sekondbrain.ai';
   // Platform contract: one project per environment, services separated by the
   // `service` property. See Kemory/dashboard/src/lib/posthog.ts.
   var SERVICE = 'docs-site';
@@ -104,6 +106,7 @@
 
     window.posthog.init(POSTHOG_KEY, {
       api_host: POSTHOG_HOST,
+      ui_host: 'https://eu.posthog.com',
       // This is a public documentation site. Autocapture would record a click
       // on every element of every page for a reader we have no other reason to
       // profile; pageviews plus the campaign parameters on the URL are what the

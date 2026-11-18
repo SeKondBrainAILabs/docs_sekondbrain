@@ -188,9 +188,9 @@
       <p>One instruction, and it is the long one. A shorter version used to sit above this
       one for tight custom-instructions fields, and it did not hold up: a two-rule summary
       reads as background colour and gets skipped, where a named procedure — call this, then
-      this, before answering — gets followed. At 1,738 characters it fits every field on this
+      this, before answering — gets followed. At <span data-kemory-count="full">1,568</span> characters it fits every field on this
       page but two: ChatGPT's and Perplexity's custom-instructions boxes hold about 1,500, so
-      those two get a trimmed 939-character version of the same procedure, <a href="#short">below</a>. You do
+      those two get a trimmed <span data-kemory-count="compact">949</span>-character version of the same procedure, <a href="#short">below</a>. You do
       not have to work out which you need: <a href="#where">each AI further down shows the
       text to paste</a>, and it is already the right one for that AI.</p>
       <p>Two rules with a name each, because a named rule is one a model can hold on to:
@@ -200,21 +200,19 @@
       is <code>root:topic</code>, an AI writes under <code>project:</code>, <code>user:</code>
       and <code>skill:</code> only, and it never puts its own name or a date in the name. In a
       per-project field, add the one Kemory that work belongs in, such as <code>project:atlas</code>.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -230,18 +228,18 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
 
       <h3 id="short">ChatGPT's and Perplexity's, which is shorter</h3>
-      <p>The same procedure in 939 characters, and the only two AIs on this page that get
+      <p>The same procedure in <span data-kemory-count="compact">949</span> characters, and the only two AIs on this page that get
       their own. ChatGPT's Custom instructions box holds 1,500 characters and will not save
       the one above. Perplexity's holds about 1,500 too, and it is the same field you keep
-      your own tone and formatting preferences in; this one leaves you 561 characters. It is
+      your own tone and formatting preferences in; this one leaves you <span data-kemory-count="room">551</span> characters. It is
       a compression, not the old short version that was being skipped: both rules still
       named, both tools still named in call order, the filing roots still listed.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
+<pre><code data-kemory-instruction="compact">You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
 
 Read before answering. Open each session with kemory_list_kemories, then kemory_recall_memory on the topic. Recall again when the topic shifts. If you are guessing where a memory would have answered, check now.
 
@@ -249,7 +247,8 @@ Write at the moment. A session can stop at any time, so a memory saved for later
 
 File as root:topic: project:&lt;topic&gt; by default (sub-topics are tags), user:&lt;topic&gt; for preferences, profile, feedback, skill:&lt;name&gt; for how-tos. Never write to inbox, shared:, archive: or app:; no AI names or dates in names.
 
-Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.</code></pre>
+Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.
+Kemory v2</code></pre>
 
       <div class="note">
         <span class="lbl">If the email you got had a shorter one</span>
@@ -280,8 +279,8 @@ Keep it sharp: one specific memory, in the words we used. Update rather than dup
           <p>Open your name at the bottom-left, then Settings, then Personalization, and scroll to the
           Custom instructions field. Paste the block below into it, replacing any earlier Kemory
           instruction you put there.</p>
-                    <p class="paste-lead"><b>What to paste</b> — the shorter version, because this field holds 1,500 characters. 939 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
+                    <p class="paste-lead"><b>What to paste</b> — the shorter version, because this field holds 1,500 characters. <span data-kemory-count="compact">949</span> characters.</p>
+<pre><code data-kemory-instruction="compact">You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
 
 Read before answering. Open each session with kemory_list_kemories, then kemory_recall_memory on the topic. Recall again when the topic shifts. If you are guessing where a memory would have answered, check now.
 
@@ -289,9 +288,10 @@ Write at the moment. A session can stop at any time, so a memory saved for later
 
 File as root:topic: project:&lt;topic&gt; by default (sub-topics are tags), user:&lt;topic&gt; for preferences, profile, feedback, skill:&lt;name&gt; for how-tos. Never write to inbox, shared:, archive: or app:; no AI names or dates in names.
 
-Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.</code></pre>
+Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
-            <li><span class="k">Paste this</span><span>The <a href="#short">shorter version</a>. The Custom instructions box holds 1,500 characters — Save turns off at 1,501 — and the full instruction is 1,738, so ChatGPT will not save it. The shorter one keeps both rules, both tools and the filing roots, in 939.</span></li>
+            <li><span class="k">Paste this</span><span>The <a href="#short">shorter version</a>. The Custom instructions box holds 1,500 characters — Save turns off at 1,501 — and the full instruction is <span data-kemory-count="full">1,568</span>, so ChatGPT will not save it. The shorter one keeps both rules, both tools and the filing roots, in <span data-kemory-count="compact">949</span>.</span></li>
             <li><span class="k">On mobile</span><span>The path is different: tap your name, then <strong>Customize ChatGPT</strong>. Same field, same account — set it in either place.</span></li>
             <li><span class="k">Per project</span><span>A Project carries its own instructions field, applied on top of the account-wide one. That is the right home for a namespace.</span></li>
             <li><span class="k">Connecting</span><span>Settings &rsaquo; Connected apps. Kemory appears in the directory where it is listed; otherwise add it as a <a href="#mcp-web">custom connector</a>.</span></li>
@@ -307,22 +307,20 @@ Keep it sharp: one specific memory, in the words we used. Update rather than dup
           <div class="shot real">
             <img src="claude-instructions.png" width="1360" height="900" loading="lazy" alt="Claude's desktop app settings on General, with the Profile section's Instructions for Claude field holding the standing instruction.">
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -338,9 +336,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. It applies everywhere Claude runs on your account.</span></li>
             <li><span class="k">Finding it</span><span>The field sits under the <strong>Profile</strong> heading partway down the General page, below the name fields — scroll to it. The desktop app is the same screen: your initials, lower-left, then Settings.</span></li>
@@ -361,22 +359,20 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="manus-instructions.png" width="1360" height="866" loading="lazy" alt="Manus settings on Personalization, Profile tab, with the Custom Instructions field holding the standing instruction.">
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -392,9 +388,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. The field is roomy, so it fits whole, filing roots and all.</span></li>
             <li><span class="k">Where exactly</span><span>Personalization sits under Capabilities in the settings sidebar; Custom Instructions is at the bottom of its <strong>Profile</strong> tab, below the profile fields. It applies across all your tasks.</span></li>
@@ -418,21 +414,19 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <a href="../#kora">Kora extension</a> in both directions, and that path needs no instruction
           field at all.</p>
                     <p class="paste-lead"><b>What to paste</b> — only if your account carries MCP. If it does not, paste nothing: see <em>Check first</em> below.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -448,9 +442,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Check first</span><span>Look for <strong>Settings &rsaquo; Apps</strong> (or your workspace admin's connector controls) before pasting anything. If there is no way to add an MCP connector, your account does not carry it — and the <a href="#instruction">standing instruction</a> will name tools Gemini cannot call, which reads as a model apologising for a missing tool rather than as memory.</span></li>
             <li><span class="k">If you do have it</span><span>Paste the <a href="#instruction">instruction</a> under <strong>Settings &amp; help &rsaquo; Personal Intelligence &rsaquo; Instructions for Gemini</strong>, and add the connector with the <a href="#mcp-web">server address</a>. Enterprise and Workspace accounts are where this shows up; consumer accounts generally do not have it.</span></li>
@@ -471,8 +465,8 @@ transient state — anything that stops being true by tomorrow.</code></pre>
           <div class="shot real">
             <img src="perplexity-instructions.png" width="810" height="710" loading="lazy" alt="Perplexity settings on Personalization, showing the account-wide Custom instructions field beneath the profile fields.">
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the shorter version, because this field is the tightest here. 939 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
+                    <p class="paste-lead"><b>What to paste</b> — the shorter version, because this field is the tightest here. <span data-kemory-count="compact">949</span> characters.</p>
+<pre><code data-kemory-instruction="compact">You have Kemory memory tools. Kemory is my long-term memory, shared across all my AIs — use it every session, unasked.
 
 Read before answering. Open each session with kemory_list_kemories, then kemory_recall_memory on the topic. Recall again when the topic shifts. If you are guessing where a memory would have answered, check now.
 
@@ -480,10 +474,11 @@ Write at the moment. A session can stop at any time, so a memory saved for later
 
 File as root:topic: project:&lt;topic&gt; by default (sub-topics are tags), user:&lt;topic&gt; for preferences, profile, feedback, skill:&lt;name&gt; for how-tos. Never write to inbox, shared:, archive: or app:; no AI names or dates in names.
 
-Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.</code></pre>
+Keep it sharp: one specific memory, in the words we used. Update rather than duplicate. Skip what stops being true tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Where it goes</span><span>Scroll past the profile fields — Custom instructions is the last thing on the Personalization page, and it is <strong>account-wide</strong>: every thread, in every project.</span></li>
-            <li><span class="k">Why this one is shorter</span><span>This field holds about 1,500 characters, the tightest of any product here, and you share it with your own tone and formatting preferences. The full instruction is 1,738 — more than the whole field. The version above says the same things in 939 and leaves you the rest of the field.</span></li>
+            <li><span class="k">Why this one is shorter</span><span>This field holds about 1,500 characters, the tightest of any product here, and you share it with your own tone and formatting preferences. The full instruction is <span data-kemory-count="full">1,568</span> — more than the whole field. The version above says the same things in <span data-kemory-count="compact">949</span> and leaves you the rest of the field.</span></li>
             <li><span class="k">Per project</span><span>A Project has its own instructions field too — 8,000 characters, applied on top of the account-wide one. That is where the namespace goes.</span></li>
             <li><span class="k">Naming</span><span>Projects were called Spaces until recently, and parts of the product and its help centre still say so. They are the same thing.</span></li>
             <li><span class="k">Not Memory</span><span>Settings &rsaquo; Memory is Perplexity's own store — separate from Kemory, and confined to Perplexity. Kemory is the one your other AIs can also read.</span></li>
@@ -519,22 +514,20 @@ Save the moment I state a preference, we reach
 a decision, or we learn something non-obvious.
 Say briefly what you saved, and where.</div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -550,9 +543,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. A file has no character limit, so paste it whole and leave the filing roots in. Skip this entirely if you installed the plugin — it ships the instruction.</span></li>
             <li><span class="k">Already pasted, then installed the plugin?</span><span>Delete the pasted copy. Both together are not harmful, but the pasted one opens every session with <code>kemory_list_kemories</code> and a recall that the plugin has already done by then, which costs two tool calls a session to repeat. The plugin says so once a week until you remove it.</span></li>
@@ -582,22 +575,20 @@ Save to Kemory when we reach a decision or
 learn something non-obvious. Memories for this
 work go in project:atlas.</div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -613,9 +604,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.codex/AGENTS.md</code> for every project; an <code>AGENTS.md</code> at the repository root for one.</span></li>
@@ -645,22 +636,20 @@ transient state — anything that stops being true by tomorrow.</code></pre>
               </div>
             </div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -676,9 +665,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> into User Rules — plain text, global, follows you across every project.</span></li>
             <li><span class="k">Per project</span><span>An <code>.mdc</code> file under <code>.cursor/rules/</code>, committed with the repo. It needs <code>alwaysApply: true</code> in its frontmatter, otherwise Cursor only pulls it in when it judges the rule relevant — which is exactly the behaviour a standing instruction is meant to stop.</span></li>
@@ -707,22 +696,20 @@ Save the moment I state a preference, we reach
 a decision, or we learn something non-obvious.
 Say briefly what you saved.</div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -738,9 +725,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>. Global rules are capped at 6,000 characters, so it fits with room to spare.</span></li>
             <li><span class="k">Per project</span><span>A rules file in <code>.devin/rules/</code>. The older <code>.windsurf/rules/</code> and a root <code>.windsurfrules</code> are still read, so existing projects keep working.</span></li>
@@ -768,22 +755,20 @@ Save the moment we reach a decision or learn
 something non-obvious about this codebase.
 Memories for this work go in project:atlas.</div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -799,9 +784,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a>, with the namespace named — this file is per-repository, so it already knows which project it is.</span></li>
             <li><span class="k">Several rules</span><span><code>.clinerules</code> can also be a directory, with one file per concern. Memory rules in their own file are easier to keep current.</span></li>
@@ -829,22 +814,20 @@ again when the topic shifts.
 Save the moment I state a preference or we
 reach a decision. Say what you saved.</div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -860,9 +843,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> — no limit on a file.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.gemini/GEMINI.md</code> for every project; a <code>GEMINI.md</code> at a repository root for one, read on top of the global file.</span></li>
@@ -891,22 +874,20 @@ transient state — anything that stops being true by tomorrow.</code></pre>
               </div>
             </div>
           </div>
-                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. 1,738 characters.</p>
-<pre><code>You have Kemory memory tools. Kemory is my long-term memory, shared
+                    <p class="paste-lead"><b>What to paste</b> — the standing instruction, whole. <span data-kemory-count="full">1,568</span> characters.</p>
+<pre><code data-kemory-instruction="full">You have Kemory memory tools. Kemory is my long-term memory, shared
 across all my AIs. Use it in every session, without being asked.
 
 Read before answering. At the start of each session: call
 kemory_list_kemories, then kemory_recall_memory on the current
-topic. Do this before answering, not after. Recall again when the
-topic shifts or I refer to past work. If you catch yourself answering
-from guesswork when a memory could have answered, check now and
-correct yourself.
+topic. Recall again when the topic shifts or I refer to past
+work. If you catch yourself answering from guesswork when a memory
+could have answered, check now and correct yourself.
 
-Write at the moment, not at the end. A session can stop at any time,
-so a memory you were saving for later is a memory lost. Write
-immediately when: I state a preference or a way of working, we make a
-decision, or we learn something non-obvious about this codebase or
-domain. Do not ask whether to save — save it.
+Write at the moment, not at the end. A session can stop at any time.
+Write immediately when: I state a preference or a way of working, we
+make a decision, or we learn something non-obvious. Do not ask
+whether to save — save it.
 
 Where to file it. A Kemory name is root:topic, such as
 project:legal-contracts. A sub-topic is a tag, not another part.
@@ -922,9 +903,9 @@ Tell me in one line what you wrote and to which Kemory.
 Keep the store sharp. Prefer one specific memory over one long one.
 Write in the vocabulary we actually used — identifiers, error strings,
 config keys — because that is what recall matches against later.
-Before writing, check whether a memory on the same fact already
-exists; update or supersede it rather than adding a duplicate. Skip
-transient state — anything that stops being true by tomorrow.</code></pre>
+Update or supersede an existing memory on the same fact rather than
+adding a duplicate. Skip anything that stops being true by tomorrow.
+Kemory v2</code></pre>
           <ul class="facts">
             <li><span class="k">Paste this</span><span>The <a href="#instruction">instruction</a> as a global rule. It applies across every project and every session.</span></li>
             <li><span class="k">Per project</span><span>An <code>AGENTS.md</code> at the repository root — the same file Codex reads. A legacy <code>WARP.md</code> still works.</span></li>
@@ -1083,6 +1064,41 @@ transient state — anything that stops being true by tomorrow.</code></pre>
 <script src="../../assets/nav.js" defer></script>
 <script src="../../assets/tables.js" defer></script>
 <script src="../../assets/consent.js" defer></script>
+<script>
+/* The instruction on this page is the one Kemory serves now.
+ *
+ * It used to be typed into this page, and every change to it in the product
+ * left this copy behind. Kemory now holds it as a versioned record, published
+ * from its admin panel, and serves the current one on a public, read-only
+ * route. On load this fills every instruction block from that route, and the
+ * character counts quoted in the text with it.
+ *
+ * What is in the markup is the last version known when this page was built.
+ * It stays as it is if Kemory cannot be reached or scripts are off, so the
+ * page is never empty; it is only as fresh as the last change to this file.
+ */
+(function () {
+  var URL = 'https://kemory-api.prod.apps.s9n.ai/api/v1/setup-instruction';
+  if (!window.fetch) return;
+  fetch(URL, { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+    .then(function (live) {
+      if (!live || typeof live.full !== 'string' || typeof live.compact !== 'string') return;
+      var text = { full: live.full, compact: live.compact };
+      document.querySelectorAll('code[data-kemory-instruction]').forEach(function (el) {
+        var form = el.getAttribute('data-kemory-instruction');
+        if (text[form]) el.textContent = text[form];
+      });
+      var count = { full: live.full.length, compact: live.compact.length, room: 1500 - live.compact.length };
+      document.querySelectorAll('[data-kemory-count]').forEach(function (el) {
+        var n = count[el.getAttribute('data-kemory-count')];
+        if (typeof n === 'number') el.textContent = n.toLocaleString('en-GB');
+      });
+      document.documentElement.setAttribute('data-kemory-instruction-version', String(live.version));
+    })
+    .catch(function () { /* the built-in text stands */ });
+})();
+</script>
 <script>
 /* Make a deep link select its own tab.
  *

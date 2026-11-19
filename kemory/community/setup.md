@@ -1,6 +1,6 @@
 # Setup
 
-Kemory Community Edition is installed through npm. v0.1 supports the Docker
+SeKondBrain Community Edition is installed through npm. v0.1 supports the Docker
 runtime and reserves the local ports below.
 
 - `docker` - default and recommended for local development and QA.
@@ -51,7 +51,7 @@ the settings API.
 The supplied Compose files map `host.docker.internal` on Linux and Docker
 Desktop. For llama.cpp running as another container on the same network, use
 its service URL, such as `http://llama-cpp:8080`. This endpoint is user-managed
-and is not a Kemory-published host port, so it adds no Kemory port-registry
+and is not a SeKondBrain-published host port, so it adds no SeKondBrain port-registry
 allocation.
 
 Headless deployments can set the same values before startup:

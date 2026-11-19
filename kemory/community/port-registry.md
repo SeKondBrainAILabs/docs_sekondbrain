@@ -1,6 +1,6 @@
 # Port Registry
 
-Kemory Community reserves these local ports for the Docker runtime.
+SeKondBrain Community Edition reserves these local ports for the Docker runtime.
 
 | Service | Host Port | Container Port | Notes |
 | --- | ---: | ---: | --- |

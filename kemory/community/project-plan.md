@@ -1,4 +1,4 @@
-# Kemory Community Edition - Project Plan
+# SeKondBrain Community Edition - Project Plan
 
 This is the build plan for v0.1 of `kemory-community`. The community repo
 receives backend, SDK, CLI, and dashboard code by subtree split from
@@ -25,7 +25,7 @@ Included:
 - Dashboard pages: memories, namespaces, chats, artifacts, settings, doctor
 - Settings UI: LLM provider/model/endpoint/key and connection test, embedding provider, artifact limits, log level
 
-Not included (stays in hosted Kemory):
+Not included (stays in hosted SeKondBrain):
 
 - L5 cross-namespace merge detection (the one piece of cognition that's hosted-only)
 - Keycloak / OIDC / multi-tenant org isolation

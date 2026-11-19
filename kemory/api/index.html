@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory API reference | SeKondBrain docs</title>
-<meta name="description" content="Every REST endpoint Kemory serves, plus how compaction tiers and the search summary behind enhance actually work.">
+<title>SeKondBrain API reference | SeKondBrain docs</title>
+<meta name="description" content="Every REST endpoint SeKondBrain serves, plus how compaction tiers and the search summary behind enhance actually work.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/api/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,10 +56,10 @@ table.api code{font-size:.86em}
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· API</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· API</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#base">Auth</a>
       <a href="#compaction">Compaction</a>
       <a href="#digest">Session digest</a>
@@ -71,7 +71,7 @@ table.api code{font-size:.86em}
 
 <div class="wrap hero">
   <span class="pill"><i></i>195 operations · 37 areas · generated from the service</span>
-  <h1>The Kemory<br><em>API reference.</em></h1>
+  <h1>The SeKondBrain<br><em>API reference.</em></h1>
   <p class="lede">Every REST endpoint the service exposes, generated from the API's own schema rather than written by hand. Alongside it, the parts you cannot infer from a path: how a memory is compacted over time, and what actually happens behind the extension's <em>enhance</em>.</p>
 </div>
 
@@ -131,7 +131,7 @@ table.api code{font-size:.86em}
 
 <section id="base">
   <h2>Base URL, auth and conventions</h2>
-  <p>Every endpoint below is served by the Kemory API. Paths are given exactly as the service exposes them; prepend your deployment's origin.</p>
+  <p>Every endpoint below is served by the SeKondBrain API. Paths are given exactly as the service exposes them; prepend your deployment's origin. Tool names, paths, URLs and environment variables keep the product's old name, Kemory.</p>
   <table>
     <thead><tr><th>Concern</th><th>Detail</th></tr></thead>
     <tbody>
@@ -170,10 +170,10 @@ table.api code{font-size:.86em}
       <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/oauth-protected-resource/mcp/v1</code></td><td>Oauth Protected Resource Mcp</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/.well-known/openai-apps-challenge</code></td><td>Openai Apps Challenge</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/artifacts/{artifact_id}/blob</code></td><td>Stream artifact binary (signed-URL auth — no bearer needed)</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code></td><td>Kemory&#x27;s plan catalogue, unauthenticated</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code></td><td>SeKondBrain&#x27;s plan catalogue, unauthenticated</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/chats/{chat_id}/artifacts/{artifact_id}/blob</code></td><td>Stream a binary artifact body (signed-URL auth, no bearer needed)</td></tr>
-      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code></td><td>Claim a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code></td><td>Validate a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code></td><td>Claim a SeKondBrain bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code></td><td>Validate a SeKondBrain bypass/referral code (no auth — the code is the credential)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/pair/{code}/claim</code></td><td>Self‑register an agent using a pair code (called by the AI)</td></tr>
       <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/telemetry</code></td><td>Ingest an opt-in anonymous CLI telemetry event</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/artifacts/{token}</code></td><td>Stream a LocalFS artifact by signed token</td></tr>
@@ -239,7 +239,7 @@ table.api code{font-size:.86em}
 <section id="digest">
   <h2>L2.1 — the rolling session digest</h2>
   <p>This is the service most often described as "the last few messages plus a summary", and the one to reach for when the problem is prompt-window pressure during a live session rather than recall across the vault.</p>
-  <p>Kemory keeps the <strong>latest few exchanges verbatim</strong> — three by default — and compacts everything older into a single readable, token-budgeted digest covering the current objective, decisions, constraints and open loops. The raw tail is a per-call parameter clamped to 1–10 exchanges; 3 is the default, so the digest first appears once a session runs past its raw tail. It is deliberately prose rather than AAAK, because it is prompt-facing — the tier that exists to be read by a model is the one that must not be encoded for bytes. If no model backend is reachable, or the call fails or returns nothing, a deterministic extractive fallback runs instead.</p>
+  <p>SeKondBrain keeps the <strong>latest few exchanges verbatim</strong> — three by default — and compacts everything older into a single readable, token-budgeted digest covering the current objective, decisions, constraints and open loops. The raw tail is a per-call parameter clamped to 1–10 exchanges; 3 is the default, so the digest first appears once a session runs past its raw tail. It is deliberately prose rather than AAAK, because it is prompt-facing — the tier that exists to be read by a model is the one that must not be encoded for bytes. If no model backend is reachable, or the call fails or returns nothing, a deterministic extractive fallback runs instead.</p>
   <h3>Nothing is lost, only deferred</h3>
   <p>The digest carries retrieval hooks and the source ids behind its sections and facts, so an agent needing the exact wording of an older exchange can drill back to it on demand rather than being told a compressed approximation is all that survives. That is the difference between this and truncating a transcript.</p>
   <table>
@@ -635,7 +635,7 @@ table.api code{font-size:.86em}
 
 <section id="Teams">
   <h2>Teams <span class="ct">5</span></h2>
-  <p>Kemory's own teams and membership. Independent of Core_Backend's teams; there is no sync between them.</p>
+  <p>SeKondBrain's own teams and membership. Independent of Core_Backend's teams; there is no sync between them.</p>
   
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
@@ -769,17 +769,17 @@ table.api code{font-size:.86em}
 
 <section id="billing">
   <h2>billing <span class="ct">7</span></h2>
-  <p>Kemory plans and checkout. Proxies Core_Backend.</p>
-  <p class="note">These endpoints forward to Core_Backend. Kemory serves the route; the behaviour behind it is owned elsewhere.</p>
+  <p>SeKondBrain plans and checkout. Proxies Core_Backend.</p>
+  <p class="note">These endpoints forward to Core_Backend. SeKondBrain serves the route; the behaviour behind it is owned elsewhere.</p>
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
-            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/billing/checkout</code></td><td>Start a Stripe hosted Checkout for a Kemory plan</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans</code></td><td>Kemory&#x27;s public plan catalogue</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code><span class="flag pub">no auth</span></td><td>Kemory&#x27;s plan catalogue, unauthenticated</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/billing/checkout</code></td><td>Start a Stripe hosted Checkout for a SeKondBrain plan</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans</code></td><td>SeKondBrain&#x27;s public plan catalogue</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/plans/public</code><span class="flag pub">no auth</span></td><td>SeKondBrain&#x27;s plan catalogue, unauthenticated</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/portal</code></td><td>Stripe Billing Portal URL for self-service billing</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/subscription</code></td><td>The caller&#x27;s active Kemory subscription, if any</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/transactions</code></td><td>The org&#x27;s Kemory invoice history</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/subscription</code></td><td>The caller&#x27;s active SeKondBrain subscription, if any</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/transactions</code></td><td>The org&#x27;s SeKondBrain invoice history</td></tr>
       <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/billing/usage</code></td><td>Plan caps and how much of them the caller has used</td></tr>
     </tbody>
   </table>
@@ -788,12 +788,12 @@ table.api code{font-size:.86em}
 <section id="referral">
   <h2>referral <span class="ct">2</span></h2>
   <p>Referral codes. Proxies Core_Backend.</p>
-  <p class="note">These endpoints forward to Core_Backend. Kemory serves the route; the behaviour behind it is owned elsewhere.</p>
+  <p class="note">These endpoints forward to Core_Backend. SeKondBrain serves the route; the behaviour behind it is owned elsewhere.</p>
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
-            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/referral/invite</code></td><td>Invite someone to Kemory with the caller&#x27;s referral link</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/referral/me</code></td><td>The caller&#x27;s Kemory referral link, stats and activity</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/referral/invite</code></td><td>Invite someone to SeKondBrain with the caller&#x27;s referral link</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/referral/me</code></td><td>The caller&#x27;s SeKondBrain referral link, stats and activity</td></tr>
     </tbody>
   </table>
 </section>
@@ -801,7 +801,7 @@ table.api code{font-size:.86em}
 <section id="residency">
   <h2>residency <span class="ct">3</span></h2>
   <p>Data-residency region selection. Proxies Core_Backend.</p>
-  <p class="note">These endpoints forward to Core_Backend. Kemory serves the route; the behaviour behind it is owned elsewhere.</p>
+  <p class="note">These endpoints forward to Core_Backend. SeKondBrain serves the route; the behaviour behind it is owned elsewhere.</p>
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
@@ -819,8 +819,8 @@ table.api code{font-size:.86em}
   <table class="api">
     <thead><tr><th>Method</th><th>Path</th><th>What it does</th></tr></thead>
     <tbody>
-            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code><span class="flag pub">no auth</span></td><td>Claim a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
-      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code><span class="flag pub">no auth</span></td><td>Validate a Kemory bypass/referral code (no auth — the code is the credential)</td></tr>
+            <tr><td><span class="m m-post">POST</span></td><td><code>/api/v1/join/{code}/claim</code><span class="flag pub">no auth</span></td><td>Claim a SeKondBrain bypass/referral code (no auth — the code is the credential)</td></tr>
+      <tr><td><span class="m m-get">GET</span></td><td><code>/api/v1/join/{code}/validate</code><span class="flag pub">no auth</span></td><td>Validate a SeKondBrain bypass/referral code (no auth — the code is the credential)</td></tr>
     </tbody>
   </table>
 </section>
@@ -888,7 +888,7 @@ table.api code{font-size:.86em}
 
 <footer class="foot">
   <div class="wrap">
-    <p>Questions: <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a> · <a href="../">Kemory docs</a> · <a href="../../legal/privacy/">Privacy</a></p>
+    <p>Questions: <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a> · <a href="../">SeKondBrain docs</a> · <a href="../../legal/privacy/">Privacy</a></p>
   </div>
 </footer>
 <!-- The shared mobile-nav behaviour every other docs page loads. Emitted here

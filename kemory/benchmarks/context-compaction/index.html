@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory benchmarks — context compaction | SeKondBrain</title>
-<meta name="description" content="A deterministic replay of 1,314 real Kemory sessions: tiered context sends 72.2% fewer reader tokens than re-sending the full history, and costs more than it saves below about six exchanges. Method, results by session length, costs, caveats, and how to reproduce it.">
+<title>SeKondBrain benchmarks — context compaction | SeKondBrain</title>
+<meta name="description" content="A deterministic replay of 1,314 real SeKondBrain sessions: tiered context sends 72.2% fewer reader tokens than re-sending the full history, and costs more than it saves below about six exchanges. Method, results by session length, costs, caveats, and how to reproduce it.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
 <link rel="icon" href="../../../assets/mark.png" type="image/png">
-<meta property="og:title" content="Kemory benchmarks — context compaction">
+<meta property="og:title" content="SeKondBrain benchmarks — context compaction">
 <meta property="og:description" content="72.2% fewer reader tokens than full-history replay, measured over 1,314 real sessions — and where it doesn't pay. Method, results and caveats.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
 <meta property="og:type" content="website">
@@ -48,10 +48,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../../assets/mark.png" alt="">
-    <a class="brandline" href="../../">Kemory <span>· benchmarks</span></a>
+    <a class="brandline" href="../../">SeKondBrain <span>· benchmarks</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../../">Kemory docs</a>
+      <a class="nav-back" href="../../">SeKondBrain docs</a>
       <a href="../">LongMemEval</a>
       <a href="#by-length">Results</a>
       <a href="#caveats">Caveats</a>
@@ -63,7 +63,7 @@
 <div class="wrap hero">
   <span class="pill"><i></i>Benchmark · Context compaction</span>
   <h1>72% fewer reader tokens,<br><em>once a session runs long.</em></h1>
-  <p class="lede">We replayed 1,314 real Kemory sessions two ways — re-sending the whole conversation on every turn, and sending the tiered context Kemory assembles instead — and counted the tokens each would hand a model. Tiered context sends 72.2% fewer. It also sends <em>more</em> than full history on short sessions, and almost all of the saving comes from the longest ones.</p>
+  <p class="lede">We replayed 1,314 real SeKondBrain sessions two ways — re-sending the whole conversation on every turn, and sending the tiered context SeKondBrain assembles instead — and counted the tokens each would hand a model. Tiered context sends 72.2% fewer. It also sends <em>more</em> than full history on short sessions, and almost all of the saving comes from the longest ones.</p>
   <p>This page sets out what was measured, the result by session length, what the compaction itself costs, what it is worth in money at published prices, and the caveats — the first of which is that one account dominates the sample. It measures tokens and price. It does not measure answer quality; for that, see the <a href="../">LongMemEval benchmark</a>.</p>
 </div>
 
@@ -100,15 +100,15 @@
       <table class="tight">
         <thead><tr><th>Property</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Sample</td><td>1,314 real Kemory chat sessions; 8,369 decision steps (one per user → assistant exchange)</td></tr>
+          <tr><td>Sample</td><td>1,314 real SeKondBrain chat sessions; 8,369 decision steps (one per user → assistant exchange)</td></tr>
           <tr><td>Excluded</td><td>12 chats with no complete exchange</td></tr>
-          <tr><td>Compared</td><td><strong>Full-history replay</strong> against Kemory's <strong>tiered context</strong>, at every step of every session</td></tr>
+          <tr><td>Compared</td><td><strong>Full-history replay</strong> against SeKondBrain's <strong>tiered context</strong>, at every step of every session</td></tr>
           <tr><td>Metric</td><td>Reader input tokens, summed across steps — each turn re-sends its context to a stateless API</td></tr>
           <tr><td>Tokenizer</td><td><code>tiktoken</code> <code>o200k_base</code>, as a documented proxy (see <a href="#caveats">caveats</a>)</td></tr>
-          <tr><td>Compactor</td><td>Kemory's configured route, Groq <code>openai/gpt-oss-120b</code>; the digest itself comes from Kemory's deterministic extractive path</td></tr>
+          <tr><td>Compactor</td><td>SeKondBrain's configured route, Groq <code>openai/gpt-oss-120b</code>; the digest itself comes from SeKondBrain's deterministic extractive path</td></tr>
           <tr><td>Price reference</td><td>Frontier reader at <code>claude-opus-4-8</code> published input price</td></tr>
           <tr><td>Evidence</td><td>Deterministic replay for tokens; published-rate scenario for money. <strong>No figure here is observed billing.</strong></td></tr>
-          <tr><td>Snapshot</td><td>All persisted chats in the Kemory database, July 2026; measurement package dated 22 July 2026</td></tr>
+          <tr><td>Snapshot</td><td>All persisted chats in the SeKondBrain database, July 2026; measurement package dated 22 July 2026</td></tr>
         </tbody>
       </table>
     </section>
@@ -177,7 +177,7 @@
         </tbody>
       </table>
       <p>From six exchanges up, the tiered context is roughly flat at three thousand tokens however long the session grows. The digest is capped by its token budget at around nine hundred, the raw tail is always the latest three exchanges, and the background summary is bounded. Full history has no such ceiling: it grows with every exchange and is re-sent on every step. That is the whole mechanism, and why the saving concentrates where it does.</p>
-      <p>Two components are zero by construction. <strong>AAAK</strong>, Kemory's storage and export dialect, is never part of the default context — it is not a compression scheme for prompts, and no AAAK byte ratio is used as a token count anywhere in this study. <strong>Recalled memories</strong> are zero because a replay has no query to recall against; see the <a href="#caveats">caveats</a> for which way that cuts.</p>
+      <p>Two components are zero by construction. <strong>AAAK</strong>, SeKondBrain's storage and export dialect, is never part of the default context — it is not a compression scheme for prompts, and no AAAK byte ratio is used as a token count anywhere in this study. <strong>Recalled memories</strong> are zero because a replay has no query to recall against; see the <a href="#caveats">caveats</a> for which way that cuts.</p>
     </section>
 
     <section id="cost">
@@ -188,7 +188,7 @@
       <table class="tight">
         <thead><tr><th>Route</th><th>Input / output per MTok</th><th>Cost</th></tr></thead>
         <tbody>
-          <tr><td>Groq <code>openai/gpt-oss-120b</code> — Kemory's configured route</td><td>$0.15 / $0.60</td><td><strong>$1.97</strong></td></tr>
+          <tr><td>Groq <code>openai/gpt-oss-120b</code> — SeKondBrain's configured route</td><td>$0.15 / $0.60</td><td><strong>$1.97</strong></td></tr>
           <tr><td>Groq <code>llama-3.3-70b-versatile</code></td><td>$0.59 / $0.79</td><td>$5.03</td></tr>
           <tr><td>OpenAI <code>gpt-4o</code> class</td><td>$2.50 / $10.00</td><td>$32.89</td></tr>
           <tr><td>Anthropic <code>claude-sonnet-5</code></td><td>$3.00 / $15.00</td><td>$44.69</td></tr>
@@ -217,7 +217,7 @@
         <thead><tr><th>Policy</th><th>What the reader receives at each step</th></tr></thead>
         <tbody>
           <tr><td><strong>Full-history replay</strong></td><td>The system prompt, every prior exchange, and the current user message.</td></tr>
-          <tr><td><strong>Tiered context</strong> — what Kemory sends today</td><td>The namespace and session background summary (L3), the <strong>rolling digest</strong> (L2.1) of every exchange older than the raw tail, the latest three exchanges verbatim, and the current user message.</td></tr>
+          <tr><td><strong>Tiered context</strong> — what SeKondBrain sends today</td><td>The namespace and session background summary (L3), the <strong>rolling digest</strong> (L2.1) of every exchange older than the raw tail, the latest three exchanges verbatim, and the current user message.</td></tr>
         </tbody>
       </table>
       <p>Summing across steps is the point. A stateless API is sent the whole context again on every turn, so full history costs grow roughly with the square of session length, and that is where compaction earns its keep.</p>
@@ -226,9 +226,9 @@
     <section id="replay">
       <h2>How the replay works</h2>
       <p>The replay mirrors the service's own functions rather than approximating them. Exchanges are reconstructed with the same turn-pairing the backend uses; the tiered context is assembled as the session-context service formats it; and the rolling digest is folded in batches of three exchanges, exactly as the service refreshes it.</p>
-      <p>The digest is produced by Kemory's <strong>deterministic extractive path</strong> — the code the service runs when no AI backend is configured. That makes the replay reproducible and free of external calls. An LLM-written digest would differ in wording but is bounded by the same token budget, so the reader-side accounting is representative.</p>
+      <p>The digest is produced by SeKondBrain's <strong>deterministic extractive path</strong> — the code the service runs when no AI backend is configured. That makes the replay reproducible and free of external calls. An LLM-written digest would differ in wording but is bounded by the same token budget, so the reader-side accounting is representative.</p>
       <p>The compactor <strong>workload</strong> is the token count of the prompt the digest generator would be fed, plus the digest it produces, per batch. That workload is what section A prices under each route.</p>
-      <p>Token counts use <code>tiktoken</code>'s <code>o200k_base</code> encoding as a documented proxy: the open-weight models Kemory routes to have no tiktoken mapping. No byte count is used as a token count anywhere.</p>
+      <p>Token counts use <code>tiktoken</code>'s <code>o200k_base</code> encoding as a documented proxy: the open-weight models SeKondBrain routes to have no tiktoken mapping. No byte count is used as a token count anywhere.</p>
     </section>
 
     <section id="evidence">
@@ -237,7 +237,7 @@
       <table class="tight">
         <thead><tr><th>Class</th><th>What it covers</th></tr></thead>
         <tbody>
-          <tr><td><strong>Observed</strong></td><td>Only the counts of real sessions and turns. Kemory does not yet record compactor token usage, so nothing else here is observed.</td></tr>
+          <tr><td><strong>Observed</strong></td><td>Only the counts of real sessions and turns. SeKondBrain does not yet record compactor token usage, so nothing else here is observed.</td></tr>
           <tr><td><strong>Deterministic replay</strong></td><td>Reader-input and compactor-workload token counts, recomputed from the real sessions with the real assembly policy. The strongest evidence on the page.</td></tr>
           <tr><td><strong>Published-rate scenario</strong></td><td>Every dollar figure. Replayed tokens multiplied by list prices from a versioned, source-cited rate card.</td></tr>
         </tbody>
@@ -254,7 +254,7 @@
       <p>The method does not depend on whose sessions they are, and the mechanism behind the result — a bounded context against an unbounded one — is general. But a different mix of session lengths gives a different aggregate, and a user whose sessions are mostly short would see tiered context cost them tokens. A multi-account re-run is the obvious next measurement.</p>
 
       <h3>2. Replay, not billing</h3>
-      <p>Kemory does not currently persist what the compactor actually reads and writes: the provider's usage figures are discarded after each call, and no session digests were stored in the measured database. So the compactor numbers are a replayed workload, and every dollar figure is that workload at list price. The measurement package includes an analysis of the instrumentation that would turn the replay into an observation.</p>
+      <p>SeKondBrain does not currently persist what the compactor actually reads and writes: the provider's usage figures are discarded after each call, and no session digests were stored in the measured database. So the compactor numbers are a replayed workload, and every dollar figure is that workload at list price. The measurement package includes an analysis of the instrumentation that would turn the replay into an observation.</p>
 
       <h3>3. Bounds that cut both ways</h3>
       <table class="tight">
@@ -278,7 +278,7 @@
       <table class="tight">
         <tbody>
           <tr><td>Answer quality</td><td>Not measured here — see caveat 4.</td></tr>
-          <tr><td>Observed compactor usage and latency</td><td>Not recorded by Kemory today; replayed instead.</td></tr>
+          <tr><td>Observed compactor usage and latency</td><td>Not recorded by SeKondBrain today; replayed instead.</td></tr>
           <tr><td>Drill-down to raw sources</td><td>Rehydration is read-only and not instrumented, so how often the reader pulls raw exchanges back in, and how many tokens that adds, is unknown.</td></tr>
           <tr><td>Prompt-cached pricing</td><td>The rate card records cache-read prices, but no cache-adjusted scenario has been run.</td></tr>
           <tr><td>LLM-written digests</td><td>Replayed with the extractive digest; same budget, different wording.</td></tr>
@@ -288,7 +288,7 @@
 
     <section id="reproduce">
       <h2>Reproduce it</h2>
-      <p>The measurement package — the replay code, its unit tests, the rate card, the data dictionary, the instrumentation-gap analysis and the aggregate outputs behind every table on this page — is published in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">Kemory Community Edition repository</a>.</p>
+      <p>The measurement package — the replay code, its unit tests, the rate card, the data dictionary, the instrumentation-gap analysis and the aggregate outputs behind every table on this page — is published in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">SeKondBrain Community Edition repository</a>. Environment variables and file names keep the product's old name, Kemory.</p>
       <p>It reads the same chat tables Community Edition creates, so you can run it against your own local install and see what tiered context does with <em>your</em> sessions — which is a better answer to caveat 1 than anything we could publish.</p>
 <pre><code>cd benchmarks/context_compaction_empirical
 pip install -r requirements.txt
@@ -307,7 +307,7 @@ python build_report.py --out out --report kemory_compaction_report.html</code></
       <p class="muted">We publish the aggregate outputs. The per-session and per-step files stay private: they hold nothing but counts and salted pseudonyms, but together they would still show how one account uses the product. Run the package yourself and you get your own.</p>
       <div class="note">
         <span class="lbl">Want to verify it yourself?</span>
-        <p>If you want this run on hosted Kemory against your own sessions, email <a href="mailto:hello@sekondbrain.ai?subject=Kemory%20context-compaction%20benchmark">hello@sekondbrain.ai</a>. A measurement over your own work is worth more than one over ours.</p>
+        <p>If you want this run on hosted SeKondBrain against your own sessions, email <a href="mailto:hello@sekondbrain.ai?subject=SeKondBrain%20context-compaction%20benchmark">hello@sekondbrain.ai</a>. A measurement over your own work is worth more than one over ours.</p>
       </div>
     </section>
 
@@ -318,7 +318,7 @@ python build_report.py --out out --report kemory_compaction_report.html</code></
   <div class="wrap">
     <div class="fl">
       <a href="https://sekondbrain.ai">SeKondBrain</a>
-      <a href="../../">Kemory documentation</a>
+      <a href="../../">SeKondBrain documentation</a>
       <a href="../../../">All documentation</a>
       <a href="../../../legal/privacy/">Privacy</a>
     </div>

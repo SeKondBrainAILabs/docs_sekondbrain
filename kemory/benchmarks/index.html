@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory benchmarks — LongMemEval | SeKondBrain</title>
-<meta name="description" content="Kemory scores 89.6% end-to-end on the 500-question LongMemEval-S oracle benchmark, run against the production deployment. The method, the dataset, the per-category results, the caveats, and how to reproduce it.">
+<title>SeKondBrain benchmarks — LongMemEval | SeKondBrain</title>
+<meta name="description" content="SeKondBrain scores 89.6% end-to-end on the 500-question LongMemEval-S oracle benchmark, run against the production deployment. The method, the dataset, the per-category results, the caveats, and how to reproduce it.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
-<meta property="og:title" content="Kemory benchmarks — LongMemEval">
+<meta property="og:title" content="SeKondBrain benchmarks — LongMemEval">
 <meta property="og:description" content="89.6% end-to-end on LongMemEval-S, on the production deployment. Method, results and caveats.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/">
 <meta property="og:type" content="website">
@@ -53,10 +53,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· benchmarks</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· benchmarks</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#results">Results</a>
       <a href="#caveats">Caveats</a>
       <a href="#reproduce">Reproduce</a>
@@ -68,7 +68,7 @@
 <div class="wrap hero">
   <span class="pill"><i></i>Benchmark · LongMemEval-S oracle</span>
   <h1>89.6%, end to end,<br><em>and here's the method.</em></h1>
-  <p class="lede">Kemory answers 448 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer, against the live production deployment. Not a retrieval metric.</p>
+  <p class="lede">SeKondBrain answers 448 of 500 questions correctly on the LongMemEval-S oracle benchmark — measured end to end, through retrieval and generation, judged by an LLM against the reference answer, against the live production deployment. Not a retrieval metric.</p>
   <p>Everything below is what we actually ran: the dataset and its configuration, the three phases in detail, the per-category breakdown, the run-to-run variance, and the four caveats that matter when you compare this to anyone else's number — including where the harness is tuned to the benchmark. The harness, the dataset and the raw run output are preserved so the number can be re-derived rather than taken on trust.</p>
 </div>
 
@@ -110,14 +110,14 @@
           <tr><td>Reader &amp; judge</td><td>Llama-3.3-70B (see <a href="#caveats">caveats</a> — the paper uses GPT-4o as judge)</td></tr>
           <tr><td>Retrieval depth</td><td>Per question type, top-<em>k</em> 10–30; 16.1 memories reaching the reader on average</td></tr>
           <tr><td>Run</td><td>11 August 2026, against the live production deployment, release v3.70.2 (see <a href="#runs">run history</a>)</td></tr>
-          <tr><td>Hardware</td><td>The production Kemory deployment — a single instance on commodity hardware</td></tr>
+          <tr><td>Hardware</td><td>The production SeKondBrain deployment — a single instance on commodity hardware</td></tr>
         </tbody>
       </table>
     </section>
 
     <section id="results">
       <h2>By category</h2>
-      <p>Six question types, weighted as the benchmark defines them. Where Kemory is strong and where it isn't:</p>
+      <p>Six question types, weighted as the benchmark defines them. Where SeKondBrain is strong and where it isn't:</p>
 
       <div class="bar"><span class="lbl">single-session-assistant</span><span class="track"><span class="fill hi" style="width:98.2%"></span></span><span class="num">98.2%</span></div>
       <div class="bar"><span class="lbl">single-session-user</span><span class="track"><span class="fill hi" style="width:95.7%"></span></span><span class="num">95.7%</span></div>
@@ -162,7 +162,7 @@
 
       <div class="note">
         <span class="lbl">What moved the number from 88.2% to 89.6%</span>
-        <p>Nothing in the benchmark harness changed between the two 11 August runs — the gain came from the product. Release <strong>v3.70.1/v3.70.2</strong> fixed how Kemory's unified search fuses results across surfaces (proper <strong>reciprocal-rank fusion</strong> instead of comparing raw scores across different scales) and tightened deduplication. A question-level diff between the runs shows 20 questions fixed and 13 broken (net +7), with the gains concentrated in <strong>multi-session</strong> (+8 fixed) and <strong>temporal-reasoning</strong> (+7 fixed) — exactly the categories that depend on assembling several memories in the right order, which is what a rank-fusion fix should improve. That said: +1.4 points sits inside our stated ±2-point run variance, so while the category pattern points at the retrieval fix rather than noise, a single run can't fully separate the two.</p>
+        <p>Nothing in the benchmark harness changed between the two 11 August runs — the gain came from the product. Release <strong>v3.70.1/v3.70.2</strong> fixed how SeKondBrain's unified search fuses results across surfaces (proper <strong>reciprocal-rank fusion</strong> instead of comparing raw scores across different scales) and tightened deduplication. A question-level diff between the runs shows 20 questions fixed and 13 broken (net +7), with the gains concentrated in <strong>multi-session</strong> (+8 fixed) and <strong>temporal-reasoning</strong> (+7 fixed) — exactly the categories that depend on assembling several memories in the right order, which is what a rank-fusion fix should improve. That said: +1.4 points sits inside our stated ±2-point run variance, so while the category pattern points at the retrieval fix rather than noise, a single run can't fully separate the two.</p>
       </div>
 
       <p><strong>Run-to-run variance is roughly ±2 points</strong> on most categories. Multi-session is the most prompt-sensitive and has swung about 7 points between runs. Treat 89.6% as the centre of a range, not a precision measurement — anyone quoting a memory benchmark to a tenth of a point is overstating what these harnesses can resolve.</p>
@@ -204,14 +204,14 @@
       <p>Three phases, each independently resumable — a 500-question run is long enough that restartability matters.</p>
       <div class="phase"><span class="n">PHASE 1</span><div>
         <h4>Ingest</h4>
-        <p>Every haystack session is written into Kemory through the <strong>normal public write path</strong> — <code>POST /api/v1/memories</code>, the same call any user makes, with no benchmark-only ingestion route.</p>
+        <p>Every haystack session is written into SeKondBrain through the <strong>normal public write path</strong> — <code>POST /api/v1/memories</code>, the same call any user makes, with no benchmark-only ingestion route.</p>
         <p>Each conversation <strong>turn is stored as its own memory</strong> rather than the session as a block, so retrieval has to find the right turn instead of being handed a whole session that happens to contain it. Turns are written as <code>conversation</code> content type, sixteen concurrently, and each question's history lands in its own namespace — <code>lme_oracle_&lt;question_id&gt;</code> — so retrieval for one question <em>structurally cannot</em> see another's evidence.</p>
         <p>A state file maps every question to the memory IDs it produced, which is what makes the phase resumable and cleanly reversible. <strong>10,960 memories, zero terminal failures.</strong> Wall clock: 97.7 minutes.</p>
         <p class="muted">The published 11 Aug 2026 run reuses the vault seeded by this April ingest — the same 10,960 memories, untouched in between — rather than re-ingesting. A harness script reconstructs the state file from the live namespace listing so Phases 2–3 can run standalone.</p>
       </div></div>
       <div class="phase"><span class="n">PHASE 2</span><div>
         <h4>Retrieve &amp; generate</h4>
-        <p>For each question the harness searches that question's namespace through Kemory's ordinary hybrid search — <code>POST /api/v1/memories/search</code>, vector plus full-text, fused and re-ranked — then asks a reader model to answer from what came back.</p>
+        <p>For each question the harness searches that question's namespace through SeKondBrain's ordinary hybrid search — <code>POST /api/v1/memories/search</code>, vector plus full-text, fused and re-ranked — then asks a reader model to answer from what came back.</p>
         <p>Three things are tuned per question type rather than held flat, and they are the reason this section exists:</p>
         <table class="tight">
           <thead><tr><th>Question type</th><th>top-<em>k</em></th><th>Also</th></tr></thead>
@@ -250,13 +250,13 @@
           <tr><td>Retrieval depth</td><td>10 for single-session types, 15 for temporal and knowledge-update, 25 for preference, 30 for multi-session</td></tr>
           <tr><td>Memories reaching the reader</td><td>16.1 on average across the run</td></tr>
           <tr><td>Granularity</td><td>One memory per conversation turn — retrieval finds turns, not whole sessions</td></tr>
-          <tr><td>Method</td><td>Kemory's standard hybrid retrieval — vector similarity and full-text, fused and re-ranked</td></tr>
+          <tr><td>Method</td><td>SeKondBrain's standard hybrid retrieval — vector similarity and full-text, fused and re-ranked</td></tr>
           <tr><td>Scope</td><td>Namespace-scoped per question, so cross-question leakage is structurally impossible</td></tr>
         </tbody>
       </table>
       <p>Two honest observations about those numbers.</p>
       <p><strong>Depth is tuned per question type, and that flatters the result.</strong> Multi-session gets three times the retrieval budget of a single-session question. That is a defensible engineering choice — a question whose evidence is spread across five conversations genuinely needs a wider window than one answered by a single turn — but it is a choice made <em>with knowledge of the question type</em>, which a live system does not always have. A flat top-<em>k</em> 10 across all types would score lower.</p>
-      <p><strong>Turn-level granularity cuts the other way.</strong> Storing each turn as its own memory makes retrieval harder, not easier: the system has to locate the specific exchange rather than being handed a whole session that happens to contain the answer. That is also how Kemory stores real conversations, so it is the honest configuration rather than a benchmark convenience.</p>
+      <p><strong>Turn-level granularity cuts the other way.</strong> Storing each turn as its own memory makes retrieval harder, not easier: the system has to locate the specific exchange rather than being handed a whole session that happens to contain the answer. That is also how SeKondBrain stores real conversations, so it is the honest configuration rather than a benchmark convenience.</p>
     </section>
 
     <section id="caveats">
@@ -265,7 +265,7 @@
 
       <h3>1. The harness is tuned to this benchmark</h3>
       <p>This is the most important one. The answer prompts are written <strong>per question type</strong>, and they were refined using <strong>failure analysis from earlier runs on this same dataset</strong>. Retrieval depth is likewise set per question type, and the self-consistency voting on counting and duration questions was added after failure analysis showed those questions dominated the misses. None of it was arrived at blind.</p>
-      <p>That makes the figure a measure of <em>Kemory retrieving well when the harness around it has been tuned for the task</em> — not a zero-shot result on unseen data. It is the normal way these numbers are produced across the field, and the per-type judge protocol in the benchmark itself invites per-type handling. But anyone comparing our number to a system evaluated with a single flat prompt is not comparing like with like, and we would rather say so than let the number imply otherwise.</p>
+      <p>That makes the figure a measure of <em>SeKondBrain retrieving well when the harness around it has been tuned for the task</em> — not a zero-shot result on unseen data. It is the normal way these numbers are produced across the field, and the per-type judge protocol in the benchmark itself invites per-type handling. But anyone comparing our number to a system evaluated with a single flat prompt is not comparing like with like, and we would rather say so than let the number imply otherwise.</p>
       <p>What is <em>not</em> tuned: the storage and retrieval path. Ingestion goes through the public write API, retrieval through ordinary hybrid search, and every question is isolated in its own namespace.</p>
 
       <h3>2. A different judge</h3>
@@ -299,7 +299,7 @@
     <section id="reproduce">
       <h2>Reproduce it</h2>
       <p>The harness, the oracle dataset and the raw run output are preserved together — hypotheses and judge results for every one of the 500 questions, so any individual answer can be inspected rather than trusted.</p>
-      <p>The three phases run against a live Kemory instance with your own credentials:</p>
+      <p>The three phases run against a live SeKondBrain instance with your own credentials:</p>
 <pre><code># Phase 1 — ingest the haystack into Kemory
 python3 ingest.py --data longmemeval_oracle.json \
                   --out output/ingestion_state.json --resume
@@ -321,7 +321,7 @@ python3 score.py --hyp output/hypotheses.jsonl \
       <p>This is the direct answer to the judge caveat above. If you do not trust a Llama-judged score, you do not have to take ours — take our raw answers and grade them yourself, with whatever judge you consider authoritative.</p>
       <div class="note">
         <span class="lbl">Want to verify it yourself?</span>
-        <p>If you are evaluating Kemory seriously and want to run this — on the oracle set, the full haystack, or your own corpus — email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kemory%20benchmarks">hello@sekondbrain.ai</a> and we'll set you up with an instance and the harness. A benchmark you ran yourself is worth more than one we published.</p>
+        <p>If you are evaluating SeKondBrain seriously and want to run this — on the oracle set, the full haystack, or your own corpus — email <a href="mailto:hello@sekondbrain.ai?subject=Access%20for%20Kemory%20benchmarks">hello@sekondbrain.ai</a> and we'll set you up with an instance and the harness. A benchmark you ran yourself is worth more than one we published.</p>
       </div>
     </section>
 
@@ -332,7 +332,7 @@ python3 score.py --hyp output/hypotheses.jsonl \
   <div class="wrap">
     <div class="fl">
       <a href="https://sekondbrain.ai">SeKondBrain</a>
-      <a href="../">Kemory documentation</a>
+      <a href="../">SeKondBrain documentation</a>
       <a href="../../">All documentation</a>
       <a href="../../legal/privacy/">Privacy</a>
     </div>

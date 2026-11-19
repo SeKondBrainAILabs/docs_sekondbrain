@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory CLI — install, sign in, connect | SeKondBrain</title>
-<meta name="description" content="The kemory command: install with Homebrew, sign in through your browser, wire a local client into Kemory in one command, mint keys, switch organisations, and diagnose a connection.">
+<title>SeKondBrain CLI — install, sign in, connect | SeKondBrain</title>
+<meta name="description" content="The kemory command: install with Homebrew, sign in through your browser, wire a local client into SeKondBrain in one command, mint keys, switch organisations, and diagnose a connection.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/cli/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
-<meta property="og:title" content="Kemory CLI">
-<meta property="og:description" content="Install, sign in, and wire a local client into Kemory in one command.">
+<meta property="og:title" content="SeKondBrain CLI">
+<meta property="og:description" content="Install, sign in, and wire a local client into SeKondBrain in one command.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/cli/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,10 +27,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· CLI</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· CLI</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#install">Install</a>
       <a href="#connect">Connect a client</a>
       <a href="#doctor">Diagnosing</a>
@@ -41,8 +41,9 @@
 <div class="wrap hero">
   <span class="pill"><i></i>Command-line tool · optional</span>
   <h1>One command to wire<br><em>a client to your memory.</em></h1>
-  <p class="lede">You do not need the CLI to use Kemory. A web AI connects with nothing installed, and a local client needs only a config entry and an API key — both covered in <a href="../">the main guide</a>.</p>
+  <p class="lede">You do not need the CLI to use SeKondBrain. A web AI connects with nothing installed, and a local client needs only a config entry and an API key — both covered in <a href="../">the main guide</a>.</p>
   <p>The <code>kemory</code> command is for the cases where that is not enough: wiring several clients on one machine at once, holding a browser login that refreshes itself instead of a long-lived key in a file, switching between organisations, and finding out what broke when a connection misbehaves.</p>
+  <p class="muted">The <code>kemory</code> command, its download names, tool names and URLs keep the product's old name, Kemory.</p>
 </div>
 
 <div class="wrap cols">
@@ -95,7 +96,7 @@ brew install sekondbrainailabs/s9n/kemory</code></pre>
     <section id="signin">
       <h2>Sign in</h2>
 <pre><code>kemory login</code></pre>
-      <p>This opens a browser, signs you in through SeKondBrain's identity service, and stores a short-lived token that refreshes itself. Kemory never sees or holds your password, and because there is no key to paste, nothing secret ends up in your shell history.</p>
+      <p>This opens a browser, signs you in through SeKondBrain's identity service, and stores a short-lived token that refreshes itself. SeKondBrain never sees or holds your password, and because there is no key to paste, nothing secret ends up in your shell history.</p>
       <p>Confirm it worked:</p>
 <pre><code>kemory whoami</code></pre>
       <p>That prints the account and organisation your token resolves to. <code>kemory logout</code> removes the stored credentials.</p>
@@ -105,7 +106,7 @@ brew install sekondbrainailabs/s9n/kemory</code></pre>
       <h2>Connect a local client</h2>
       <p>If you have done nothing else yet, this is the whole setup — it signs you in if needed, writes the config, and verifies the result with a live call:</p>
 <pre><code>kemory connect</code></pre>
-      <p>Every step is idempotent, so re-running it is safe and is the first thing to try when a client has stopped seeing Kemory. It takes the same <code>--host</code> choices as below, and <code>--no-browser</code> if you would rather copy the login URL yourself.</p>
+      <p>Every step is idempotent, so re-running it is safe and is the first thing to try when a client has stopped seeing SeKondBrain. It takes the same <code>--host</code> choices as below, and <code>--no-browser</code> if you would rather copy the login URL yourself.</p>
       <p>To write the config without the sign-in and verification around it:</p>
 <pre><code>kemory mcp install --host claude-code</code></pre>
       <table class="tight">
@@ -127,7 +128,7 @@ brew install sekondbrainailabs/s9n/kemory</code></pre>
       <p>Restart the client fully afterwards — quitting the window is not enough. Warp is the exception; it picks the change up on save.</p>
       <div class="note">
         <span class="lbl">Why prefer this over a hand-written config?</span>
-        <p>The entry it writes runs a local bridge that speaks MCP to your client and HTTPS to Kemory, authenticating with your browser login. No API key is written into the file — so your client configs stay safe to sync between machines, or commit.</p>
+        <p>The entry it writes runs a local bridge that speaks MCP to your client and HTTPS to SeKondBrain, authenticating with your browser login. No API key is written into the file — so your client configs stay safe to sync between machines, or commit.</p>
       </div>
       <p>This path is for clients running on your own machine. An agent that cannot start a local subprocess — a hosted or cloud agent — should connect to the remote endpoint directly instead. See <a href="../#connect-web">Connect a web AI</a>.</p>
     </section>
@@ -217,7 +218,7 @@ kemory telemetry off</code></pre>
   <div class="wrap">
     <div class="fl">
       <a href="https://sekondbrain.ai">SeKondBrain</a>
-      <a href="../">Kemory documentation</a>
+      <a href="../">SeKondBrain documentation</a>
       <a href="../../">All documentation</a>
       <a href="../../legal/privacy/">Privacy</a>
     </div>

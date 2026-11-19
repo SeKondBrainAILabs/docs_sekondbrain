@@ -1,9 +1,9 @@
-# How Kemory retrieval works
+# How SeKondBrain retrieval works
 
 > Copy source of truth for `kemory/retrieval/index.html`. Edit prose here first, then
 > mirror it into the HTML — the same convention as `kemory/docs.md`.
 
-Kemory exposes several ways to read memory, and they are not interchangeable. This page
+SeKondBrain exposes several ways to read memory, and they are not interchangeable. This page
 explains what happens when you search, which tool to reach for, and how to read a result
 honestly — including the cases where a tool's name suggests more than it does.
 
@@ -49,7 +49,7 @@ Both will return something. The first is far more likely to return the right thi
 
 ## Reading a result honestly
 
-Kemory tells you how a search actually ran, and it is worth reading those fields.
+SeKondBrain tells you how a search actually ran, and it is worth reading those fields.
 
 **`search_mode_effective`** — what really executed. `hybrid_dense_only` means the lexical
 half was skipped because your content is encrypted. Recall is genuinely weaker for rare
@@ -67,6 +67,8 @@ an absolute similarity number — similarity scores drift upward as a store grow
 fixed threshold stays meaningful.
 
 ## Which tool to use
+
+Tool names and the `kemory` command keep the product's old name, Kemory.
 
 **`kemory_ask`** — the one federated tool: searches memories, chat turns and files
 together (the cross-surface engine below) and, when the question calls for it, synthesises
@@ -108,7 +110,7 @@ it, and why.
 
 ## Tuning retrieval (self-hosted)
 
-These are **server-side** settings. On hosted Kemory they are managed for you and cannot be
+These are **server-side** settings. On hosted SeKondBrain they are managed for you and cannot be
 set per account; they matter if you run Community Edition or your own deployment.
 
 | Variable | Default | What it changes |
@@ -194,11 +196,11 @@ Two write tools are easy to confuse:
 - **`kemory_capture_session`** stores *many* discrete items the user has confirmed — at
   most 10 per call, with `user_confirmed: true`. It does not take a conversation window or a
   transcript. An optional `session_id` tags every item.
-- **`kemory_consolidate_session`** refreshes the *one* summary Kemory already keeps for a
+- **`kemory_consolidate_session`** refreshes the *one* summary SeKondBrain already keeps for a
   session, and returns it. It stores nothing new and changes no memory.
 
 Use capture when the conversation contained several things worth remembering separately;
-use consolidate when you want the session's summary current right now; Kemory keeps it up to
+use consolidate when you want the session's summary current right now; SeKondBrain keeps it up to
 date on its own as memories arrive, and Ask and Enhance read it. They compose: capture with a
 `session_id`, then consolidate that session. The `save-session`
 prompt does both.

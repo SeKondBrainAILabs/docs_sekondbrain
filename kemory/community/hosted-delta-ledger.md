@@ -1,13 +1,13 @@
-# Hosted Kemory Delta Ledger
+# Hosted SeKondBrain Delta Ledger
 
-This ledger tracks the downstream relationship between hosted Kemory and
-Kemory Community. The community repository receives selected subtree changes;
+This ledger tracks the downstream relationship between hosted SeKondBrain and
+SeKondBrain Community Edition. The community repository receives selected subtree changes;
 it is not a mirror of the hosted product.
 
 ## Repository Relationship
 
 `SeKondBrainAILabs/kemory-community` is an independent public repository, not
-a GitHub fork. Hosted Kemory is the upstream product and design source; the
+a GitHub fork. Hosted SeKondBrain is the upstream product and design source; the
 community repository preserves its own release history, Docker runtime, npm
 installer, local-user security boundary, and Apache-2.0 distribution surface.
 

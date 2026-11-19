@@ -1,4 +1,4 @@
-# Kemory
+# SeKondBrain: connect your AI
 
 **Persistent, permissioned memory for AI agents.**
 
@@ -6,13 +6,13 @@
 > then mirror it into the HTML. The tool table between the `TOOLS` markers is machine-
 > generated in both files — do not hand-edit it. See `tools/gen_tools_table.py`.
 
-Kemory gives an AI something it does not have on its own: recall. An assistant that reads
-from Kemory at the start of a session knows what you told it last week, in a different
+SeKondBrain gives an AI something it does not have on its own: recall. An assistant that reads
+from your SeKondBrain at the start of a session knows what you told it last week, in a different
 client, on a different machine. What it learns, it can write back. Every memory is scoped
 to a user and an organisation, and that scoping is enforced in the database rather than in
 a prompt.
 
-Kemory is a remote MCP server. You connect to it once, from any MCP-capable AI, and it is
+SeKondBrain reaches your AI through a remote MCP server. You connect to it once, from any MCP-capable AI, and it is
 available to every session after that.
 
 ---
@@ -21,7 +21,10 @@ available to every session after that.
 
 You need a SeKondBrain account. Create one, and reach every setting named on this page, at
 **[kemory.sekondbrain.ai](https://kemory.sekondbrain.ai)** — that is the dashboard. Sign-in is handled by SeKondBrain's
-identity service; Kemory never sees or holds a password.
+identity service; SeKondBrain never sees or holds a password.
+
+Tool names (`kemory_*`), the `kemory` command, the server address and other URLs, and environment
+variables keep the product's old name, Kemory. Only the name changed: they work as before.
 
 There is nothing to install for a web AI. Local clients need a config-file entry, shown below.
 
@@ -51,15 +54,15 @@ For Claude, ChatGPT, Perplexity, Manus and any other AI that supports remote MCP
 4. The connector reports the tools it found. You are connected.
 
 There is no key to copy, paste or keep safe. The connector holds a short-lived token that
-refreshes itself and that you can revoke at any time from your Kemory dashboard.
+refreshes itself and that you can revoke at any time from your SeKondBrain dashboard.
 
 Connected is not the same as remembering: a model decides for itself when to call a tool,
 and an AI given one with no instruction about it will usually not reach for it.
-[Optimise your AIs for Kemory](optimise/) is the standing instruction that fixes that, and
+[Optimise your AIs for SeKondBrain](optimise/) is the standing instruction that fixes that, and
 where to paste it.
 
 **What you are approving.** The sign-in screen asks you to let this AI act as you inside
-Kemory — read your memories, write new ones, and delete memories you point it at. It does
+SeKondBrain — read your memories, write new ones, and delete memories you point it at. It does
 not grant the AI access to anything else in your SeKondBrain account, and it does not grant
 access to another user's memories, including colleagues in the same organisation.
 
@@ -103,7 +106,7 @@ installed later finds you already signed in. On a headless machine,
 
 Two checks have to pass: credentials resolve, and the API accepts them. The same output
 prints which server will serve the tools and how capture and context injection are
-configured. `/mcp` then shows which Kemory server Claude Code is actually talking to.
+configured. `/mcp` then shows which SeKondBrain server Claude Code is actually talking to.
 Context injection begins with your *next* session, because the hook that performs it runs
 at session start.
 
@@ -131,9 +134,9 @@ plugin installed you do not need to paste it into `CLAUDE.md` yourself. The serv
 [prompts](#prompts-resources-and-cards) arrive with the plugin too, under plugin-namespaced
 names: `/mcp__plugin_kemory_kemory__enhance` and `/mcp__plugin_kemory_kemory__save-session`.
 
-Auto-approval of read-only Kemory tools, a status line and an in-app panel live in a separate,
+Auto-approval of read-only SeKondBrain tools, a status line and an in-app panel live in a separate,
 optional add-on, `kemory-panel` (`/plugin install kemory-panel@kemory`). Without it, read-only
-Kemory tools ask for permission like any other tool.
+SeKondBrain tools ask for permission like any other tool.
 
 Every environment variable, what each hook sends, the surfaces that do and do not have
 plugins, and what to do when nothing seems to happen: **[the plugin documentation](plugin/)**.
@@ -141,7 +144,7 @@ Source: [SeKondBrainAILabs/kemory-plugin](https://github.com/SeKondBrainAILabs/k
 
 ### Run one server, not two
 
-There are three ways to give Claude Code the Kemory tools, and they stack silently. Two
+There are three ways to give Claude Code the SeKondBrain tools, and they stack silently. Two
 servers means two copies of every tool in every request — wasted context, and no way to
 tell which lane a result came from. Pick one:
 
@@ -152,7 +155,7 @@ tell which lane a result came from. Pick one:
 | *Kemory by SeKondBrain* in claude.ai connector settings | OAuth, account-wide | You want the same tools in the web and desktop apps too |
 
 You do not have to police this yourself: the bundled entry stands down when this machine
-already has a server for the same Kemory, and says so rather than starting and exposing
+already has a server for the same SeKondBrain account, and says so rather than starting and exposing
 nothing. The hooks are unaffected either way — they call the API directly. The one case it
 cannot detect is a claude.ai connector, which lives inside Claude and is invisible from a
 shell; disable the bundled entry under `/mcp` if you use it.
@@ -160,7 +163,7 @@ shell; disable the bundled entry under `/mcp` if you use it.
 ### What leaves your machine
 
 Two hooks transmit anything, and both are on by default. **Prompt recall** sends the
-redacted text of each prompt to your Kemory instance as a search query — it skips prompts
+redacted text of each prompt to your SeKondBrain instance as a search query — it skips prompts
 under 12 characters and anything starting with `/`, `!` or `#`, so slash commands are never
 sent. **Session capture** sends a bounded, redacted digest of your own turns, never file
 contents or tool output, and stores it as a private memory; `KEMORY_AUTO_CAPTURE=0` turns it
@@ -170,7 +173,7 @@ files the plugin keeps, is in [the plugin documentation](plugin/#privacy).
 
 ### If nothing seems to happen
 
-The hooks fail open by design: with no credentials or no Kemory server they print one short
+The hooks fail open by design: with no credentials or no SeKondBrain server they print one short
 warning and carry on rather than erroring or blocking the session, so a broken setup can look
 like an idle one. The setup notice then stays silent for 24 hours rather than nagging.
 
@@ -236,7 +239,7 @@ this is the whole surface.
 | Gemini CLI | `~/.gemini/settings.json` |
 
 Restart the client fully after editing — quitting the window is not enough. Ask it to list
-your Kemory namespaces; a response means all three gates (authentication, agent
+your Kemories; a response means all three gates (authentication, agent
 registration, permissions) are green.
 
 A key inherits the organisation of the person who created it, so an agent holding one stays
@@ -245,13 +248,13 @@ effect on the next call. Never commit one.
 
 There is also a command-line tool that writes this entry for you, using a browser login
 instead of a key in a file — useful if you are wiring several clients on one machine. See
-the [Kemory CLI](cli/).
+the [SeKondBrain CLI](cli/).
 
 ### Making an AI actually use memory
 
 Most clients treat a tool as something to reach for when asked. Put this in your project
 instructions or `CLAUDE.md` and it becomes the first thing checked instead. The
-[Kemory plugin](plugin/) ships this as a skill, so plugin users can skip it:
+[SeKondBrain plugin](plugin/) ships this as a skill, so plugin users can skip it:
 
 ```text
 You have Kemory memory tools. Kemory is my long-term memory, shared
@@ -289,15 +292,15 @@ exists; update or supersede it rather than adding a duplicate. Skip
 transient state — anything that stops being true by tomorrow.
 ```
 
-[Optimise your AIs for Kemory](optimise/) has the same instruction, with a shorter version for
+[Optimise your AIs for SeKondBrain](optimise/) has the same instruction, with a shorter version for
 the fields this one does not fit, and names where that field lives in each AI.
 
 ---
 
-## Use Kemory from the Claude API
+## Use SeKondBrain from the Claude API
 
-The Claude API's MCP connector can call Kemory's tools from a Messages API request, with no
-MCP client of your own. Pass a Kemory API key as the server's `authorization_token`:
+The Claude API's MCP connector can call SeKondBrain's tools from a Messages API request, with no
+MCP client of your own. Pass a SeKondBrain API key as the server's `authorization_token`:
 
 ```bash
 curl https://api.anthropic.com/v1/messages \
@@ -405,7 +408,7 @@ runs anything.
 
 **On annotations.** MCP clients read these hints when deciding what to auto-approve and what
 to confirm with you. They are hints: the MCP specification says a client must treat
-annotations from an untrusted server as untrusted. They are not Kemory's access control.
+annotations from an untrusted server as untrusted. They are not SeKondBrain's access control.
 Permissions are enforced server-side on every call, whatever a client decides to do with the
 hint.
 
@@ -419,7 +422,7 @@ requires `user_confirmed: true`. It does not take a conversation window or a tra
 model picks the items, shows them to you, and sends only those. An optional `session_id` tags
 every item so it counts towards that session's summary.
 
-**`kemory_consolidate_session`** brings a session's summary up to date and returns it. Kemory
+**`kemory_consolidate_session`** brings a session's summary up to date and returns it. SeKondBrain
 already keeps a summary of every session automatically: it is rebuilt as memories carrying the
 session id arrive, and older exchanges are folded into a rolling digest. Consolidate refreshes
 both on demand (before `/compact`, say) and returns the summary for each namespace the session
@@ -434,7 +437,7 @@ The `save-session` prompt below runs both in order.
 
 ### When a save updates a memory you already had
 
-If you save something very close to a memory you already have, Kemory updates that memory
+If you save something very close to a memory you already have, SeKondBrain updates that memory
 instead of keeping two near-copies, and the save reports it. The earlier wording is not
 thrown away: it is kept in the memory's history, and `kemory_get_history` returns it under
 `displaced_revisions`.
@@ -449,7 +452,7 @@ different. It needs write access to the memory.
 
 ## Prompts, resources and cards
 
-Tools are not the whole surface. Kemory also offers MCP prompts, which hosts surface as slash
+Tools are not the whole surface. SeKondBrain also offers MCP prompts, which hosts surface as slash
 commands, and resource templates, which hosts surface as @-mentions. These are rolling out
 server by server; a server that does not offer them yet simply shows none.
 
@@ -459,7 +462,7 @@ server by server; a server that does not offer them yet simply shows none.
 |---|---|---|
 | `enhance` | `request` (required), `project` (optional) | Returns your request with the stored memories that bear on it appended, each cited by memory id, capped at about 1,500 tokens. If nothing relevant is stored, the request comes back unchanged with a one-line note. Retrieval only — no model writes or invents context |
 | `save-session` | `project` (optional) | Run it before `/compact` or when you stop work. Claude lists the session's decisions, open questions, next steps and durable facts — at most 10 items — stores them with `kemory_capture_session`, then calls `kemory_consolidate_session` so the session's summary includes them |
-| `cards` | `mode` (`open`, `collapsed` or `off`; optional), `app` (`this` or `all`; optional) | Sets how Kemory's cards show up, through `kemory_settings`: for the AI app you are in, or for every app. With no mode it tells you the current setting |
+| `cards` | `mode` (`open`, `collapsed` or `off`; optional), `app` (`this` or `all`; optional) | Sets how SeKondBrain's cards show up, through `kemory_settings`: for the AI app you are in, or for every app. With no mode it tells you the current setting |
 
 In Claude Code: `/mcp__kemory__enhance <request>`, `/mcp__kemory__save-session` and
 `/mcp__kemory__cards off`. With the
@@ -495,30 +498,30 @@ Cards stay out of the way of the conversation:
   **Why this:** — how strong the match is, which AI's chat it came from, and how many passages
   agree.
 - **First card, a short welcome.** The first card you ever get, in any AI, opens with a
-  five-slide introduction to Kemory, the Chrome extension and the web app, and ends with a
+  five-slide introduction to SeKondBrain, the Chrome extension and the web app, and ends with a
   choice of how cards should show up.
 
 **Choose how cards show up:** open, collapsed to one line (the default) or hidden, for every AI
-or for one app — for example open in claude.ai and hidden in Claude Code. Set it in Kemory's
+or for one app — for example open in claude.ai and hidden in Claude Code. Set it in SeKondBrain's
 **Settings → Kemory cards in your AI chats**, with the `cards` prompt above, or by asking your AI
-("turn off Kemory cards"), which calls `kemory_settings`. A change applies from the next card;
-reconnect Kemory or refresh its tools if an empty space still shows where a hidden card was.
+("turn off cards in chat"), which calls `kemory_settings`. A change applies from the next card;
+reconnect SeKondBrain or refresh its tools if an empty space still shows where a hidden card was.
 
 - **Recall card.** Results grouped by conversation: each chat's title, Kemory, AI and date
   once, the best passage first and the rest a click away, with the best overall marked
-  **Best match**. Thumbs up or down tells Kemory whether a result helped; thumbs down asks
+  **Best match**. Thumbs up or down tells SeKondBrain whether a result helped; thumbs down asks
   why (not relevant, out of date, duplicate). **Open chat** and **Open in Kemory** open the
   item inside its own Kemory, and the Kemory label opens the Kemory itself. **Forget** sits
   behind the ⋯ menu, needs a second click, and is not offered on memories shared with you.
 - **Saved card.** Says plainly what happened: saved, updated a memory you already had,
-  already in your Kemory, or not saved. A brand-new memory offers **Undo** (second click to
+  already in your SeKondBrain, or not saved. A brand-new memory offers **Undo** (second click to
   confirm). An update shows the earlier and the new wording side by side, with
   **Restore previous**, which [`kemory_restore_version`](#restore) carries out and which can
   itself be undone.
 - **Conflict card.** After `kemory_resolve_conflict`, what was kept and what was replaced,
   side by side. **Keep both** or **Keep the other one instead** undo the decision through
   `kemory_reinstate_memory`; each needs a second click, and nothing is deleted.
-- **Answer card.** A `kemory_ask` answer with how well it is grounded in your Kemory, and the
+- **Answer card.** A `kemory_ask` answer with how well it is grounded in your SeKondBrain, and the
   sources it used, each opening in its own Kemory.
 - **Overview card.** For `kemory_list_projects`, `kemory_plan_usage` and
   `kemory_get_namespace_summary`: your Kemories at a glance (totals, recently active,
@@ -537,7 +540,7 @@ Two paths, one authorisation model.
 **OAuth 2.1 with PKCE — web AIs.** Authorisation is handled by SeKondBrain's identity
 service. Clients register dynamically, so there is nothing to configure. You are redirected
 to sign in, you approve, and the client receives a short-lived access token and a refresh
-token. Kemory never sees your password. No long-lived credential exists anywhere on this
+token. SeKondBrain never sees your password. No long-lived credential exists anywhere on this
 path.
 
 **API keys — local clients.** A key is minted from an authenticated dashboard session,
@@ -576,10 +579,10 @@ An AI writes under three roots only:
 | `user:<topic>` | Preferences, profile and feedback. Private, never shared automatically | `user:preferences` |
 | `skill:<name>` | A reusable how-to | `skill:release-checklist` |
 
-Kemory and its apps fill the rest, and an AI does not write there: `inbox` holds chats not yet
+SeKondBrain and its apps fill the rest, and an AI does not write there: `inbox` holds chats not yet
 filed, `shared:` shows what others have shared with you, `archive:` keeps a copy when a share
 ends, and `app:` holds memory for apps such as Kora. Never put an AI's name or a date in a
-namespace. Not sure where something goes? Leave the namespace out and Kemory suggests one.
+namespace. Not sure where something goes? Leave the namespace out and SeKondBrain suggests one.
 
 **Sharing is explicit.** A memory becomes visible beyond you when it is written to, or
 promoted into, a namespace that your team can read. Nothing is promoted automatically.
@@ -597,7 +600,7 @@ connected by different people do not.
 
 ## Benchmarks
 
-Kemory scores **89.6%** — 448 of 500 — on the LongMemEval-S oracle benchmark, run against the live production deployment. That is
+SeKondBrain scores **89.6%** — 448 of 500 — on the LongMemEval-S oracle benchmark, run against the live production deployment. That is
 *end-to-end answer accuracy*: retrieve, generate, then judge the answer against the reference.
 It is not a retrieval-recall figure, which is the number most memory systems publish and is
 not the same thing.
@@ -607,7 +610,7 @@ when comparing it are all set out in full — along with how to reproduce it.
 
 **Full method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/
 
-A second benchmark measures cost rather than accuracy. Replayed over 1,314 real sessions, Kemory's
+A second benchmark measures cost rather than accuracy. Replayed over 1,314 real sessions, SeKondBrain's
 tiered context sends **72.2% fewer reader tokens** than re-sending the full conversation on every
 turn — and more than full history on sessions of five exchanges or fewer. The saving lives in long
 sessions, and the sample is dominated by one account; both are set out in full.
@@ -616,12 +619,12 @@ sessions, and the sample is dominated by one account; both are set out in full.
 
 ---
 
-## Capture with Kora's Chrome extension
+## Kora by SeKondBrain, the Chrome extension
 
-Kemory is the memory; **Kora** is one way to fill it. Kora is SeKondBrain's Chief of Staff
-AI, and her Chrome extension captures your conversations with ChatGPT, Claude, Gemini,
+Your SeKondBrain is the memory; **Kora** is one way to fill it. Kora is SeKondBrain's Chief of Staff
+AI, and her Chrome extension, Kora by SeKondBrain, records your conversations with ChatGPT, Claude, Gemini,
 Perplexity and Manus as you have them, keeps them in your browser, and syncs them into
-Kemory — so a chat you had in one AI becomes a memory any connected AI can recall.
+your SeKondBrain — so a chat you had in one AI becomes a memory any connected AI can recall.
 
 It keeps what the host platforms eventually drop: full message text and structured blocks —
 code, tables, reasoning, citations, artifacts — uploaded and generated files, inline images,
@@ -629,29 +632,29 @@ and conversation metadata. It groups related chats across tools by topic, so you
 hooks* thread in ChatGPT and your *React state* thread in Claude land in the same place.
 
 **Local first.** Conversations are captured into browser storage first, and sync only to the
-Kemory you connect — your SeKondBrain account's, or a self-hosted instance you point it at.
+SeKondBrain you connect — your own account's, or a self-hosted instance you point it at.
 They go nowhere else.
 
 **Connecting is the sign-in.** Choose your environment and **Sign in with SeKondBrain**. That
-single sign-in also connects Kemory: a per-install key is issued for you in the background and
+single sign-in also connects your SeKondBrain: a per-install key is issued for you in the background and
 the connection indicator turns green on its own — there is no separate key to paste. An
 Advanced mode still accepts a pair code, a pasted key, or a custom URL for manual and
 self-hosted setups.
 
-**What reaches Kemory.** Captured chats become memories in your account, routed into
+**What reaches your SeKondBrain.** Captured chats become memories in your account, routed into
 namespaces automatically — a chat with no routing signal lands in an inbox namespace and is
-sorted from there. Once in Kemory they behave like any other memory: `kemory_recall_memory`
+sorted from there. Once in your SeKondBrain they behave like any other memory: `kemory_recall_memory`
 and the rest return them, scoped to you, from any AI you have connected.
 
 **What the extension reads.** The extension reads page content only on the AI sites you switch it on
 for, and only to capture your own conversations. What it stores and syncs is covered by the
-same privacy policy as the rest of Kemory.
+same privacy policy as the rest of SeKondBrain.
 
 ---
 
 ## Your data
 
-Kemory stores memory content, the namespaces and metadata you attach to it, and the vector
+SeKondBrain holds memory content, the namespaces and metadata you attach to it, and the vector
 embeddings computed from it. Where you connect a capture surface, it stores the conversation
 content that surface sends. Account identity comes from SeKondBrain sign-in.
 
@@ -665,14 +668,14 @@ set out in full in the privacy policy.
 The privacy policy describes what the audit trail retains afterwards and how to request
 complete erasure.
 
-**Credentials are your call.** Kemory does not stop you storing a password or an API key. An
+**Credentials are your call.** SeKondBrain does not stop you saving a password or an API key. An
 explicit write is stored as you sent it, and no tool refuses one. Two facts should inform that
 choice rather than a rule: content is encrypted at rest only if you have turned encryption on,
 which is opt-in and permanent per account; and memory content is processed by third-party
 language models for enrichment, compression and embedding, so a stored secret reaches those
 providers like any other memory.
 
-What Kemory will not do is make the decision for you. Capture — `kemory_capture_session`,
+What SeKondBrain will not do is make the decision for you. Capture — `kemory_capture_session`,
 the plugin's session capture and the Kora sync — drops or redacts credential-shaped text
 instead of persisting it, even though that text was already in the conversation you had. The asymmetry is
 deliberate: you can store a secret on purpose, but nothing will store one on your behalf.
@@ -689,7 +692,7 @@ typed message, rather than as an HTTP error — an AI can read the message and a
 | `Permission denied` | The credential is valid; that action on that namespace is not allowed. |
 | `Validation error` | Arguments did not match the tool's schema. |
 | `401` with a `WWW-Authenticate` header | No credential, or it expired or was revoked. Web clients re-authenticate automatically; local clients need a new key. |
-| `-32601 Method not found` | An MCP method Kemory does not implement. |
+| `-32601 Method not found` | An MCP method SeKondBrain does not implement. |
 | `-32002 Resource not found` | A `kemory://` resource that does not exist, or that you cannot see — the two read the same. |
 | `429` | Rate limited. Back off and retry. |
 
@@ -707,5 +710,5 @@ reconnecting on its own will not fix it.
 - **Support:** support@sekondbrain.ai
 - **Privacy policy:** https://docs.sekondbrain.ai/legal/privacy/
 
-Kemory is built by SeKondBrain AI Labs. We own and operate the API, the domain and the
+SeKondBrain is built by SeKondBrain AI Labs. We own and operate the API, the domain and the
 infrastructure this connector reaches.

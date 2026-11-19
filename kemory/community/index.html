@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kemory Community Edition | SeKondBrain docs</title>
-<meta name="description" content="Install and operate the local-first, open-source Kemory Community Edition with Docker.">
+<title>SeKondBrain Community Edition | SeKondBrain docs</title>
+<meta name="description" content="Install and operate the local-first, open-source SeKondBrain Community Edition with Docker.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/community/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,10 +18,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· Community Edition</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· Community Edition</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#install">Install</a>
       <a href="#runtime">Runtime</a>
       <a href="#boundaries">Boundaries</a>
@@ -32,8 +32,8 @@
 
 <div class="wrap hero">
   <span class="pill"><i></i>Apache-2.0 · Docker-first · local data</span>
-  <h1>Kemory<br><em>Community Edition.</em></h1>
-  <p class="lede">Run persistent memory for AI agents on infrastructure you control. Community Edition keeps the hosted Kemory REST and MCP wire contracts while replacing managed identity, storage and telemetry with a local single-user runtime.</p>
+  <h1>SeKondBrain<br><em>Community Edition.</em></h1>
+  <p class="lede">Run persistent memory for AI agents on infrastructure you control. Community Edition keeps the hosted SeKondBrain REST and MCP wire contracts while replacing managed identity, storage and telemetry with a local single-user runtime. The npm package, repository, tool names and environment variables keep the product's old name, Kemory.</p>
   <div class="addr"><span class="k">Repository</span><code>github.com/SeKondBrainAILabs/kemory-community</code></div>
 </div>
 
@@ -75,7 +75,7 @@ npx kemory-community@latest bundle</code></pre>
           <tr><td>Redis</td><td>Internal only</td><td>Local coordination</td></tr>
         </tbody>
       </table>
-      <p>Artifacts use local filesystem storage and telemetry uses the no-op adapter. Runtime data stays in Docker volumes and the local Kemory configuration directory.</p>
+      <p>Artifacts use local filesystem storage and telemetry uses the no-op adapter. Runtime data stays in Docker volumes and the local SeKondBrain configuration directory.</p>
     </section>
 
     <section id="connect">
@@ -85,7 +85,7 @@ npx kemory-community@latest bundle</code></pre>
 
     <section id="benchmark">
       <h2>Measure your own sessions</h2>
-      <p>Community Edition stores captured chats in the same tables as hosted Kemory, so the <a href="../benchmarks/context-compaction/">context-compaction benchmark</a> runs against a local install. It replays every stored session two ways — the full history re-sent on each turn, and the tiered context Kemory assembles — and reports how many reader tokens the tiered context saves, by session length, with what the compaction itself costs.</p>
+      <p>Community Edition stores captured chats in the same tables as hosted SeKondBrain, so the <a href="../benchmarks/context-compaction/">context-compaction benchmark</a> runs against a local install. It replays every stored session two ways — the full history re-sent on each turn, and the tiered context SeKondBrain assembles — and reports how many reader tokens the tiered context saves, by session length, with what the compaction itself costs.</p>
       <p>The measurement package lives in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">Community Edition repository</a>, under <code>benchmarks/context_compaction_empirical/</code>. It is read-only against your database and writes only counts and salted pseudonyms.</p>
     </section>
 
@@ -98,7 +98,7 @@ npx kemory-community@latest bundle</code></pre>
 
     <section id="privacy">
       <h2>Privacy</h2>
-      <p>Kemory Community does not send local memories to hosted Kemory and includes no hosted telemetry. External calls occur only for model or embedding providers you explicitly configure, plus the first download of a selected local embedding model.</p>
+      <p>SeKondBrain Community Edition does not send local memories to hosted SeKondBrain and includes no hosted telemetry. External calls occur only for model or embedding providers you explicitly configure, plus the first download of a selected local embedding model.</p>
       <p>Keep API keys out of source control and review logs before sharing them publicly.</p>
     </section>
 

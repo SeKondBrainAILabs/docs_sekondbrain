@@ -328,31 +328,35 @@ sentinel.watch('postContainer', (els) =&gt; console.log(`${els.length} posts`));
       <div class="sig">getEnrollmentStatus(userId) · deleteEnrollment(userId)</div>
       <p>A <code>useSpeakerIdentification</code> hook wraps this with attempt limits and caching — once identified it stops asking — and a drop-in <code>VoiceEnrollment</code> component handles the capture flow, requesting a 16 kHz mono stream with echo cancellation and noise suppression.</p>
 
-      <h3>Identification is two-stage, and says when it isn't sure</h3>
-      <p>A single similarity score is not enough to act on. The engine returns a decision built from several signals:</p>
+      <h3>Who splits, who names</h3>
+      <p>Two steps, kept apart on purpose. Your transcription provider splits the audio into anonymous speakers (<code>speaker_0</code>, <code>speaker_1</code>). Naming them is ours: each speaker's audio is matched against the voiceprints enrolled in your organisation, and voiceprints never leave our service.</p>
+
+      <h3>One rule, and it says when it isn't sure</h3>
+      <p>Every product that names a speaker &mdash; a live room and a stored recording alike &mdash; uses the same named rule, so the same voice gets the same answer everywhere. A speaker is named only when their best match clears a floor <em>and</em> beats the runner-up by a margin; a voice that sounds like two people is not guessed. Overwriting a name that is already on screen uses a stricter rule than naming a new speaker.</p>
       <table class="tight">
-        <thead><tr><th>Signal</th><th>Meaning</th></tr></thead>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>identified</code></td><td>Best match cleared the identification floor.</td></tr>
-          <tr><td><code>verified</code></td><td>Cleared the higher confirmation floor <em>and</em> was unambiguous <em>and</em> in-session. This is the one to gate on.</td></tr>
-          <tr><td><code>ambiguous</code></td><td>Top match didn't beat the runner-up by enough — two similar voices, so no claim is made.</td></tr>
-          <tr><td><code>out_of_session</code></td><td>Someone outside the expected roster matched better than anyone in it — meaning the real speaker isn't enrolled here, so the in-room runner-up must <strong>not</strong> be trusted.</td></tr>
-          <tr><td><code>all_scores</code></td><td>Every candidate's score, so you can show your own working.</td></tr>
+          <tr><td><code>person_id</code></td><td>The person to name, or empty: a guest. This is the one to act on.</td></tr>
+          <tr><td><code>identified</code></td><td>The best match cleared the floor.</td></tr>
+          <tr><td><code>verified</code></td><td>Also cleared a higher confirmation floor, <em>and</em> was unambiguous, <em>and</em> in-session.</td></tr>
+          <tr><td><code>ambiguous</code></td><td>The best match didn't beat the runner-up by enough &mdash; two similar voices, so nobody is named.</td></tr>
+          <tr><td><code>out_of_session</code></td><td>In a room, someone outside it matched better than anyone in it &mdash; the real speaker isn't here, so the in-room runner-up is <strong>not</strong> named.</td></tr>
+          <tr><td><code>score</code>, <code>runner_up</code></td><td>The best match's similarity and the next one's, so you can show your own working.</td></tr>
+          <tr><td><code>session_present</code></td><td>People heard often enough during a session to count as present, even if no single turn was conclusive. The session's evidence is handed back with each turn; the service keeps no session state.</td></tr>
         </tbody>
       </table>
-      <p>Enrolment is collision-checked: a new voice too close to a <em>different</em> enrolled user is rejected rather than quietly creating a second identity for the same person.</p>
 
       <h3>Beyond identification</h3>
       <table class="tight">
         <thead><tr><th>Capability</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td>Diarisation</td><td>Segments a recording into who-spoke-when using a sliding window, merging consecutive turns. Unmatched speech is labelled as a guest rather than guessed.</td></tr>
-          <tr><td>Transcript</td><td>Diarised segments with spoken text attached, where transcription is available.</td></tr>
+          <tr><td>Speaker naming</td><td>Each anonymous speaker in a live room or a recording is named from enrolled voiceprints, or left as a guest rather than guessed.</td></tr>
+          <tr><td>Transcript</td><td>Speaker-labelled segments with spoken text attached.</td></tr>
           <tr><td>Floor control</td><td>Push-to-talk with a holder and a queue, so several people share one agent without talking over each other.</td></tr>
           <tr><td>Wake check</td><td>Order-independent wake-phrase matching, tolerant of homophones and near-misses.</td></tr>
         </tbody>
       </table>
-      <p>Voice signatures are compact embeddings — two engines are selectable, and audio is conditioned first: noise reduction, a speech-band filter, pre-emphasis and level normalisation. Multiple enrolments average into one profile per speaker.</p>
+      <p>A voiceprint is a compact embedding of the enrolment reading, stored encrypted and scoped to one organisation: a voice enrolled in one organisation is never matched in another. Enrolling again replaces it. The enrolment response never contains the voiceprint, and revoking it removes every name it produced.</p>
     </section>
 
     <section id="data">
@@ -360,7 +364,7 @@ sentinel.watch('postContainer', (els) =&gt; console.log(`${els.length} posts`));
       <p><strong>On the web.</strong> Sentinel and Control read and act only on the pages you enable, and only to do the job you asked. During a self-heal, page structure is sent to the vision provider <em>you</em> configure, with conversational content redacted before it leaves. You hold the provider key. The fingerprint-based repair path sends nothing anywhere.</p>
       <div class="note">
         <span class="lbl">Voice is biometric data</span>
-        <p>Diarisation creates a <strong>voiceprint</strong> — a biometric identifier, and special-category personal data in most jurisdictions. Enrolment must be explicit and informed. Raw audio is not retained; profiles are stored as embeddings and are deletable per user. If you select a cloud transcription provider, audio is sent to it — a browser-native provider keeps it on the device. Handling, consent and erasure are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
+        <p>Diarisation creates a <strong>voiceprint</strong> — a biometric identifier, and special-category personal data in most jurisdictions. Enrolment must be explicit and informed. Raw audio is not retained; voiceprints are stored as encrypted embeddings, per organisation, and are deletable per user. If you select a cloud transcription provider, audio is sent to it — a browser-native provider keeps it on the device. Handling, consent and erasure are set out in the <a href="../legal/privacy/">privacy policy</a>.</p>
       </div>
     </section>
 

@@ -30,6 +30,7 @@ KEMORY = [
     ("kemory/api/", "Reference"),
     ("kemory/benchmarks/", "Reference"),
     ("kemory/benchmarks/context-compaction/", "Reference"),
+    ("kemory/compare/", "Reference"),
     ("kemory/community/", "Reference"),
 ]
 PRODUCTS = ["cognition/", "reasoning/", "heve/", "redaction/", "kora-hai/"]

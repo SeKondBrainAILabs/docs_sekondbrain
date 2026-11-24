@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How Kemory retrieval works | SeKondBrain docs</title>
-<meta name="description" content="What happens when you search Kemory, which read tool to use, and how to read a result honestly.">
+<title>How SeKondBrain retrieval works | SeKondBrain docs</title>
+<meta name="description" content="What happens when you search SeKondBrain, which read tool to use, and how to read a result honestly.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/retrieval/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,10 +18,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· Retrieval</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· Retrieval</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#engine">How search works</a>
       <a href="#phrasing">Phrasing</a>
       <a href="#reading">Reading results</a>
@@ -33,7 +33,7 @@
 <div class="wrap hero">
   <span class="pill"><i></i>Semantic + lexical · rank fusion</span>
   <h1>How retrieval<br><em>actually works.</em></h1>
-  <p class="lede">Kemory exposes several ways to read memory, and they are not interchangeable. This page explains what happens when you search, which tool to reach for, and how to read a result honestly — including the places where a tool's name suggests more than it does.</p>
+  <p class="lede">SeKondBrain exposes several ways to read memory, and they are not interchangeable. This page explains what happens when you search, which tool to reach for, and how to read a result honestly — including the places where a tool's name suggests more than it does.</p>
 </div>
 
 <div class="wrap cols">
@@ -82,7 +82,7 @@
 
     <section id="reading">
       <h2>Reading a result honestly</h2>
-      <p>Kemory tells you how a search actually ran, and those fields are worth reading.</p>
+      <p>SeKondBrain tells you how a search actually ran, and those fields are worth reading.</p>
       <table>
         <thead><tr><th>Field</th><th>What it means</th></tr></thead>
         <tbody>
@@ -97,6 +97,7 @@
 
     <section id="tools">
       <h2>Which tool to use</h2>
+      <p>Tool names and the <code>kemory</code> command keep the product's old name, Kemory.</p>
       <table>
         <thead><tr><th>Tool</th><th>Use it for</th></tr></thead>
         <tbody>
@@ -115,7 +116,7 @@
 
     <section id="tuning">
       <h2>Tuning retrieval (self-hosted)</h2>
-      <p>These are <strong>server-side</strong> settings. On hosted Kemory they are managed for you and cannot be set per account; they matter if you run Community Edition or your own deployment.</p>
+      <p>These are <strong>server-side</strong> settings. On hosted SeKondBrain they are managed for you and cannot be set per account; they matter if you run Community Edition or your own deployment.</p>
       <table>
         <thead><tr><th>Variable</th><th>Default</th><th>What it changes</th></tr></thead>
         <tbody>
@@ -170,15 +171,15 @@
       <p>Two write tools are easy to confuse:</p>
       <ul>
         <li><code>kemory_capture_session</code> stores <em>many</em> discrete items the user has confirmed — at most 10 per call, with <code>user_confirmed: true</code>. It does not take a conversation window or a transcript. An optional <code>session_id</code> tags every item.</li>
-        <li><code>kemory_consolidate_session</code> refreshes the <em>one</em> summary Kemory already keeps for a session, and returns it. It stores nothing new and changes no memory.</li>
+        <li><code>kemory_consolidate_session</code> refreshes the <em>one</em> summary SeKondBrain already keeps for a session, and returns it. It stores nothing new and changes no memory.</li>
       </ul>
-      <p>Use capture when the conversation contained several things worth remembering separately; use consolidate when you want the session's summary current right now; Kemory keeps it up to date on its own as memories arrive, and Ask and Enhance read it. They compose: capture with a <code>session_id</code>, then consolidate that session. The <a href="../#prompts"><code>save-session</code> prompt</a> does both.</p>
+      <p>Use capture when the conversation contained several things worth remembering separately; use consolidate when you want the session's summary current right now; SeKondBrain keeps it up to date on its own as memories arrive, and Ask and Enhance read it. They compose: capture with a <code>session_id</code>, then consolidate that session. The <a href="../#prompts"><code>save-session</code> prompt</a> does both.</p>
     </section>
 
     <section id="scoping">
       <h2>Scoping and isolation</h2>
       <p>Every read is filtered by user and organisation in the database, not in a prompt. That applies identically across REST, MCP and every tool listed above. Agents additionally pass a permission check before any read or write.</p>
-      <p>See the <a href="../">Kemory overview</a> for connection and scoping detail, and the <a href="../../legal/privacy/">Privacy Policy</a> for data handling.</p>
+      <p>See the <a href="../">SeKondBrain overview</a> for connection and scoping detail, and the <a href="../../legal/privacy/">Privacy Policy</a> for data handling.</p>
     </section>
   </main>
 </div>

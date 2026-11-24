@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Kemory plugin — install, hooks, configuration | SeKondBrain</title>
-<meta name="description" content="The Kemory plugin: install and sign in, what each of the six hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing. Claude Code is the host it ships on today.">
+<title>The SeKondBrain plugin — install, hooks, configuration | SeKondBrain</title>
+<meta name="description" content="The SeKondBrain plugin: install and sign in, what each of the six hooks does, every environment variable, what leaves your machine, and how to diagnose a setup that is quietly doing nothing. Claude Code is the host it ships on today.">
 <link rel="canonical" href="https://docs.sekondbrain.ai/kemory/plugin/">
 <link rel="icon" href="../../assets/mark.png" type="image/png">
-<meta property="og:title" content="The Kemory plugin">
+<meta property="og:title" content="The SeKondBrain plugin">
 <meta property="og:description" content="Hooks that make an agent actually use memory — install, configuration, and what leaves your machine.">
 <meta property="og:url" content="https://docs.sekondbrain.ai/kemory/plugin/">
 <meta property="og:type" content="website">
@@ -27,10 +27,10 @@
   <div class="wrap top-in">
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
     <img class="mark" src="../../assets/mark.png" alt="">
-    <a class="brandline" href="../">Kemory <span>· plugin</span></a>
+    <a class="brandline" href="../">SeKondBrain <span>· plugin</span></a>
     <label class="nav-btn" for="nav-toggle" aria-hidden="true"><span></span></label>
     <div class="top-links">
-      <a class="nav-back" href="../">Kemory docs</a>
+      <a class="nav-back" href="../">SeKondBrain docs</a>
       <a href="#install">Install</a>
       <a href="#hooks">Hooks</a>
       <a href="#config">Configuration</a>
@@ -44,7 +44,8 @@
   <span class="pill"><i></i>Agent plugin · Apache-2.0</span>
   <h1>Tools make memory possible.<br><em>Hooks make it happen.</em></h1>
   <p class="lede">An MCP server gives an agent memory <em>tools</em>. This plugin makes it actually use them: relevant memories arrive under every prompt, a turn that settles something durable does not end with it unwritten, and recalls get rated so retrieval improves instead of decaying.</p>
-  <p>It is a client and nothing more. It sends data to one place — the Kemory instance you point it at — and adds no telemetry, no analytics and no endpoint of its own. With no credential configured, every hook no-ops and nothing is sent.</p>
+  <p>It is a client and nothing more. It sends data to one place — the SeKondBrain instance you point it at — and adds no telemetry, no analytics and no endpoint of its own. With no credential configured, every hook no-ops and nothing is sent.</p>
+  <p class="muted">The plugin name, slash commands, tool names, the <code>kemory</code> command, URLs and environment variables keep the product's old name, Kemory.</p>
   <p class="muted">One plugin, one tree, a manifest per host. <strong>Claude Code is the first host</strong> — the one it installs and is tested on today, and the commands on this page are its commands. A Grok Build manifest ships alongside and that catalog entry is in review.</p>
   <div class="addr">
     <span class="k">Marketplace</span>
@@ -80,7 +81,7 @@
 
     <section id="what">
       <h2>What it adds</h2>
-      <p>You can reach Kemory from any host without this plugin — a config-file entry gives you the same <code>kemory_*</code> tools, and <a href="../#connect-local">Connect a local client</a> covers that path. What it does not give you is any reason for the model to reach for them. A tool sits unused unless something prompts it, and prompting is the whole of what the plugin contributes.</p>
+      <p>You can reach SeKondBrain from any host without this plugin — a config-file entry gives you the same <code>kemory_*</code> tools, and <a href="../#connect-local">Connect a local client</a> covers that path. What it does not give you is any reason for the model to reach for them. A tool sits unused unless something prompts it, and prompting is the whole of what the plugin contributes.</p>
       <ul>
         <li><strong>A standing instruction that ships with the plugin</strong> — nothing to paste into <code>CLAUDE.md</code>, nothing to keep in sync per project.</li>
         <li><strong>Prompt recall</strong> — every substantive prompt is searched against your vault and the matches arrive before the agent answers, without it deciding to look.</li>
@@ -89,9 +90,9 @@
         <li><strong>Store nudge</strong> — <em>opt-in.</em> When a turn reached a decision and stored nothing, the turn does not just end.</li>
         <li><strong>Session capture</strong> — <em>on by default.</em> A bounded, redacted digest of your own turns, stored as the session goes, flushed before each <code>/compact</code> and again at the end. Never file contents or tool output.</li>
         <li><strong><code>/kemory:status</code></strong> — one command that says what is and is not working.</li>
-          <li><strong>The server's slash commands</strong> — <code>enhance</code> and <code>save-session</code>, relayed from the Kemory server. See <a href="#skills">Skills and commands</a>.</li>
+          <li><strong>The server's slash commands</strong> — <code>enhance</code> and <code>save-session</code>, relayed from the SeKondBrain MCP server. See <a href="#skills">Skills and commands</a>.</li>
       </ul>
-      <p>It works against hosted Kemory and against the open-source <a href="../community/">Community Edition</a> — one variable, <code>KEMORY_URL</code>, moves the whole plugin.</p>
+      <p>It works against hosted SeKondBrain and against the open-source <a href="../community/">Community Edition</a> — one variable, <code>KEMORY_URL</code>, moves the whole plugin.</p>
     </section>
 
     <section id="surfaces">
@@ -140,11 +141,11 @@
       <p>It prints one link. Open it, approve in the browser, and the credential is written for you — nothing to install, nothing to paste. It is an RFC 8628 device authorization grant against the same public client the CLI uses, so the user code is already in the URL.</p>
       <p>It signs you in the same way <code>kemory login</code> does and writes the same file, <code>~/.kemory/credentials-&lt;env&gt;</code> — so if you install the <a href="../cli/">CLI</a> later it finds you already signed in.</p>
       <p><strong>Restart Claude Code fully afterwards.</strong> Closing the window is not enough, and context injection begins with your <em>next</em> session because the hook that performs it runs at session start.</p>
-      <h3>Already reach Kemory another way?</h3>
+      <h3>Already reach SeKondBrain another way?</h3>
       <table>
         <thead><tr><th>You have</th><th>Do this</th></tr></thead>
         <tbody>
-          <tr><td>The Kemory CLI, signed in with <code>kemory login</code></td><td>Nothing at all — that is the same credential <code>/kemory:login</code> writes, and both halves read it. <code>kemory connect</code> is only needed for other MCP hosts.</td></tr>
+          <tr><td>The SeKondBrain CLI, signed in with <code>kemory login</code></td><td>Nothing at all — that is the same credential <code>/kemory:login</code> writes, and both halves read it. <code>kemory connect</code> is only needed for other MCP hosts.</td></tr>
           <tr><td>The claude.ai Kemory connector</td><td>Tools already work; disable the bundled entry under <code>/mcp</code> so you are not running two. The hooks still need <code>export KEMORY_API_KEY="..."</code> — the connector's OAuth token lives inside Claude and a shell script cannot read it.</td></tr>
           <tr><td>A self-hosted or Community Edition instance</td><td><code>export KEMORY_URL=http://...</code> alongside <code>KEMORY_API_KEY</code>. One URL moves the whole plugin.</td></tr>
           <tr><td>A headless machine — CI, a container, no browser</td><td><code>export KEMORY_API_KEY="kemory_..."</code>. It is a long-lived secret, so prefer <code>/kemory:login</code> anywhere a browser exists.</td></tr>
@@ -160,11 +161,11 @@
         <thead><tr><th>Block</th><th>What it answers</th></tr></thead>
         <tbody>
           <tr><td><strong>HOOKS</strong></td><td>Whether a credential resolves at all, and whether the API accepts it — the two checks that have to pass.</td></tr>
-          <tr><td><strong>TOOLS</strong></td><td>Whether the bundled MCP server will start, which credential it will serve with, whether another server on this machine already covers the same Kemory, and the installed plugin version.</td></tr>
+          <tr><td><strong>TOOLS</strong></td><td>Whether the bundled MCP server will start, which credential it will serve with, whether another server on this machine already covers the same SeKondBrain instance, and the installed plugin version.</td></tr>
           <tr><td><strong>SETTINGS</strong></td><td>How capture and context injection are configured, and how many sessions have been captured so far.</td></tr>
         </tbody>
       </table>
-      <p><code>/mcp</code> then shows which Kemory server Claude Code is actually talking to. There is one case <code>/kemory:status</code> cannot see and says so rather than reporting a reassuring zero: a claude.ai connector lives inside Claude and is invisible from a shell.</p>
+      <p><code>/mcp</code> then shows which SeKondBrain server Claude Code is actually talking to. There is one case <code>/kemory:status</code> cannot see and says so rather than reporting a reassuring zero: a claude.ai connector lives inside Claude and is invisible from a shell.</p>
     </section>
 
     <section id="updates">
@@ -182,11 +183,11 @@
       <table>
         <thead><tr><th>Hook</th><th>Event</th><th>What it does</th><th>Leaves your machine</th><th>Default</th></tr></thead>
         <tbody>
-          <tr><td>context injection</td><td><code>SessionStart</code></td><td>Injects your namespace summaries; warns once if Kemory is not set up yet</td><td>Your credential; reads summaries back</td><td>on</td></tr>
+          <tr><td>context injection</td><td><code>SessionStart</code></td><td>Injects your namespace summaries; warns once if SeKondBrain is not set up yet</td><td>Your credential; reads summaries back</td><td>on</td></tr>
           <tr><td>prompt recall</td><td><code>UserPromptSubmit</code></td><td>Searches your vault with the prompt you typed and injects what matches</td><td><strong>The text of your prompt</strong></td><td>on</td></tr>
           <tr><td>rate reminder</td><td><code>PostToolUse</code></td><td>Prompts the agent to rate the memories it actually used. Fires only when the response is rateable — a <code>recall_id</code> or a non-empty result list</td><td>Nothing</td><td>on</td></tr>
           <tr><td>consolidate reminder</td><td><code>SessionStart</code> after compaction</td><td>Prompts the agent to store facts that would otherwise survive only as a summary</td><td>Nothing</td><td>on</td></tr>
-          <tr><td>store nudge</td><td><code>Stop</code></td><td>When the turn settled something durable and no Kemory write happened, asks for it before the turn ends</td><td>Nothing</td><td><strong>off</strong></td></tr>
+          <tr><td>store nudge</td><td><code>Stop</code></td><td>When the turn settled something durable and no SeKondBrain write happened, asks for it before the turn ends</td><td>Nothing</td><td><strong>off</strong></td></tr>
           <tr><td>session capture</td><td><code>Stop</code>, <code>PreCompact</code>, <code>SessionEnd</code></td><td>Stores a redacted digest of your own turns: last 12 turns, 8000 characters. On <code>PreCompact</code> it flushes what is not yet stored before the context is compacted</td><td>Your turns, redacted</td><td>on</td></tr>
         </tbody>
       </table>
@@ -211,7 +212,7 @@
       <h3>Why the consolidate reminder runs at <code>SessionStart</code></h3>
       <p>Capture flushes at <code>PreCompact</code> because it needs no model turn. The consolidate reminder deliberately does not: that event rejects <code>additionalContext</code>, and fires as compaction begins, so the model gets no turn in which to act. <code>SessionStart</code> with <code>source=compact</code> fires on the other side of it, where there is still something to do.</p>
 
-      <p>Read-only auto-approval, the status line and the in-app panel are not in this plugin: they ship in the optional <code>kemory-panel</code> add-on from the same marketplace (<code>/plugin install kemory-panel@kemory</code>). Without it, read-only Kemory tools ask for permission like any other tool.</p>
+      <p>Read-only auto-approval, the status line and the in-app panel are not in this plugin: they ship in the optional <code>kemory-panel</code> add-on from the same marketplace (<code>/plugin install kemory-panel@kemory</code>). Without it, read-only SeKondBrain tools ask for permission like any other tool.</p>
 
       <div class="note">
         <span class="lbl">Every hook is best-effort</span>
@@ -228,21 +229,21 @@
           <tr><td><code>/kemory:login</code></td><td>Browser sign-in. One link, approve, credential written for you.</td></tr>
           <tr><td><code>/kemory:status</code></td><td>Whether credentials resolve, whether the API accepts them, which server will serve the tools, and how capture and injection are configured.</td></tr>
           <tr><td><code>kemory</code> skill</td><td>How to recall, rate, store and phrase memories so semantic search can find them again.</td></tr>
-          <tr><td><code>kemory-setup</code> skill</td><td>Walks the agent through connecting Kemory when something is not working.</td></tr>
-          <tr><td><code>/mcp__plugin_kemory_kemory__enhance &lt;request&gt;</code></td><td>From the Kemory server. Returns your request with the related memories cited by id; when nothing matches, the request comes back unchanged.</td></tr>
-          <tr><td><code>/mcp__plugin_kemory_kemory__save-session</code></td><td>From the Kemory server. Run before <code>/compact</code> or at the end of a session: captures the session's decisions and durable facts, then consolidates them.</td></tr>
+          <tr><td><code>kemory-setup</code> skill</td><td>Walks the agent through connecting SeKondBrain when something is not working.</td></tr>
+          <tr><td><code>/mcp__plugin_kemory_kemory__enhance &lt;request&gt;</code></td><td>From the SeKondBrain MCP server. Returns your request with the related memories cited by id; when nothing matches, the request comes back unchanged.</td></tr>
+          <tr><td><code>/mcp__plugin_kemory_kemory__save-session</code></td><td>From the SeKondBrain MCP server. Run before <code>/compact</code> or at the end of a session: captures the session's decisions and durable facts, then consolidates them.</td></tr>
         </tbody>
       </table>
-      <p>The last two are MCP prompts the bundled server relays unchanged, so they are plugin-namespaced; Claude Code may also list them as <code>/plugin:kemory:kemory:&lt;name&gt; (MCP)</code>. A Kemory server too old to offer them shows none. What they do is in <a href="../#prompts">Prompts, resources and cards</a>.</p>
+      <p>The last two are MCP prompts the bundled server relays unchanged, so they are plugin-namespaced; Claude Code may also list them as <code>/plugin:kemory:kemory:&lt;name&gt; (MCP)</code>. A SeKondBrain server too old to offer them shows none. What they do is in <a href="../#prompts">Prompts, resources and cards</a>.</p>
       <p>The <code>kemory</code> skill is the standing instruction from <a href="../optimise/">Optimise your AIs</a>, already written and kept current — with the plugin installed you do not need to paste it into <code>CLAUDE.md</code> yourself.</p>
       <p>If you pasted that instruction into <code>CLAUDE.md</code> before the plugin shipped one, you can delete it; the plugin says so once a week until you do. Keeping both is not harmful, but the pasted copy asks the agent to open each session with <code>kemory_list_namespaces</code> and a recall, which the prompt-recall hook has already done by then.</p>
-      <p>The bundled instruction is injected on every session, including a brand-new vault and a session whose context call failed. It is short on purpose: recall and the write prompt are hooks now, so it says only what no hook can — what Kemory is, and the standard for writing to it.</p>
+      <p>The bundled instruction is injected on every session, including a brand-new vault and a session whose context call failed. It is short on purpose: recall and the write prompt are hooks now, so it says only what no hook can — what SeKondBrain is, and the standard for writing to it.</p>
     </section>
 
     <section id="credentials">
       <h2>Credentials</h2>
-      <p>The bundled MCP entry launches a script that resolves a credential through the same function the hooks use, then serves: <code>kemory mcp serve</code> when the credential came from a browser login, and a bundled stdio-to-HTTP bridge when it came from the environment. So one entry covers every way of reaching Kemory, and the tools cannot end up authenticated differently from the hooks or pointed at a different host.</p>
-      <p>Resolution order is <code>KEMORY_API_KEY</code>, then <code>KEMORY_TOKEN</code>, then the stored browser login in <code>~/.kemory/credentials-&lt;env&gt;</code>, against <code>KEMORY_URL</code> — defaulting to hosted Kemory. Any one of them turns on both halves. Stored tokens are refreshed automatically when they expire; if a refresh fails, <code>/kemory:status</code> says so rather than leaving the hooks quietly rejected.</p>
+      <p>The bundled MCP entry launches a script that resolves a credential through the same function the hooks use, then serves: <code>kemory mcp serve</code> when the credential came from a browser login, and a bundled stdio-to-HTTP bridge when it came from the environment. So one entry covers every way of reaching SeKondBrain, and the tools cannot end up authenticated differently from the hooks or pointed at a different host.</p>
+      <p>Resolution order is <code>KEMORY_API_KEY</code>, then <code>KEMORY_TOKEN</code>, then the stored browser login in <code>~/.kemory/credentials-&lt;env&gt;</code>, against <code>KEMORY_URL</code> — defaulting to hosted SeKondBrain. Any one of them turns on both halves. Stored tokens are refreshed automatically when they expire; if a refresh fails, <code>/kemory:status</code> says so rather than leaving the hooks quietly rejected.</p>
       <p>With no credential the bundled server <strong>exits with that reason on stderr rather than starting</strong>. A server that starts and exposes nothing reads as connected in <code>/mcp</code> while every memory tool is missing, which is worse than a visible failure.</p>
 
       <h3>Two credentials, not one</h3>
@@ -263,7 +264,7 @@
     <section id="one-server">
       <h2>Run one server,<br>not two</h2>
       <p>Three routes each register an MCP server for Claude Code — a pasted pair-claim prompt, <code>kemory mcp install</code>, and this plugin — and they stack silently. Any two of them leave every tool duplicated in each request, with <code>/mcp</code> listing both without saying they are the same server twice.</p>
-      <p>So the bundled entry stands down when this machine already has a server for the same Kemory. It is the one that gives way: an entry in a host config was put there deliberately, and this one arrives with the plugin. The cost is only the duplicate — the hooks read credentials directly, so recall, context injection, rating and capture all keep working while the server stands aside, and the message says so, because "your tools moved" and "your memory stopped working" are very different sentences.</p>
+      <p>So the bundled entry stands down when this machine already has a server for the same SeKondBrain instance. It is the one that gives way: an entry in a host config was put there deliberately, and this one arrives with the plugin. The cost is only the duplicate — the hooks read credentials directly, so recall, context injection, rating and capture all keep working while the server stands aside, and the message says so, because "your tools moved" and "your memory stopped working" are very different sentences.</p>
       <p>Loudly, never silently: it exits with the reason, names the offending entry and the file it is in, and gives the way back. <code>KEMORY_ALLOW_DUPLICATE=1</code> runs both anyway.</p>
       <div class="note">
         <span class="lbl">Same endpoint, not same name</span>
@@ -284,7 +285,7 @@
           <tr><td><code>KEMORY_TOKEN</code></td><td>—</td><td>Bearer token, sent as <code>Authorization: Bearer</code></td></tr>
           <tr><td><code>KEMORY_URL</code></td><td><code>https://api.kemory.s9n.ai</code></td><td>Override only for a self-hosted or <a href="../community/">Community Edition</a> instance. No trailing slash, no path</td></tr>
           <tr><td><code>KEMORY_ENV</code></td><td><code>prod</code></td><td>Which credentials file to read</td></tr>
-          <tr><td><code>KEMORY_ALLOW_DUPLICATE</code></td><td><code>0</code></td><td><code>1</code> starts the bundled server even when another one already serves the same Kemory</td></tr>
+          <tr><td><code>KEMORY_ALLOW_DUPLICATE</code></td><td><code>0</code></td><td><code>1</code> starts the bundled server even when another one already serves the same SeKondBrain instance</td></tr>
           <tr><td><code>KEMORY_MCP_TIMEOUT</code></td><td><code>120</code></td><td>Seconds the bundled MCP bridge waits for the API</td></tr>
           <tr><td><code>KEMORY_CLIENT_ID</code></td><td><code>kemory-cli</code></td><td>OAuth client id <code>/kemory:login</code> signs in with</td></tr>
         </tbody>
@@ -302,7 +303,7 @@
           <tr><td><code>KEMORY_QUIET_SETUP</code></td><td><code>0</code></td><td><code>1</code> suppresses the "not configured yet" notice</td></tr>
         </tbody>
       </table>
-      <p>If Kemory is not configured, the hook prints one short setup notice and then stays quiet for 24 hours rather than nagging every session.</p>
+      <p>If SeKondBrain is not configured, the hook prints one short setup notice and then stays quiet for 24 hours rather than nagging every session.</p>
 
       <h3>Prompt recall</h3>
       <table>
@@ -337,7 +338,7 @@
       <h2>What leaves<br>your machine</h2>
       <p>Two hooks transmit anything at all, and both are on by default.</p>
       <ul>
-        <li><strong>Prompt recall is on by default</strong> and sends the text of each prompt to your Kemory instance as a search query. It skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent.</li>
+        <li><strong>Prompt recall is on by default</strong> and sends the text of each prompt to your SeKondBrain instance as a search query. It skips prompts under 12 characters and anything starting with <code>/</code>, <code>!</code> or <code>#</code>, so slash commands are never sent.</li>
         <li><strong>Session capture</strong> sends a bounded, redacted digest of your own turns — never file contents or tool output — at the end of each turn, before <code>/compact</code> and at session end. It is stored as a <code>user-private</code> memory.</li>
       </ul>
       <p>Context injection sends only your credential. The rate-reminder and store-nudge hooks make no network calls at all. Separately, when a stored login has expired the hooks refresh it against the identity provider named in the credential file.</p>
@@ -351,7 +352,7 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
 
       <h3>Local files</h3>
       <p><code>~/.kemory/.captured/</code> and <code>~/.kemory/.nudged/</code> hold per-session hashes used to avoid storing or asking twice; <code>~/.kemory/.setup-hint</code> and <code>~/.kemory/.paste-hint</code> hold timestamps that throttle one-off notices. None contains conversation content.</p>
-      <p>At session start the plugin also <strong>reads</strong> <code>~/.claude/CLAUDE.md</code> and a <code>CLAUDE.md</code> in the current directory, looking only for a hand-pasted copy of the Kemory instruction so it can tell you the plugin now ships one. The file contents are never sent anywhere, never stored, and never edited.</p>
+      <p>At session start the plugin also <strong>reads</strong> <code>~/.claude/CLAUDE.md</code> and a <code>CLAUDE.md</code> in the current directory, looking only for a hand-pasted copy of the SeKondBrain instruction so it can tell you the plugin now ships one. The file contents are never sent anywhere, never stored, and never edited.</p>
       <div class="note">
         <span class="lbl">Injected context is conversation content</span>
         <p>Whatever the plugin injects becomes part of your Claude Code conversation, so it reaches Anthropic on the same terms as anything else you type there.</p>
@@ -387,7 +388,7 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
           <tr><td><code>/plugin</code> "isn't available in this environment"</td><td>You are in the Claude Code Desktop app or an IDE extension</td><td><code>claude plugin install kemory@kemory</code> in a shell, then restart the app fully</td></tr>
           <tr><td>No <code>kemory_*</code> tools at all</td><td>The bundled server did not start — usually no credential, or it stood down for a duplicate</td><td><code>/kemory:status</code> names which; then <code>/kemory:login</code>, or remove the other entry</td></tr>
           <tr><td>Tools work, nothing at session start</td><td>The credential is in an MCP config file, which the hooks never read</td><td><code>export KEMORY_API_KEY="..."</code> in your shell, then restart fully</td></tr>
-          <tr><td>Two copies of every tool</td><td>Two servers for the same Kemory</td><td>Disable the bundled entry under <code>/mcp</code>, or remove the config-file entry</td></tr>
+          <tr><td>Two copies of every tool</td><td>Two servers for the same SeKondBrain instance</td><td>Disable the bundled entry under <code>/mcp</code>, or remove the config-file entry</td></tr>
           <tr><td><code>401</code> on every call</td><td>The stored login expired or was revoked, or the key was reissued</td><td><code>/kemory:login</code>, or mint a new key</td></tr>
           <tr><td>Installed, signed in, still quiet</td><td>Claude Code was not restarted, or this is the session the credential arrived in</td><td>Quit completely and reopen — injection starts with the <em>next</em> session</td></tr>
           <tr><td>Recall returns nothing useful</td><td>The relevance floor is above what your vault matches</td><td>Lower <code>KEMORY_PROMPT_RECALL_MIN_RELEVANCE</code>, or raise <code>KEMORY_PROMPT_RECALL_LIMIT</code></td></tr>
@@ -442,7 +443,7 @@ export KEMORY_STORE_NUDGE=1     # turn the store nudge on (off by default)</code
   <div class="wrap">
     <div class="fl">
       <a href="https://sekondbrain.ai">SeKondBrain</a>
-      <a href="../">Kemory documentation</a>
+      <a href="../">SeKondBrain documentation</a>
       <a href="../cli/">CLI</a>
       <a href="../../">All documentation</a>
       <a href="../../legal/privacy/">Privacy</a>

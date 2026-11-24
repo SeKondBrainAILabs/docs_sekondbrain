@@ -1,6 +1,6 @@
 # Hosted Upstream Intake
 
-Kemory Community is an independent public repository. Hosted Kemory is a
+SeKondBrain Community Edition is an independent public repository. Hosted SeKondBrain is a
 private upstream design and implementation source, so a normal Git merge or
 subtree mirror would also import hosted identity, billing, telemetry, storage,
 and private dependency assumptions.

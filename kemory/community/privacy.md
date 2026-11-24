@@ -4,13 +4,13 @@ title: Privacy Policy
 
 # Privacy Policy
 
-Kemory Community Edition is local-first software for personal AI-agent
+SeKondBrain Community Edition is local-first software for personal AI-agent
 memory. The community build is designed to run on your machine and keep
 your data under your control.
 
-## What Kemory stores locally
+## What SeKondBrain keeps on your machine
 
-Kemory stores memory records, namespaces, chats, artifacts, configuration,
+SeKondBrain keeps memory records, namespaces, chats, artifacts, configuration,
 indexes, and operational metadata on your local machine. By default:
 
 - Database data is stored under `~/.kemory-community/data/pgdata/`.
@@ -20,9 +20,9 @@ indexes, and operational metadata on your local machine. By default:
 If you opt into an external Postgres database, your database provider's
 own privacy and security practices apply to that database.
 
-## What Kemory sends out
+## What SeKondBrain sends out
 
-Kemory Community Edition does not include hosted telemetry.
+SeKondBrain Community Edition does not include hosted telemetry.
 
 The community build may send data to external services only when needed
 for features you configure:
@@ -36,13 +36,13 @@ for features you configure:
 - If you configure a non-default embedding or model provider, requests are
   sent to that provider according to the provider settings you choose.
 
-Kemory does not send your local memories, chats, or artifacts to the hosted
-Kemory service.
+SeKondBrain does not send your local memories, chats, or artifacts to the hosted
+SeKondBrain service.
 
 ## API keys
 
 API keys are used only for the providers you configure. Do not share your
-local Kemory configuration directory with untrusted users.
+local SeKondBrain configuration directory with untrusted users.
 
 ## Logs
 

@@ -10,7 +10,7 @@ gh repo edit --add-topic kemory --add-topic memory --add-topic ai-agents \
   --add-topic llm --add-topic mcp --add-topic groq --add-topic vector \
   --add-topic rag --add-topic local-first --add-topic oss
 
-gh repo edit --description "Local-first, OSS memory for AI agents. Same wire protocol as hosted Kemory. Apache-2.0." \
+gh repo edit --description "Local-first, OSS memory for AI agents. Same wire protocol as hosted SeKondBrain. Apache-2.0." \
   --homepage "https://docs.sekondbrain.ai/kemory/community/"
 
 gh repo edit --enable-discussions --enable-issues --enable-projects

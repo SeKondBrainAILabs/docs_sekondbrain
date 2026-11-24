@@ -54,8 +54,16 @@ Add when needed (do NOT commit values):
 
 - `NPM_TOKEN` - automation token scoped to the `kemory-community` package
 - `GROQ_API_KEY_TEST` - low-quota Groq key for CI L3 tests
+- `KEMORY_UPSTREAM_READ_TOKEN` - fine-grained read-only access to the private
+  hosted Kemory repository for the daily intake workflow
+- `KEMORY_COMMUNITY_SYNC_TOKEN` - fine-grained branch and pull-request write
+  access to the Community repository; required while organisation policy
+  prevents the workflow `GITHUB_TOKEN` from creating pull requests
 - `APPLE_DEVELOPER_ID_CERT` + `APPLE_DEVELOPER_ID_PASSWORD` - macOS binary signing (can wait until first real release)
 - `APPLE_NOTARY_API_KEY_ID` + `APPLE_NOTARY_API_KEY_ISSUER_ID` + `APPLE_NOTARY_API_PRIVATE_KEY` - notarization
+
+Replace any broad bootstrap credentials with the two least-privilege Kemory
+tokens as soon as they are available.
 
 ## 4. Documentation
 
@@ -97,3 +105,19 @@ this repository aligned when runtime providers or data paths change.
   `["ci / noop-pass"]` to `["ci / smoke", "Community Config / pgvector + local_fs + local_single_user + noop"]`.
 - Subtree pull post-processing: re-apply Gap-1 artifact MinIO strip until
   upstream removes the path.
+
+## 8. Community feature decisions in Notion
+
+Use the canonical Product x Features database in the SeKondBrain Notion
+workspace. `Community Edition` is the hard checkbox gate: only checked Kemory
+or Chrome Extension features may enter a porting cohort. Set `Community status`
+to `Shipped`, `Adapted`, `Planned`, `Excluded`, or `Review`, and put the
+decision rationale plus pull request, tests, and release tag in
+`Community evidence`.
+
+`Shipped` means verified in a tagged Community release. An upstream intake
+classification is only triage evidence and must not be used as a shipment
+claim. Use the `Community Edition intake` view as the allowed set and the
+`Community Edition review` view as the decision queue. Keep the Upstream Parity
+epic current with the observed hosted head, queue counts, Community pull
+request, and remaining human-review gate.

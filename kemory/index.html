@@ -66,7 +66,7 @@
   <p>Every memory is scoped to a user and an organisation, and that scoping is enforced in the database rather than in a prompt. Connect once from any MCP-capable AI, and it is available to every session after that.</p>
   <div class="addr">
     <span class="k">Server address</span>
-    <code>https://api.kemory.s9n.ai/mcp/v1</code>
+    <code>https://api.kemory.sekondbrain.ai/mcp/v1</code>
   </div>
 </div>
 
@@ -179,7 +179,7 @@
 
       <h3 id="server-only">Server only</h3>
       <p>To connect the server without the plugin:</p>
-<pre><code>claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1</code></pre>
+<pre><code>claude mcp add --transport http kemory https://api.kemory.sekondbrain.ai/mcp/v1</code></pre>
       <p>Then run <code>/mcp</code>, choose <strong>kemory → Authenticate</strong>, and sign in in the browser. You get the tools, the prompts as <code>/mcp__kemory__enhance</code> and <code>/mcp__kemory__save-session</code>, and the resources under <code>@kemory:</code> — but none of the hooks, so nothing is recalled or captured unless the model decides to call a tool. Do not add this alongside the plugin; see <em>Run one server, not two</em> above.</p>
     </section>
 
@@ -192,7 +192,7 @@
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "url": "https://api.kemory.sekondbrain.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -268,7 +268,7 @@ transient state — anything that stops being true by tomorrow.</code></pre>
     "messages": [{"role": "user", "content": "What did we decide about the release process?"}],
     "mcp_servers": [{
       "type": "url",
-      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "url": "https://api.kemory.sekondbrain.ai/mcp/v1",
       "name": "kemory",
       "authorization_token": "&lt;KEMORY_API_KEY&gt;"
     }],

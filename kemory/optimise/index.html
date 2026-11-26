@@ -551,7 +551,7 @@ Kemory v2</code></pre>
             <li><span class="k">Already pasted, then installed the plugin?</span><span>Delete the pasted copy. Both together are not harmful, but the pasted one opens every session with <code>kemory_list_kemories</code> and a recall that the plugin has already done by then, which costs two tool calls a session to repeat. The plugin says so once a week until you remove it.</span></li>
             <li><span class="k">Two scopes</span><span><code>~/.claude/CLAUDE.md</code> applies to every project on the machine. A <code>CLAUDE.md</code> at a repository root applies to that repository and is read on top of the global one — put the project namespace there.</span></li>
             <li><span class="k">Shortcut</span><span>Typing <code>/memory</code> in a session opens these files for editing without leaving the terminal.</span></li>
-            <li><span class="k">Connecting</span><span>The <a href="../#connect-claude-code">SeKondBrain plugin for Claude Code</a>, which ships this instruction as a skill. For the server alone, <code>claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1</code>, then <code>/mcp</code> → Authenticate.</span></li>
+            <li><span class="k">Connecting</span><span>The <a href="../#connect-claude-code">SeKondBrain plugin for Claude Code</a>, which ships this instruction as a skill. For the server alone, <code>claude mcp add --transport http kemory https://api.kemory.sekondbrain.ai/mcp/v1</code>, then <code>/mcp</code> → Authenticate.</span></li>
           </ul>
         </div>
 
@@ -944,7 +944,7 @@ Kemory v2</code></pre>
       <p>The catalogue is a convenience, not a different product. A connector added this way is the same remote MCP server, on the same address, with the same permissions and the same entry on your connectors page as one added by hand. If SeKondBrain is not yet listed in the catalogue of the AI you are using, add it as a custom connector instead — <a href="#mcp-web">below</a> — and nothing about the result differs.</p>
       <div class="note">
         <span class="lbl">Check the listing is ours</span>
-        <p>A directory entry for SeKondBrain should point at <code>https://api.kemory.s9n.ai/mcp/v1</code> and name SeKondBrain AI Labs as the publisher, with this documentation as its documentation URL. If any of those three is different, it is not our listing — do not sign in to it, and tell us at <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>.</p>
+        <p>A directory entry for SeKondBrain should point at <code>https://api.kemory.sekondbrain.ai/mcp/v1</code> and name SeKondBrain AI Labs as the publisher, with this documentation as its documentation URL. If any of those three is different, it is not our listing — do not sign in to it, and tell us at <a href="mailto:support@sekondbrain.ai">support@sekondbrain.ai</a>.</p>
       </div>
     </section>
 
@@ -953,7 +953,7 @@ Kemory v2</code></pre>
       <p>For any AI that accepts a custom remote connector. There is no key to copy and nothing to install.</p>
       <div class="addr" style="margin-top:0">
         <span class="k">Server address</span>
-        <code>https://api.kemory.s9n.ai/mcp/v1</code>
+        <code>https://api.kemory.sekondbrain.ai/mcp/v1</code>
       </div>
       <ol>
         <li>Open the AI's connector settings and choose <strong>Add custom connector</strong>, or the equivalent.</li>
@@ -976,7 +976,7 @@ Kemory v2</code></pre>
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "url": "https://api.kemory.sekondbrain.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }

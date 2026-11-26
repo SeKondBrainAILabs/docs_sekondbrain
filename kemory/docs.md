@@ -31,7 +31,7 @@ There is nothing to install for a web AI. Local clients need a config-file entry
 **The server address:**
 
 ```
-https://api.kemory.s9n.ai/mcp/v1
+https://api.kemory.sekondbrain.ai/mcp/v1
 ```
 
 Every user connects to the same address. There is no per-tenant URL and nothing to
@@ -190,7 +190,7 @@ tools, and the hooks never read MCP config.
 To connect the server without the plugin:
 
 ```
-claude mcp add --transport http kemory https://api.kemory.s9n.ai/mcp/v1
+claude mcp add --transport http kemory https://api.kemory.sekondbrain.ai/mcp/v1
 ```
 
 Then run `/mcp`, choose **kemory → Authenticate**, and sign in in the browser. You get the
@@ -218,7 +218,7 @@ this is the whole surface.
   "mcpServers": {
     "kemory": {
       "type": "http",
-      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "url": "https://api.kemory.sekondbrain.ai/mcp/v1",
       "headers": {
         "X-API-Key": "kemory_REPLACE_WITH_YOUR_KEY"
       }
@@ -314,7 +314,7 @@ curl https://api.anthropic.com/v1/messages \
     "messages": [{"role": "user", "content": "What did we decide about the release process?"}],
     "mcp_servers": [{
       "type": "url",
-      "url": "https://api.kemory.s9n.ai/mcp/v1",
+      "url": "https://api.kemory.sekondbrain.ai/mcp/v1",
       "name": "kemory",
       "authorization_token": "<KEMORY_API_KEY>"
     }],

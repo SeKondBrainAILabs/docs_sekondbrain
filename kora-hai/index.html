@@ -54,7 +54,7 @@
   <span class="pill"><i></i>Platform · self-healing agents · alpha</span>
   <h1>An agent that writes<br>the skill <em>it's missing.</em></h1>
   <p class="lede">Kora HAI — Healing Autonomous Intelligence — is a self-healing agent framework. When an agent meets a task it has no capability for, it doesn't fail: it detects the gap, drafts the missing skill, has a second agent review it, tests it in a sandbox, and deploys it behind a blue/green cutover it can roll back.</p>
-  <p>Everything it does is written into the <a href="../cognition/">concept graph</a> and <a href="../kemory/">memory</a> — so the agent doesn't just gain a capability, it remembers why it needed one.</p>
+  <p>Everything it does is written into the <a href="../cognition/">concept graph</a> and <a href="../sekondbrain/">memory</a> — so the agent doesn't just gain a capability, it remembers why it needed one.</p>
 </div>
 
 <div class="wrap cols">
@@ -212,7 +212,7 @@
     <section id="memory">
       <h2>What it remembers</h2>
       <p>The healing loop is a first-class citizen of the platform's memory, not a log file.</p>
-      <p>Every event is retained and projected into the <a href="../cognition/">Cognition OS</a> graph, so the agent's history is queryable as structure — which gap led to which skill, which decision produced which outcome. Skills, chains and primitives are graph nodes with real types; episodes and reasoning land in <a href="../kemory/">Kemory</a>.</p>
+      <p>Every event is retained and projected into the <a href="../cognition/">Cognition OS</a> graph, so the agent's history is queryable as structure — which gap led to which skill, which decision produced which outcome. Skills, chains and primitives are graph nodes with real types; episodes and reasoning land in <a href="../sekondbrain/">Kemory</a>.</p>
       <p>The relationships between them are <strong>weighted and evolving</strong>: edges between skills, tasks, agents and events strengthen with successful execution and frequent use, so the paths the system reasons along optimise from its own experience rather than from a static design.</p>
       <p>This is the part that compounds. A framework that generates skills gets more capable; one that also remembers <em>why</em> gets better at deciding whether to generate at all.</p>
     </section>

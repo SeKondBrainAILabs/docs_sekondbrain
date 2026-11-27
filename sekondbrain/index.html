@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Connect your AI — SeKondBrain documentation</title>
 <meta name="description" content="Persistent, permissioned memory for AI agents. How to connect SeKondBrain, what its tools do, and how authentication and scoping work.">
-<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/">
+<link rel="canonical" href="https://docs.sekondbrain.ai/sekondbrain/">
 <link rel="icon" href="../assets/mark.png" type="image/png">
 <meta property="og:title" content="Connect your AI — SeKondBrain documentation">
 <meta property="og:description" content="Persistent, permissioned memory for AI agents.">
-<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/">
+<meta property="og:url" content="https://docs.sekondbrain.ai/sekondbrain/">
 <meta property="og:type" content="website">
 <script type="application/ld+json">
 {
@@ -17,7 +17,7 @@
   "@type": "TechArticle",
   "headline": "Connect your AI — SeKondBrain documentation",
   "description": "Persistent, permissioned memory for AI agents. How to connect SeKondBrain, what its tools do, and how authentication and scoping work.",
-  "url": "https://docs.sekondbrain.ai/kemory/",
+  "url": "https://docs.sekondbrain.ai/sekondbrain/",
   "inLanguage": "en-GB",
   "about": {"@type": "Brand", "name": "SeKondBrain", "url": "https://sekondbrain.ai/products/kemory"},
   "publisher": {"@type": "Organization", "name": "SeKondBrain", "url": "https://sekondbrain.ai"}
@@ -104,7 +104,7 @@
     <section id="before">
       <h2>Before you connect</h2>
       <p>You need a SeKondBrain account. Create one, and reach every setting named on this page, at <strong><a href="https://kemory.sekondbrain.ai">kemory.sekondbrain.ai</a></strong> — that is the dashboard. Sign-in is handled by SeKondBrain's identity service; SeKondBrain never sees or holds a password.</p>
-      <p>Tool names (<code>kemory_*</code>), the <code>kemory</code> command, the server address and other URLs, and environment variables keep the product's old name, Kemory. Only the name changed: they work as before.</p>
+      <p>Tool names (<code>kemory_*</code>), the <code>kemory</code> command, the server address and other URLs, and environment variables keep the Kemory name. Both names are in use while the rename completes, and nothing you have already configured changes.</p>
       <p>There is nothing to install for a web AI. Local clients need a config-file entry, shown below. Every user connects to the same address; there is no per-tenant URL and nothing to provision before you begin.</p>
       <p class="muted"><strong>Transport.</strong> Streamable HTTP, JSON-RPC 2.0, single endpoint. Protocol revisions <code>2024-11-05</code> through <code>2025-11-25</code> are negotiated on <code>initialize</code>. Server-sent events, server-initiated messages and persistent sessions are deliberately not implemented — every request is stateless and self-authenticating.</p>
     </section>

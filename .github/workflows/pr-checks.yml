@@ -26,3 +26,6 @@ jobs:
 
       - name: Generate sitemap.xml and robots.txt
         run: python tools/gen_sitemap.py
+
+      - name: Generate the /kemory/ compatibility mirror
+        run: python tools/gen_kemory_aliases.py

@@ -33,7 +33,7 @@ jobs:
           test -f CNAME       || { echo "::error::CNAME missing — the custom domain will drop"; exit 1; }
           test -f .nojekyll   || { echo "::error::.nojekyll missing — Jekyll will mangle the tree"; exit 1; }
           test -f index.html  || { echo "::error::root index.html missing"; exit 1; }
-          test -f kemory/index.html || { echo "::error::kemory/index.html missing — this is the documentation URL on the directory listing"; exit 1; }
+          test -f sekondbrain/index.html || { echo "::error::sekondbrain/index.html missing — this is the documentation URL on the directory listing"; exit 1; }
           for p in legal legal/privacy legal/terms legal/business-terms legal/extension-privacy legal/refunds legal/cookies subprocessors; do
             test -f "$p/index.html" || { echo "::error::$p/index.html missing — the legal documents are linked from the index, the footers and the Chrome Web Store listing"; exit 1; }
           done
@@ -51,6 +51,19 @@ jobs:
 
       - name: Generate sitemap.xml and robots.txt
         run: python tools/gen_sitemap.py
+
+      # Every address published before the docs moved to /sekondbrain/ still has to
+      # resolve. Runs after gen_llms.py so the llms.txt files are mirrored too.
+      - name: Generate the /kemory/ compatibility mirror
+        run: python tools/gen_kemory_aliases.py
+
+      - name: Guard the compatibility mirror
+        run: |
+          set -e
+          for f in kemory/index.html kemory/docs.md kemory/updates/updates.json \
+                   kemory/llms.txt kemory/llms-full.txt; do
+            test -f "$f" || { echo "::error::$f missing — the /kemory/ mirror did not build, and addresses in the connector listing, the plugin directory and the product's Update Cards would 404"; exit 1; }
+          done
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

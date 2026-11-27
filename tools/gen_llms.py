@@ -4,9 +4,12 @@
 
 Writes three files (https://llmstxt.org):
 
-    llms.txt               site index — every product, the legal documents
-    kemory/llms.txt        Kemory index — one linked line per page
-    kemory/llms-full.txt   every Kemory page as Markdown, in one file
+    llms.txt                     site index — every product, the legal documents
+    sekondbrain/llms.txt         product index — one linked line per page
+    sekondbrain/llms-full.txt    every page as Markdown, in one file
+
+gen_kemory_aliases.py runs after this one and copies the last two to the old /kemory/
+addresses, so a fetcher that still asks for kemory/llms.txt gets the same bytes.
 
 The HTML is the source. pages.yml runs this before every deploy and the outputs are
 gitignored, so they cannot drift from the pages and there is nothing to hand-edit.
@@ -22,16 +25,16 @@ SITE = "https://docs.sekondbrain.ai/"
 
 # Order is reading order. A new page is listed here deliberately, not picked up by a glob.
 KEMORY = [
-    ("kemory/", "Docs"),
-    ("kemory/optimise/", "Docs"),
-    ("kemory/retrieval/", "Docs"),
-    ("kemory/cli/", "Docs"),
-    ("kemory/plugin/", "Docs"),
-    ("kemory/api/", "Reference"),
-    ("kemory/benchmarks/", "Reference"),
-    ("kemory/benchmarks/context-compaction/", "Reference"),
-    ("kemory/compare/", "Reference"),
-    ("kemory/community/", "Reference"),
+    ("sekondbrain/", "Docs"),
+    ("sekondbrain/optimise/", "Docs"),
+    ("sekondbrain/retrieval/", "Docs"),
+    ("sekondbrain/cli/", "Docs"),
+    ("sekondbrain/plugin/", "Docs"),
+    ("sekondbrain/api/", "Reference"),
+    ("sekondbrain/benchmarks/", "Reference"),
+    ("sekondbrain/benchmarks/context-compaction/", "Reference"),
+    ("sekondbrain/compare/", "Reference"),
+    ("sekondbrain/community/", "Reference"),
 ]
 PRODUCTS = ["cognition/", "reasoning/", "heve/", "redaction/", "kora-hai/"]
 LEGAL = [
@@ -285,19 +288,19 @@ def index_line(path):
 
 def kemory_links(root):
     """The MCP address and dashboard URL, read from the Kemory index so they cannot drift."""
-    addr = need(find(root, lambda n: "addr" in n.classes), 'the hero <div class="addr">', "kemory/")
+    addr = need(find(root, lambda n: "addr" in n.classes), 'the hero <div class="addr">', "sekondbrain/")
     mcp = text(need(find(addr, lambda n: n.tag == "code"), "a <code> in the hero address",
-                    "kemory/")).strip()
+                    "sekondbrain/")).strip()
     row = need(find(root, lambda n: n.tag == "tr" and any(
         isinstance(td, Node) and td.tag == "td" and text(td).strip() == "Dashboard"
-        for td in n.children)), "a table row labelled Dashboard", "kemory/")
-    dash = need(find(row, lambda n: n.tag == "a"), "a link in the Dashboard row", "kemory/")
+        for td in n.children)), "a table row labelled Dashboard", "sekondbrain/")
+    dash = need(find(row, lambda n: n.tag == "a"), "a link in the Dashboard row", "sekondbrain/")
     return mcp, dash.attrs["href"]
 
 
 def kemory_index():
-    root = load("kemory/")
-    _, desc = meta(root, "kemory/")
+    root = load("sekondbrain/")
+    _, desc = meta(root, "sekondbrain/")
     mcp, dashboard = kemory_links(root)
     lines = [
         "# Kemory",
@@ -307,7 +310,7 @@ def kemory_index():
         "",
         f"- MCP server address: `{mcp}` (OAuth sign-in, no key to copy for web AIs)",
         f"- Dashboard and account: {dashboard}",
-        f"- Everything below in one file: {SITE}kemory/llms-full.txt",
+        f"- Everything below in one file: {SITE}sekondbrain/llms-full.txt",
     ]
     for group in dict.fromkeys(g for _, g in KEMORY):
         lines += ["", f"## {group}", ""]
@@ -319,8 +322,8 @@ def kemory_index():
 
 def kemory_full():
     head = ("# Kemory — full documentation\n\n"
-            f"> Every page of {SITE}kemory/ as Markdown, generated from the published HTML. "
-            f"Index: {SITE}kemory/llms.txt")
+            f"> Every page of {SITE}sekondbrain/ as Markdown, generated from the published HTML. "
+            f"Index: {SITE}sekondbrain/llms.txt")
     pages = [page_markdown(p) for p, _ in KEMORY]
     return head + "\n\n" + "\n\n---\n\n".join(pages) + "\n"
 
@@ -335,10 +338,10 @@ def site_index():
         "",
         "## Kemory",
         "",
-        f"- [Kemory llms.txt]({SITE}kemory/llms.txt): index of every Kemory page",
-        f"- [Kemory llms-full.txt]({SITE}kemory/llms-full.txt): every Kemory page in one "
+        f"- [Kemory llms.txt]({SITE}sekondbrain/llms.txt): index of every Kemory page",
+        f"- [Kemory llms-full.txt]({SITE}sekondbrain/llms-full.txt): every Kemory page in one "
         "Markdown file",
-        index_line("kemory/"),
+        index_line("sekondbrain/"),
         "",
         "## Platform",
         "",
@@ -352,8 +355,8 @@ def site_index():
 def main():
     outputs = {
         "llms.txt": site_index(),
-        "kemory/llms.txt": kemory_index(),
-        "kemory/llms-full.txt": kemory_full(),
+        "sekondbrain/llms.txt": kemory_index(),
+        "sekondbrain/llms-full.txt": kemory_full(),
     }
     for path, body in outputs.items():
         with open(path, "w", encoding="utf-8") as f:

@@ -1,7 +1,7 @@
 # How SeKondBrain retrieval works
 
-> Copy source of truth for `kemory/retrieval/index.html`. Edit prose here first, then
-> mirror it into the HTML — the same convention as `kemory/docs.md`.
+> Copy source of truth for `sekondbrain/retrieval/index.html`. Edit prose here first, then
+> mirror it into the HTML — the same convention as `sekondbrain/docs.md`.
 
 SeKondBrain exposes several ways to read memory, and they are not interchangeable. This page
 explains what happens when you search, which tool to reach for, and how to read a result
@@ -68,7 +68,7 @@ fixed threshold stays meaningful.
 
 ## Which tool to use
 
-Tool names and the `kemory` command keep the product's old name, Kemory.
+Tool names and the `kemory` command keep the Kemory name.
 
 **`kemory_ask`** — the one federated tool: searches memories, chat turns and files
 together (the cross-surface engine below) and, when the question calls for it, synthesises

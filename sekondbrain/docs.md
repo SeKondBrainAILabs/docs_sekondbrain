@@ -2,7 +2,7 @@
 
 **Persistent, permissioned memory for AI agents.**
 
-> This file is the copy source of truth for `kemory/index.html`. Edit prose here first,
+> This file is the copy source of truth for `sekondbrain/index.html`. Edit prose here first,
 > then mirror it into the HTML. The tool table between the `TOOLS` markers is machine-
 > generated in both files — do not hand-edit it. See `tools/gen_tools_table.py`.
 
@@ -24,7 +24,8 @@ You need a SeKondBrain account. Create one, and reach every setting named on thi
 identity service; SeKondBrain never sees or holds a password.
 
 Tool names (`kemory_*`), the `kemory` command, the server address and other URLs, and environment
-variables keep the product's old name, Kemory. Only the name changed: they work as before.
+variables keep the Kemory name. Both names are in use while the rename completes, and nothing
+you have already configured changes.
 
 There is nothing to install for a web AI. Local clients need a config-file entry, shown below.
 
@@ -608,14 +609,14 @@ not the same thing.
 The method, the per-category breakdown, the run-to-run variance and the four caveats that matter
 when comparing it are all set out in full — along with how to reproduce it.
 
-**Full method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/
+**Full method and results:** https://docs.sekondbrain.ai/sekondbrain/benchmarks/
 
 A second benchmark measures cost rather than accuracy. Replayed over 1,314 real sessions, SeKondBrain's
 tiered context sends **72.2% fewer reader tokens** than re-sending the full conversation on every
 turn — and more than full history on sessions of five exchanges or fewer. The saving lives in long
 sessions, and the sample is dominated by one account; both are set out in full.
 
-**Context-compaction method and results:** https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/
+**Context-compaction method and results:** https://docs.sekondbrain.ai/sekondbrain/benchmarks/context-compaction/
 
 ---
 

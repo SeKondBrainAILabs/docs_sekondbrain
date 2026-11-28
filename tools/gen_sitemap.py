@@ -3,8 +3,9 @@
     python tools/gen_sitemap.py
 
 A page is listed when its <link rel="canonical"> points at its own URL and it carries no
-noindex, so an alias such as kemory/optimize/ (canonical kemory/optimise/, noindex) stays
-out. <lastmod> is the date of the last commit that touched the page; pages.yml checks out
+noindex, so an alias such as sekondbrain/optimize/ (canonical sekondbrain/optimise/,
+noindex) stays out, as does every stub in the generated /kemory/ mirror.
+<lastmod> is the date of the last commit that touched the page; pages.yml checks out
 full history for it, and without history the element is left out rather than guessed.
 Like llms.txt, both outputs are written at deploy time and gitignored. Standard library only.
 """

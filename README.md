@@ -9,8 +9,8 @@ claiming a credential.
 | | |
 |---|---|
 | Live | https://docs.sekondbrain.ai |
-| Documentation URL for the connector listing | https://docs.sekondbrain.ai/kemory/ |
-| Plugin homepage for the plugin directory listing | https://docs.sekondbrain.ai/kemory/plugin/ |
+| Documentation URL for the connector listing | https://docs.sekondbrain.ai/sekondbrain/ |
+| Plugin homepage for the plugin directory listing | https://docs.sekondbrain.ai/sekondbrain/plugin/ |
 | Repo | `SeKondBrainAILabs/docs_sekondbrain` (public) |
 | Owner | Product / Kemory |
 
@@ -30,7 +30,7 @@ that breaks either one breaks a published listing, not just an internal link.
 ├── assets/
 │   ├── style.css           the whole design system, one file
 │   └── mark.svg            logomark
-├── kemory/
+├── sekondbrain/
 │   ├── index.html          THE published page
 │   ├── docs.md             copy source of truth (prose)
 │   ├── optimise/           the standing instruction, and where it goes in each AI
@@ -42,6 +42,7 @@ that breaks either one breaks a published listing, not just an internal link.
 │   ├── benchmarks/         LongMemEval-S method and results
 │   │   └── context-compaction/  tiered context vs full history: tokens, cost, caveats
 │   └── community/          Community Edition guide and versioned sources
+├── kemory/                 GENERATED, gitignored — the /kemory/ compatibility mirror
 ├── legal/                  the four legal documents — see below
 │   ├── index.html
 │   ├── privacy/            master Privacy Policy v2.7
@@ -53,19 +54,34 @@ that breaks either one breaks a published listing, not just an internal link.
 ├── tools/
 │   ├── gen_tools_table.py  regenerates the tool table from live tools/list
 │   ├── preflight.py        tag balance, link resolution, no leaked internal notes
-│   ├── gen_llms.py         builds llms.txt, kemory/llms.txt, kemory/llms-full.txt
-│   └── gen_sitemap.py      builds sitemap.xml and robots.txt
+│   ├── gen_llms.py         builds llms.txt, sekondbrain/llms.txt, sekondbrain/llms-full.txt
+│   ├── gen_sitemap.py      builds sitemap.xml and robots.txt
+│   └── gen_kemory_aliases.py  builds the /kemory/ mirror from /sekondbrain/
 └── .github/workflows/
     ├── pages.yml           deploy
+    ├── pr-checks.yml       the same checks on a pull request
     └── tools-drift.yml     fails if the published tool table has drifted
 ```
 
-**Two files, one page.** `kemory/docs.md` holds the prose; `kemory/index.html` is what ships.
+**Two files, one page.** `sekondbrain/docs.md` holds the prose; `sekondbrain/index.html` is what ships.
 Edit prose in the Markdown first, then mirror it. The tool table between the
 `<!-- TOOLS:BEGIN -->` / `<!-- TOOLS:END -->` markers is generated in **both** files — never
 hand-edit it.
 
-**`kemory/plugin/` mirrors another repository.** Its source of truth is
+**The documentation moved from `/kemory/` to `/sekondbrain/`.** Both names stay in use while
+the rename completes, so nothing was renamed *inside* the pages: tool names, the `kemory`
+command, the server address, environment variables and the dashboard host are untouched.
+Only the published path changed.
+
+`/kemory/` is still served, as a generated mirror. GitHub Pages has no server-side 301, so
+`tools/gen_kemory_aliases.py` builds the old tree at deploy time from the new one — an HTML
+redirect stub for every page (meta refresh, canonical, noindex) and a byte-for-byte copy of
+every non-HTML file, because a fetcher asking for `docs.md`, `updates.json` or `llms.txt`
+cannot follow a redirect it never sees. The whole `kemory/` directory is gitignored: never
+commit into it and never hand-edit it. Add a page under `sekondbrain/` and its alias appears
+on the next deploy; the deploy fails if the mirror does not build.
+
+**`sekondbrain/plugin/` mirrors another repository.** Its source of truth is
 `SeKondBrainAILabs/kemory-plugin` — `README.md`, `plugin/README.md`, `PRIVACY.md`,
 `SECURITY.md` and the manifests under `plugin/`. Defaults, hook events and environment
 variable names come from the scripts themselves, not from prose about them. The `Connect
@@ -101,7 +117,7 @@ edit. A page with no `<link rel="canonical">` fails the build.
    Without verification, anyone who later points a repo at `docs.sekondbrain.ai` can take the
    subdomain over if our DNS record ever outlives this repo. Cheap, and it applies to every
    future subdomain we publish.
-5. **Confirm** `curl -I https://docs.sekondbrain.ai/kemory/` returns `200`.
+5. **Confirm** `curl -I https://docs.sekondbrain.ai/sekondbrain/` returns `200`.
 
 ---
 
@@ -192,11 +208,11 @@ server within one release, so it is generated:
 python tools/gen_tools_table.py \
   --url  https://api.kemory.sekondbrain.ai/mcp/v1 \
   --api-key "$KEMORY_DOCS_KEY" \
-  --write kemory/docs.md --write kemory/index.html
+  --write sekondbrain/docs.md --write sekondbrain/index.html
 
 # CI mode — non-zero exit if either committed table is stale
 python tools/gen_tools_table.py --url ... --api-key ... \
-  --check kemory/docs.md --check kemory/index.html
+  --check sekondbrain/docs.md --check sekondbrain/index.html
 ```
 
 The script fails the build, rather than publishing something misleading, when:

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SeKondBrain benchmarks — context compaction | SeKondBrain</title>
 <meta name="description" content="A deterministic replay of 1,314 real SeKondBrain sessions: tiered context sends 72.2% fewer reader tokens than re-sending the full history, and costs more than it saves below about six exchanges. Method, results by session length, costs, caveats, and how to reproduce it.">
-<link rel="canonical" href="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
+<link rel="canonical" href="https://docs.sekondbrain.ai/sekondbrain/benchmarks/context-compaction/">
 <link rel="icon" href="../../../assets/mark.png" type="image/png">
 <meta property="og:title" content="SeKondBrain benchmarks — context compaction">
 <meta property="og:description" content="72.2% fewer reader tokens than full-history replay, measured over 1,314 real sessions — and where it doesn't pay. Method, results and caveats.">
-<meta property="og:url" content="https://docs.sekondbrain.ai/kemory/benchmarks/context-compaction/">
+<meta property="og:url" content="https://docs.sekondbrain.ai/sekondbrain/benchmarks/context-compaction/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -288,7 +288,7 @@
 
     <section id="reproduce">
       <h2>Reproduce it</h2>
-      <p>The measurement package — the replay code, its unit tests, the rate card, the data dictionary, the instrumentation-gap analysis and the aggregate outputs behind every table on this page — is published in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">SeKondBrain Community Edition repository</a>. Environment variables and file names keep the product's old name, Kemory.</p>
+      <p>The measurement package — the replay code, its unit tests, the rate card, the data dictionary, the instrumentation-gap analysis and the aggregate outputs behind every table on this page — is published in the <a href="https://github.com/SeKondBrainAILabs/kemory-community/tree/main/benchmarks/context_compaction_empirical">SeKondBrain Community Edition repository</a>. Environment variables and file names keep the Kemory name.</p>
       <p>It reads the same chat tables Community Edition creates, so you can run it against your own local install and see what tiered context does with <em>your</em> sessions — which is a better answer to caveat 1 than anything we could publish.</p>
 <pre><code>cd benchmarks/context_compaction_empirical
 pip install -r requirements.txt

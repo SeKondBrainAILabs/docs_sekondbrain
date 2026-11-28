@@ -65,7 +65,7 @@ for page in sorted(pages):
     print(f"parsed {page} ({len(html):,} bytes)")
 
 # the page that is the deliverable
-kem = open("kemory/index.html", encoding="utf-8").read()
+kem = open("sekondbrain/index.html", encoding="utf-8").read()
 for needle, label in [
     ("TOOLS:BEGIN", "tool-table marker"),
     ("kemory_REPLACE_WITH_YOUR_KEY", "placeholder key, not a live credential"),
@@ -73,11 +73,11 @@ for needle, label in [
     ('id="scoping"', "scoping section"),
 ]:
     if needle not in kem:
-        failures.append(f"kemory/index.html: missing {label}")
+        failures.append(f"sekondbrain/index.html: missing {label}")
 
 tool_rows = len(re.findall(r"<code>kemory_[a-z_]+</code>", kem))
 if tool_rows < 17:
-    failures.append(f"kemory/index.html: only {tool_rows} tool rows, expected >= 17")
+    failures.append(f"sekondbrain/index.html: only {tool_rows} tool rows, expected >= 17")
 else:
     print(f"tool rows in table: {tool_rows}")
 

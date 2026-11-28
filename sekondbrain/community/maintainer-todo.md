@@ -11,7 +11,7 @@ gh repo edit --add-topic kemory --add-topic memory --add-topic ai-agents \
   --add-topic rag --add-topic local-first --add-topic oss
 
 gh repo edit --description "Local-first, OSS memory for AI agents. Same wire protocol as hosted SeKondBrain. Apache-2.0." \
-  --homepage "https://docs.sekondbrain.ai/kemory/community/"
+  --homepage "https://docs.sekondbrain.ai/sekondbrain/community/"
 
 gh repo edit --enable-discussions --enable-issues --enable-projects
 gh api -X PATCH "/repos/SeKondBrainAILabs/kemory-community" -f has_wiki=false
@@ -70,7 +70,7 @@ tokens as soon as they are available.
 Community documentation is published by the central public docs repository:
 
 - Source: `SeKondBrainAILabs/docs_sekondbrain`
-- URL: `https://docs.sekondbrain.ai/kemory/community/`
+- URL: `https://docs.sekondbrain.ai/sekondbrain/community/`
 - Community Discussions and Issues remain in this repository.
 
 ## 5. npm reservation
@@ -86,7 +86,7 @@ and pushes the API/dashboard images to GHCR before publishing npm.
 ## 6. Privacy policy
 
 The Community Edition privacy source is maintained in
-`docs_sekondbrain/kemory/community/privacy.md`. Keep the operational mirror in
+`docs_sekondbrain/sekondbrain/community/privacy.md`. Keep the operational mirror in
 this repository aligned when runtime providers or data paths change.
 
 ## 7. Once the adapter refactor in `agent_memory_vault` lands

@@ -3,7 +3,11 @@ __pycache__/
 *.pyc
 *.bak
 /llms.txt
-/kemory/llms.txt
-/kemory/llms-full.txt
+/sekondbrain/llms.txt
+/sekondbrain/llms-full.txt
 /sitemap.xml
 /robots.txt
+
+# The whole /kemory/ tree is the compatibility mirror of /sekondbrain/, generated at
+# deploy time by tools/gen_kemory_aliases.py so it cannot drift from the real pages.
+/kemory/

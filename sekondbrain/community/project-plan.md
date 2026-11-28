@@ -71,7 +71,7 @@ release.
 ## After v0.1
 
 v0.2 (next 2 weeks): Host-local runtime, expanded Community documentation at
-`docs.sekondbrain.ai/kemory/community/`, artifact thumbnails, recall benchmarks vs
+`docs.sekondbrain.ai/sekondbrain/community/`, artifact thumbnails, recall benchmarks vs
 Mem0/Letta/Zep, HN + Product Hunt launch.
 
 ## Questions?

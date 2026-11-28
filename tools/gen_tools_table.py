@@ -15,11 +15,11 @@ Usage
 -----
     # rewrite both files in place
     python tools/gen_tools_table.py --url "$KEMORY_MCP_URL" --api-key "$KEMORY_DOCS_KEY" \
-        --write kemory/docs.md --write kemory/index.html
+        --write sekondbrain/docs.md --write sekondbrain/index.html
 
     # CI gate: exit 1 if either committed table is stale
     python tools/gen_tools_table.py --url "$KEMORY_MCP_URL" --api-key "$KEMORY_DOCS_KEY" \
-        --check kemory/docs.md --check kemory/index.html
+        --check sekondbrain/docs.md --check sekondbrain/index.html
 
 Format is inferred from the file extension. Beyond staleness, the script fails on
 two conditions that would sink a directory submission on their own:
